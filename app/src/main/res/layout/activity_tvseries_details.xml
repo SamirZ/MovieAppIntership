@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout
+    android:id="@+id/activity_tvseries_details"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorMovieDetailsBackground"
+    tools:context="com.example.zsamir.movieappintership.TVSeriesDetailsActivity">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/colorMovieDetailsBackground">
+
+        <ImageView
+            android:alpha="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:id="@+id/tv_series_details_image"/>
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:id="@+id/tv_series_details_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tv_series_details_genre"
+            android:textColor="@color/colorText"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:id="@+id/tv_series_details_genre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tv_series_details_release_date"
+            android:textColor="@color/colorMovieItemText"
+            android:textSize="8sp"/>
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:id="@+id/tv_series_details_release_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tv_series_break_line_details"
+            android:textColor="@color/colorMovieItemText"
+            android:textSize="8sp"/>
+
+        <View
+            android:id="@+id/tv_series_break_line_details"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/colorBreakLine"
+            android:layout_below="@id/tv_series_details_image"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:id="@+id/tv_series_details_director_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/director"
+                android:textSize="9.3sp"
+                android:textColor="@color/colorTextDetails"
+                />
+
+            <TextView
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:id="@+id/tv_series_details_writers_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/writers"
+                android:textSize="9.3sp"
+                android:textColor="@color/colorTextDetails"
+                />
+
+            <TextView
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:id="@+id/tv_series_details_stars_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/stars"
+                android:textSize="9.3sp"
+                android:textColor="@color/colorTextDetails"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_series_details_director_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="9.3sp"
+                android:textColor="@color/colorMovieItemText"
+                />
+
+            <TextView
+                android:id="@+id/tv_series_details_writers_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="9.3sp"
+                android:textColor="@color/colorMovieItemText"
+                />
+
+            <TextView
+                android:id="@+id/tv_series_details_stars_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="9.3sp"
+                android:textColor="@color/colorMovieItemText"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
+</ScrollView>

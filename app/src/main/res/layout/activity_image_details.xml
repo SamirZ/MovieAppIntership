@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_image_details"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context="com.example.zsamir.movieappintership.ImageDetailsActivity"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/image_details_movie_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20.7dp"
+        android:paddingStart="20.7dp"
+        android:paddingEnd="20.7dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="7.7dp"
+        android:textColor="@color/colorMovieItemText"
+        android:background="@color/colorImageGalleryOne"
+        />
+
+    <TextView
+        android:id="@+id/image_details_num_of_images"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20.7dp"
+        android:paddingStart="20.7dp"
+        android:paddingEnd="20.7dp"
+        android:paddingTop="7.7dp"
+        android:paddingBottom="7.7dp"
+        android:textColor="@color/colorMovieItemText"
+        android:background="@color/colorImageGalleryTwo"
+        />
+
+    <ImageView
+
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/image_details_image"/>
+
+</LinearLayout>

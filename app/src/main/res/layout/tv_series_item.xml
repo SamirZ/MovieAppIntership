@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="6dp"
+    android:background="@color/colorBlack">
+
+    <ImageView
+        android:alpha="0.5"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        android:id="@+id/tv_series_image"/>
+
+    <View
+        android:layout_above="@+id/tv_series_breakline"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/gradient" />
+
+    <TextView
+        android:id="@+id/tv_series_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_series_genre"
+        android:textColor="@color/colorText"
+        android:textSize="10.7sp"/>
+
+    <TextView
+        android:id="@+id/tv_series_genre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_series_release_date"
+        android:textColor="@color/colorMovieItemText"
+        android:textSize="5.3sp"/>
+
+    <TextView
+        android:id="@+id/tv_series_release_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_series_breakline"
+        android:textColor="@color/colorMovieItemText"
+        android:textSize="6.7sp"/>
+
+    <View
+        android:id="@+id/tv_series_breakline"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorBreakLine"
+        android:layout_below="@id/tv_series_image"/>
+
+    <TextView
+        android:layout_below="@+id/tv_series_image"
+        android:id="@+id/tv_series_rating"
+        android:layout_width="match_parent"
+        android:layout_height="20.7dp"
+        android:gravity="center"
+        android:textColor="@color/colorMovieItemText"
+        android:textSize="6.7sp"/>
+
+</RelativeLayout>

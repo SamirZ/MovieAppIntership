@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_movie_gallery"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    tools:context="com.example.zsamir.movieappintership.MovieGalleryActivity">
+
+    <TextView
+        android:id="@+id/image_gallery_movie_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20.7dp"
+        android:paddingStart="20.7dp"
+        android:paddingEnd="20.7dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="7.7dp"
+        android:textColor="@color/colorMovieItemText"
+        android:background="@color/colorImageGalleryOne"
+        />
+
+    <TextView
+        android:id="@+id/image_gallery_num_of_images"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20.7dp"
+        android:paddingStart="20.7dp"
+        android:paddingEnd="20.7dp"
+        android:paddingTop="7.7dp"
+        android:paddingBottom="7.7dp"
+        android:textColor="@color/colorMovieItemText"
+        android:background="@color/colorImageGalleryTwo"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/movie_gallery_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical" />
+
+</LinearLayout>

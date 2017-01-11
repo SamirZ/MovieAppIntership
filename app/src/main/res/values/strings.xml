@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Movie App</string>
+    <string name="action_settings">Settings</string>
+    <string name="movies_label">Movies</string>
+    <string name="director">Director:</string>
+    <string name="writers">Writers:</string>
+    <string name="stars">Stars:</string>
+    <string name="tv_series_name">TV Shows</string>
+    <string name="news_feed_name">Feed</string>
+    <string name="cast">Cast</string>
+    <string name="actor_activity_label">Actors</string>
+    <string name="website">Website:</string>
+    <string name="date_of_birth">Date of birth:</string>
+    <string name="biography">Biography:</string>
+    <string name="filmography">Filmography:</string>
+    <string name="images">Image gallery</string>
+    <string name="see_all">See All</string>
+    <string name="images1">images</string>
+    <string name="of">of</string>
+    <string name="title_activity_tvseries">TVSeriesActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+</resources>

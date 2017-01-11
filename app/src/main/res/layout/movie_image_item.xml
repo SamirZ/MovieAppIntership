@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:clickable="true"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="80dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="18dp"
+    android:layout_marginRight="6.8dp"
+    android:layout_marginEnd="6.8dp">
+    <ImageView
+        android:id="@+id/movie_image_holder"
+        android:scaleType="centerCrop"
+        android:layout_width="80dp"
+        android:layout_height="80dp" />
+</LinearLayout>

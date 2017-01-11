@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary"
+    tools:context="com.example.zsamir.movieappintership.ActorProfileActivity">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/colorBlack">
+
+        <ImageView
+            android:alpha="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="216dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:id="@+id/actor_details_image"/>
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="13.3dp"
+            android:id="@+id/actor_details_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/actor_break_line_details"
+            android:textColor="@color/colorText"
+            android:textSize="16sp"/>
+
+        <View
+            android:id="@+id/actor_break_line_details"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/colorBreakLine"
+            android:layout_below="@id/actor_details_image"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:id="@+id/actor_details_date_of_birth_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/date_of_birth"
+                android:textSize="9.3sp"
+                android:textColor="@color/colorTextDetails"
+                />
+            <TextView
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:id="@+id/actor_details_website_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/website"
+                android:textSize="9.3sp"
+                android:textColor="@color/colorTextDetails"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/actor_details_date_of_birth_2"
+                android:textColor="@color/colorMovieItemText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="9.3sp"
+                />
+            <TextView
+                android:id="@+id/actor_details_website_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="all"
+                android:clickable="true"
+                android:textSize="9.3sp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_margin="10dp"
+        android:id="@+id/actor_details_biography_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/biography"
+        android:textSize="9.3sp"
+        android:textColor="@color/colorTextDetails"
+        />
+
+    <TextView
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/actor_details_biography_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="9.3sp"
+        android:textColor="@color/colorTextDetails"
+        />
+
+    <View
+        android:id="@+id/actor_breakline_details"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorBreakLine"
+        />
+
+    <TextView
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
+        android:id="@+id/filmography"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/filmography"
+        android:textSize="9.3sp"
+        android:textColor="@color/colorText"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/actor_movies_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:scrollbars="vertical" />
+
+</LinearLayout>
+</ScrollView>
