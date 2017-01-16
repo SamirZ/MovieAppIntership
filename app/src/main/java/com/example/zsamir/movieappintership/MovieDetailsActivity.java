@@ -20,6 +20,7 @@ import com.example.zsamir.movieappintership.Modules.Crew;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.Credits;
 import com.example.zsamir.movieappintership.Modules.Images;
+import com.example.zsamir.movieappintership.Modules.MovieDetails;
 
 import java.util.ArrayList;
 
@@ -36,6 +37,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     CastAdapter mCastAdapter = new CastAdapter(actors);
     ImageAdapter mImageAdapter;
     // Genre ids sometimes empty take care of that
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +49,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         ApiHandler apiHandler = ApiHandler.getInstance();
 
-        apiHandler.requestMovieImages(mMovie.getId(), new ApiHandler.MovieImagesListener() {
+        apiHandler.requestMovieImages(mMovie.getId(), new ApiHandler.ImagesListener() {
             @Override
             public void success(Images response) {
                 mMovieImages = response;
@@ -57,52 +59,70 @@ public class MovieDetailsActivity extends AppCompatActivity {
         });
 
 
-        apiHandler.requestMovieCredits(mMovie.getId(), new ApiHandler.MovieCreditsListener() {
+        apiHandler.requestMovieCredits(mMovie.getId(), new ApiHandler.CreditsListener() {
             @Override
             public void success(Credits response) {
                 mCredits = response;
-                for (Crew c: mCredits.crew) {
-                    if(c.department.equals("Directing")){
-                        director = c;
-                    }
-                    if(c.department.equals("Writing")){
-                        writers.add(c);
-                    }
-                }
+
                 TextView mMovieDirector = (TextView) findViewById(R.id.movie_details_director_2);
-                mMovieDirector.setText(director.name);
+                if(mCredits.crew!=null) {
+                    for (Crew c : mCredits.crew) {
+                        if (c.department.equals("Directing")) {
+                            director = c;
+                            mMovieDirector.setText(director.name);
+                        }
+                        if (c.department.equals("Writing")) {
+                            writers.add(c);
+                        }
+                    }
 
-                TextView mMovieWriters = (TextView) findViewById(R.id.movie_details_writers_2);
-                if(writers.size()>2)
-                    mMovieWriters.setText(writers.get(0).name + ", " +writers.get(1).name+ ", " +writers.get(2).name);
-                else{
-                    mMovieWriters.setText(writers.get(0).name);
+                    TextView mMovieWriters = (TextView) findViewById(R.id.movie_details_writers_2);
+                    if (writers.size() > 2)
+                        mMovieWriters.setText(writers.get(0).name + ", " + writers.get(1).name + ", " + writers.get(2).name);
+                    else {
+                        if (!writers.isEmpty())
+                            mMovieWriters.setText(writers.get(0).name);
+                        else
+                            mMovieWriters.setText("");
+                    }
                 }
-
                 StringBuilder sb = new StringBuilder();
+                if(mCredits.cast!=null){
                 actors.addAll(mCredits.cast);
                 mCastAdapter.notifyDataSetChanged();
-                if(mCredits.cast.size()>0) {
-                    int size = 3;
-                    for(int i=0;i<size;i++){
-                        sb.append(mCredits.cast.get(i).name);
-                        if(i!=size-1)
+                if(actors.size()>0) {
+                    for(int i=0;i<actors.size() && i<3;i++){
+                        sb.append(actors.get(i).name);
+                        if(i!=2)
                         sb.append(", ");
                     }
                     TextView mMovieStars = (TextView) findViewById(R.id.movie_details_stars_2);
                     mMovieStars.setText(sb.toString());
                 }
 
-            }
+            }}
         });
 
         // department writing directing crew
         // cast actors
 
+        apiHandler.requestMovie(mMovie.getId(), new ApiHandler.MovieDetailsListener() {
+            @Override
+            public void success(MovieDetails response) {
+                TextView mMovieReleaseDate = (TextView) findViewById(R.id.movie_details_release_date);
+                if(!response.productionCountries.isEmpty())
+                    mMovieReleaseDate.setText(response.getReleaseDate()+" "+ "("+response.productionCountries.get(0).name+")");
+                else
+                    mMovieReleaseDate.setText(response.getReleaseDate());
+            }
+        });
+
         ImageView mMovieImage = (ImageView) findViewById(R.id.movie_details_image);
+        if(mMovie.getBackdropUrl()!=null)
         Glide.with(this).load(mMovie.getBackdropUrl()).into(mMovieImage);
 
         TextView mMovieName = (TextView) findViewById(R.id.movie_details_name);
+        if(mMovie.getTitle()!=null && mMovie.getReleaseYear()!=null)
         mMovieName.setText(mMovie.getTitle()+" ("+mMovie.getReleaseYear()+")");
 
         TextView mMovieGenre = (TextView) findViewById(R.id.movie_details_genre);
@@ -115,24 +135,18 @@ public class MovieDetailsActivity extends AppCompatActivity {
         seeMovieGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(view.getContext(), MovieGalleryActivity.class);
-                i.putExtra("MovieId", Integer.toString(mMovie.getId()));
+                Intent i = new Intent(view.getContext(), GalleryActivity.class);
                 i.putExtra("Movie",mMovie);
                 view.getContext().startActivity(i);
             }
         });
 
-        // not done yet
-        TextView mMovieReleaseDate = (TextView) findViewById(R.id.movie_details_release_date);
-        mMovieReleaseDate.setText(mMovie.getReleaseDate()+" "+ "(USA)");
-
         TextView mMovieOverview = (TextView) findViewById(R.id.movie_details_overview);
+        if(mMovie.getOverview()!=null)
         mMovieOverview.setText(mMovie.getOverview());
 
         TextView mRating = (TextView) findViewById(R.id.movie_details_raiting);
         mRating.setText(Float.toString(mMovie.getVoteAverage())+" /10");
-
-        // WIERD IMAGES
 
         RecyclerView mImageRecyclerView = (RecyclerView) findViewById(R.id.images_recyclerView);
         LinearLayoutManager layoutManagerImage = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);

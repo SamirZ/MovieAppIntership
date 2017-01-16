@@ -9,27 +9,28 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
+import com.example.zsamir.movieappintership.Adapters.MovieAdapter;
 import com.example.zsamir.movieappintership.EndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.MovieList;
-import com.example.zsamir.movieappintership.Adapters.MovieAdapter;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
 
-public class PopularMoviesFragment extends Fragment{
 
-    private static PopularMoviesFragment instance = null;
-    ArrayList<Movie> moviesList = new ArrayList<>();
-    ApiHandler apiHandler = ApiHandler.getInstance();
-    MovieAdapter mMovieAdapter = new MovieAdapter(moviesList);
+public class LatestMoviesFragment extends Fragment {
 
-    public PopularMoviesFragment() {
+    private static LatestMoviesFragment instance = null;
+    private ArrayList<Movie> moviesList = new ArrayList<>();
+    private ApiHandler apiHandler = ApiHandler.getInstance();
+    private MovieAdapter mMovieAdapter = new MovieAdapter(moviesList);
+
+    public LatestMoviesFragment() {
     }
 
-    public static PopularMoviesFragment getInstance() {
+    public static LatestMoviesFragment getInstance() {
         if(instance == null) {
-            instance = new PopularMoviesFragment();
+            instance = new LatestMoviesFragment();
         }
         return instance;
     }
@@ -37,17 +38,17 @@ public class PopularMoviesFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_popular_movies, container, false);
-        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.popular_recyclerView);
+        View rootView = inflater.inflate(R.layout.fragment_latest_movies, container, false);
+        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.latest_recyclerView);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
-        loadPopularMovies(1);
+        loadLatestMovies(1);
 
         mRecyclerView.setLayoutManager(gridLayoutManager );
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadPopularMovies(page);
+                loadLatestMovies(page);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);
@@ -57,8 +58,8 @@ public class PopularMoviesFragment extends Fragment{
     }
 
 
-    private void loadPopularMovies(int page){
-        apiHandler.requestMostPopularMovies(page, new ApiHandler.MovieListListener() {
+    private void loadLatestMovies(int page){
+        apiHandler.requestLatestMovies(page, new ApiHandler.MovieListListener() {
             @Override
             public void success(MovieList response) {
                 moviesList.addAll(response.getMovies());
@@ -66,4 +67,5 @@ public class PopularMoviesFragment extends Fragment{
             }
         });
     }
+
 }

@@ -51,18 +51,23 @@ public class ActorProfileActivity extends AppCompatActivity {
     private void initializeActor() {
 
         ImageView mActorImage = (ImageView) findViewById(R.id.actor_details_image);
+        if(cast.getPosterUrl()!=null)
         Glide.with(this).load(cast.getPosterUrl()).into(mActorImage);
 
         TextView mActorName = (TextView) findViewById(R.id.actor_details_name);
-        mActorName.setText(mActor.name);
+        if(mActor.name!=null)
+            mActorName.setText(mActor.name);
 
         TextView mActorDateOfBirth = (TextView) findViewById(R.id.actor_details_date_of_birth_2);
+        if(mActor.birthday!=null && mActor.placeOfBirth!=null)
         mActorDateOfBirth.setText(getDate(mActor.birthday)+", "+mActor.placeOfBirth);
 
         TextView mActorWebsite = (TextView) findViewById(R.id.actor_details_website_2);
+        if(mActor.homepage!=null)
         mActorWebsite.setText(mActor.homepage);
 
         TextView mActorBio = (TextView) findViewById(R.id.actor_details_biography_2);
+        if(mActor.biography!=null)
         mActorBio.setText(mActor.biography);
 
         apiHandler.requestMovieWithActor(mActor.id, new ApiHandler.MovieListListener() {
@@ -81,7 +86,7 @@ public class ActorProfileActivity extends AppCompatActivity {
 
     public String getDate(String date) {
         String[] s = date.split("-");
-        return s[2]+" "+getMonth(Integer.parseInt(s[1]))+ " "+ s[0];
+        return s[2]+" "+getMonth(Integer.parseInt(s[1]))+ " "+ s[0]; /// TO DO
     }
 
     private String getMonth(int i) {

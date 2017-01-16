@@ -1,8 +1,5 @@
 package com.example.zsamir.movieappintership.Modules;
 
-/**
- * Created by zsami on 06-Jan-17.
- */
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,21 +14,21 @@ public class Movie implements Parcelable {
     public int numOfBackdrops;
     public int lastLoadedBackdrop;
 
-    static final String BASE_IMG_URL = "http://image.tmdb.org/t/p/";
+    private static final String BASE_IMG_URL = "http://image.tmdb.org/t/p/";
     // Poster image sizes
-    static final String POSTER_SIZE_W92 = "w92";
-    static final String POSTER_SIZE_W154 = "w154";
-    static final String POSTER_SIZE_W185 = "w185";
-    static final String POSTER_SIZE_W342 = "w342";
-    static final String POSTER_SIZE_W500 = "w500";
-    static final String POSTER_W780 = "w780";
-    static final String POSTER_SIZE_ORIGINAL = "original";
+    private static final String POSTER_SIZE_W92 = "w92";
+    private static final String POSTER_SIZE_W154 = "w154";
+    private static final String POSTER_SIZE_W185 = "w185";
+    private static final String POSTER_SIZE_W342 = "w342";
+    private static final String POSTER_SIZE_W500 = "w500";
+    private static final String POSTER_W780 = "w780";
+    private static final String POSTER_SIZE_ORIGINAL = "original";
 
     // Backdrop image sizes
-    static final String BACKDROP_SIZE_W300 = "w300";
-    static final String BACKDROP_SIZE_W780 = "w780";
-    static final String BACKDROP_SIZE_W1280 = "w1280";
-    static final String BACKDROP_SIZE_ORIGINAL = "original";
+    private static final String BACKDROP_SIZE_W300 = "w300";
+    private static final String BACKDROP_SIZE_W780 = "w780";
+    private static final String BACKDROP_SIZE_W1280 = "w1280";
+    private static final String BACKDROP_SIZE_ORIGINAL = "original";
 
     @SerializedName("poster_path")
     @Expose
@@ -47,7 +44,7 @@ public class Movie implements Parcelable {
     private String releaseDate;
     @SerializedName("genre_ids")
     @Expose
-    int[] genreIds = new int[0];
+    private int[] genreIds = new int[0];
     @SerializedName("id")
     @Expose
     private int id;
@@ -136,7 +133,8 @@ public class Movie implements Parcelable {
 
     public String getReleaseDate() {
         String[] s = releaseDate.split("-");
-        return s[2]+" "+getMonth(Integer.parseInt(s[1]))+ " "+ s[0];
+        return s[2]+" "+ getMonth(Integer.parseInt(s[1]))+ " "+ s[0];
+
     }
 
     private String getMonth(int i) {
@@ -178,15 +176,15 @@ public class Movie implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
-    public int[] getGenreIds() {
+    private  int[] getGenreIds() {
         return genreIds;
     }
 
     public List<String> getMovieGenres() {
         List<String> genres = new ArrayList<>();
         int[] ids = getGenreIds();
-        for (int i=0; i<getGenreIds().length-1; i++) {
-            Genres genre = Genres.getById(ids[i]);
+        for (int i=0; i<getGenreIds().length; i++) {
+            MovieGenres genre = MovieGenres.getById(ids[i]);
             if (genre != null) {
                 genres.add(genre.getTitle());
             }
@@ -233,6 +231,7 @@ public class Movie implements Parcelable {
     public String getBackdropUrl() {
         return BASE_IMG_URL + BACKDROP_SIZE_W1280+ backdropPath;
     }
+
     public String getBackdropSizeOriginalUrl() {
         return BASE_IMG_URL + BACKDROP_SIZE_ORIGINAL+ backdropPath;
     }

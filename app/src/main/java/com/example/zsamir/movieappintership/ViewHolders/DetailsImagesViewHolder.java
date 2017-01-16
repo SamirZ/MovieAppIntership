@@ -1,8 +1,8 @@
 package com.example.zsamir.movieappintership.ViewHolders;
 
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,26 +18,27 @@ import com.example.zsamir.movieappintership.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImageGalleryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+public class DetailsImagesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
     private List<Backdrop> backdropList;
-    private Backdrop backdrop;
+    private ImageView mMovieImage;
     private Movie movie;
     private TvSeries tvSeries;
-    private ImageView mMovieImage;
+    private Backdrop backdrop;
 
-    public ImageGalleryViewHolder(View itemView) {
+    public DetailsImagesViewHolder(View itemView) {
         super(itemView);
-        mMovieImage = (ImageView) itemView.findViewById(R.id.image_gallery_holder);
+        mMovieImage = (ImageView) itemView.findViewById(R.id.movie_image_holder);
+
         itemView.setOnClickListener(this);
     }
 
-    public void bindImage(Backdrop backdrop, Movie movie, List<Backdrop> backdropList){
+    public void bindImage(Backdrop backdrop , Movie movie, List<Backdrop> backdropList){
         this.backdrop = backdrop;
         this.movie = movie;
         this.backdropList = backdropList;
         if(backdrop.getBackdropSizeW300()!=null)
-            Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
+        Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
     }
 
     public void bindImage(Backdrop backdrop , TvSeries tvSeries, List<Backdrop> backdropList){
@@ -45,7 +46,7 @@ public class ImageGalleryViewHolder extends RecyclerView.ViewHolder implements V
         this.tvSeries = tvSeries;
         this.backdropList = backdropList;
         if(backdrop.getBackdropSizeW300()!=null)
-            Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
+        Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
     }
 
     @Override
@@ -72,13 +73,13 @@ public class ImageGalleryViewHolder extends RecyclerView.ViewHolder implements V
             if(backdrop.getFilePath()!=null)
                 sendTVSeries.setBackdropPath(backdrop.getFilePath());
 
-            Intent j = new Intent(view.getContext(), ImageDetailsActivity.class);
-            j.putExtra("TVSeries", sendTVSeries);
-            view.getContext().startActivity(j);
+            Intent i = new Intent(view.getContext(), ImageDetailsActivity.class);
+            i.putExtra("TVSeries", sendTVSeries);
+            view.getContext().startActivity(i);
         }
     }
 
-    private int findBackdropInList(){
+    public int findBackdropInList(){
         return backdropList.indexOf(backdrop);
     }
 

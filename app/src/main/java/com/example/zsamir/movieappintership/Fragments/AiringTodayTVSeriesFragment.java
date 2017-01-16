@@ -46,11 +46,11 @@ public class AiringTodayTVSeriesFragment extends Fragment {
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        loadInitialAiringTodayTvSeries();
+        loadAiringTodayTvSeries(1);
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadNextAiringTodayTvSeries(page);
+                loadAiringTodayTvSeries(page);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);
@@ -58,18 +58,7 @@ public class AiringTodayTVSeriesFragment extends Fragment {
         return rootView;
     }
 
-    private void loadInitialAiringTodayTvSeries() {
-        movieDbApi.requestAiringTodayTvSeries(new ApiHandler.TvSeriesListListener() {
-            @Override
-            public void success(TvSeriesList response) {
-                tvSeriesList.clear();
-                tvSeriesList.addAll(response.getTvSeries());
-                mTvSeriesAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    private void loadNextAiringTodayTvSeries(int page) {
+    private void loadAiringTodayTvSeries(int page) {
         movieDbApi.requestAiringTodayTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
             public void success(TvSeriesList response) {

@@ -49,7 +49,7 @@ public class ActorMovieViewHolder extends RecyclerView.ViewHolder implements Vie
         // Not the best implementation
         final List<Cast> allActors = new ArrayList<>();
         ApiHandler apiHandler = ApiHandler.getInstance();
-        apiHandler.requestMovieCredits(movie.getId(), new ApiHandler.MovieCreditsListener() {
+        apiHandler.requestMovieCredits(movie.getId(), new ApiHandler.CreditsListener() {
             @Override
             public void success(Credits response) {
                 allActors.addAll(response.cast);
@@ -61,10 +61,10 @@ public class ActorMovieViewHolder extends RecyclerView.ViewHolder implements Vie
 
             }
         });
-
+        if(movie.getTitle()!=null)
         mMovieName.setText(movie.getTitle());
         // from this movie not previous one
-
+        if(movie.getPosterUrl()!=null)
         Glide.with(mMovieImage.getContext()).load(movie.getPosterUrl()).into(mMovieImage);
 
     }

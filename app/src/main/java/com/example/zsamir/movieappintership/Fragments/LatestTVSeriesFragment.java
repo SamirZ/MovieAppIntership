@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
-
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
 import com.example.zsamir.movieappintership.EndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
@@ -18,19 +17,19 @@ import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
 
-public class HighestRatedTVSeriesFragment extends Fragment {
+public class LatestTVSeriesFragment extends Fragment {
 
-    private static HighestRatedTVSeriesFragment instance = null;
-    ArrayList<TvSeries> tvSeriesList = new ArrayList<>();
-    ApiHandler movieDbApi = ApiHandler.getInstance();
-    TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(tvSeriesList);
+    private static LatestTVSeriesFragment instance = null;
+    private ArrayList<TvSeries> tvSeriesList = new ArrayList<>();
+    private ApiHandler movieDbApi = ApiHandler.getInstance();
+    private TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(tvSeriesList);
 
-    public HighestRatedTVSeriesFragment() {
+    public LatestTVSeriesFragment() {
     }
 
-    public static HighestRatedTVSeriesFragment getInstance() {
+    public static LatestTVSeriesFragment getInstance() {
         if(instance == null) {
-            instance = new HighestRatedTVSeriesFragment();
+            instance = new LatestTVSeriesFragment();
         }
         return instance;
     }
@@ -38,29 +37,27 @@ public class HighestRatedTVSeriesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_highest_rated_tvseries, container, false);
-        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.highest_rated_tv_series_recyclerView);
+        View rootView = inflater.inflate(R.layout.fragment_popular_tvseries, container, false);
+        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.popular_tv_series_recyclerView);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
-
-        mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        loadTopRatedTvSeries(1);
+        loadLatestTvSeries(1);
+
+        mRecyclerView.setLayoutManager(gridLayoutManager);
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadTopRatedTvSeries(page);
+                loadLatestTvSeries(page);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);
-
         return rootView;
     }
 
-
-    private void loadTopRatedTvSeries(int page) {
-        movieDbApi.requestHighestRatedTvSeries(page, new ApiHandler.TvSeriesListListener() {
+    private void loadLatestTvSeries(int page) {
+        movieDbApi.requestLatestTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
             public void success(TvSeriesList response) {
                 tvSeriesList.addAll(response.getTvSeries());
@@ -68,4 +65,6 @@ public class HighestRatedTVSeriesFragment extends Fragment {
             }
         });
     }
+
+
 }

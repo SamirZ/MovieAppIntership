@@ -11,12 +11,14 @@ import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
 import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.Movie;
+import com.example.zsamir.movieappintership.Modules.TvSeries;
 
 import java.util.ArrayList;
 
 public class ImageDetailsActivity extends AppCompatActivity {
 
     Movie mMovie;
+    TvSeries mTVSeries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,16 +27,32 @@ public class ImageDetailsActivity extends AppCompatActivity {
 
         if (getIntent().hasExtra("Movie")) {
             mMovie = getIntent().getParcelableExtra("Movie");
+            TextView movieName = (TextView) findViewById(R.id.image_details_movie_name);
+            if(mMovie.getTitle()!=null && mMovie.getReleaseYear()!=null)
+            movieName.setText(mMovie.getTitle()+" ("+mMovie.getReleaseYear()+")");
+
+            TextView movieImageNumber = (TextView) findViewById(R.id.image_details_num_of_images);
+            movieImageNumber.setText((mMovie.lastLoadedBackdrop+1)+" of "+mMovie.numOfBackdrops);
+
+            ImageView movieImage = (ImageView) findViewById(R.id.image_details_image);
+            if(mMovie.getBackdropUrl()!=null)
+            Glide.with(this).load(mMovie.getBackdropSizeOriginalUrl()).into(movieImage);
         }
 
-        TextView movieName = (TextView) findViewById(R.id.image_details_movie_name);
-        movieName.setText(mMovie.getTitle()+" ("+mMovie.getReleaseYear()+")");
+        if (getIntent().hasExtra("TVSeries")) {
+            mTVSeries = getIntent().getParcelableExtra("TVSeries");
+            TextView movieName = (TextView) findViewById(R.id.image_details_movie_name);
+            if(mTVSeries.getName()!=null && mTVSeries.getFirstAirDate()!=null)
+            movieName.setText(mTVSeries.getName()+" ("+mTVSeries.getFirstAirDate()+")");
 
-        TextView movieImageNumber = (TextView) findViewById(R.id.image_details_num_of_images);
-        movieImageNumber.setText((mMovie.lastLoadedBackdrop+1)+" of "+mMovie.numOfBackdrops);
+            TextView movieImageNumber = (TextView) findViewById(R.id.image_details_num_of_images);
+            movieImageNumber.setText((mTVSeries.lastLoadedBackdrop+1)+" of "+mTVSeries.numOfBackdrops);
 
-        ImageView movieImage = (ImageView) findViewById(R.id.image_details_image);
-        Glide.with(this).load(mMovie.getBackdropSizeOriginalUrl()).into(movieImage);
+            ImageView movieImage = (ImageView) findViewById(R.id.image_details_image);
+            if(mTVSeries.getBackdropUrl()!=null)
+            Glide.with(this).load(mTVSeries.getBackdropSizeOriginalUrl()).into(movieImage);
+        }
+
     }
 
 }

@@ -13,6 +13,7 @@
         <activity
             android:name=".MoviesActivity"
             android:label="@string/movies_label"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,17 +23,21 @@
         </activity>
         <activity
             android:name=".MovieDetailsActivity"
-            android:label="@string/movies_label" />
+            android:label="@string/movies_label"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ActorProfileActivity"
-            android:label="@string/actor_activity_label" />
+            android:label="@string/actor_activity_label"
+            android:screenOrientation="portrait"/>
         <activity
-            android:name=".MovieGalleryActivity"
-            android:label="@string/movies_label" />
+            android:name=".GalleryActivity"
+            android:label="@string/movies_label"
+            android:screenOrientation="portrait"/>
         <activity android:name=".ImageDetailsActivity" />
         <activity
             android:name=".TVSeriesActivity"
             android:label="@string/tv_series_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".TVSeriesDetailsActivity"></activity>
     </application>

@@ -25,6 +25,12 @@
             android:adjustViewBounds="true"
             android:id="@+id/movie_details_image"/>
 
+        <View
+            android:layout_above="@+id/break_line_details"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/gradient" />
+
         <TextView
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
@@ -148,6 +154,8 @@
     <TextView
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="13.2dp"
         android:id="@+id/movie_details_overview"
         android:layout_width="match_parent"
@@ -160,6 +168,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorBreakLine"
+        android:alpha="0.5"
         />
 
     <LinearLayout
@@ -205,6 +214,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorBreakLine"
+        android:alpha="0.5"
         />
 
     <TextView

@@ -28,6 +28,7 @@ public class MoviesActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setBottomNavigationBar();
 
         mSectionsPagerAdapter = new MovieSectionsPagerAdapter(getSupportFragmentManager());
 
@@ -35,8 +36,13 @@ public class MoviesActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation_movies);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.movie_tabs);
+        tabLayout.setupWithViewPager(mViewPager);
+    }
 
+    private void setBottomNavigationBar() {
+
+        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation_movies);
         AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.movies_label, R.drawable.ic_menu_camera, R.color.colorAccent);
         AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.tv_series_name, R.drawable.ic_menu_slideshow, R.color.colorMovieItemText);
         bottomNavigation.addItem(item1);
@@ -57,10 +63,6 @@ public class MoviesActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.movie_tabs);
-        tabLayout.setupWithViewPager(mViewPager);
     }
 
     @Override
@@ -94,6 +96,5 @@ public class MoviesActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_movies, menu);
         return true;
     }
-
 
 }

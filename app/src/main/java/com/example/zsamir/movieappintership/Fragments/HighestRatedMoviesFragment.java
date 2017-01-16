@@ -41,14 +41,14 @@ public class HighestRatedMoviesFragment extends Fragment{
         RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.highest_rated_recyclerView);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
-        loadInitialHighestRatedMovies();
+        loadHighestRatedMovies(1);
 
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setLayoutManager(gridLayoutManager );
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadNextHighestRatedMovies(page);
+                loadHighestRatedMovies(page);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);
@@ -57,17 +57,7 @@ public class HighestRatedMoviesFragment extends Fragment{
         return rootView;
     }
 
-    private void loadInitialHighestRatedMovies(){
-        apiHandler.requestHighestRatedMovies(new ApiHandler.MovieListListener() {
-            @Override
-            public void success(MovieList response) {
-                moviesList.addAll(response.getMovies());
-                mMovieAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    private void loadNextHighestRatedMovies(int page){
+    private void loadHighestRatedMovies(int page){
         apiHandler.requestHighestRatedMovies(page, new ApiHandler.MovieListListener() {
             @Override
             public void success(MovieList response) {

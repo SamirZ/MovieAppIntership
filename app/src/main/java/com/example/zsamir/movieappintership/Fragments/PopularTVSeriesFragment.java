@@ -44,31 +44,21 @@ public class PopularTVSeriesFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        loadInitialPopularTvSeries();
+        loadPopularTvSeries(1);
 
         mRecyclerView.setLayoutManager(gridLayoutManager);
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadNextPopularTvSeries(page);
+                loadPopularTvSeries(page);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);
         return rootView;
     }
 
-    private void loadInitialPopularTvSeries() {
-        movieDbApi.requestMostPopularTvSeries(new ApiHandler.TvSeriesListListener() {
-            @Override
-            public void success(TvSeriesList response) {
-                tvSeriesList.clear();
-                tvSeriesList.addAll(response.getTvSeries());
-                mTvSeriesAdapter.notifyDataSetChanged();
-            }
-        });
-    }
 
-    private void loadNextPopularTvSeries(int page) {
+    private void loadPopularTvSeries(int page) {
         movieDbApi.requestMostPopularTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
             public void success(TvSeriesList response) {

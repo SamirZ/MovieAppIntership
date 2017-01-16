@@ -19,4 +19,6 @@
     <string name="of">of</string>
     <string name="title_activity_tvseries">TVSeriesActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="years">Years:</string>
+    <string name="seasons">Seasons:</string>
 </resources>

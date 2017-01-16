@@ -1,5 +1,6 @@
 package com.example.zsamir.movieappintership.ViewHolders;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -7,14 +8,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.zsamir.movieappintership.Modules.Genre;
+import com.example.zsamir.movieappintership.Modules.TVSeriesGenres;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
+import com.example.zsamir.movieappintership.MovieDetailsActivity;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.TVSeriesDetailsActivity;
 
+import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by zsami on 09-Jan-17.
- */
+import java.util.Locale;
 
 public class TvSeriesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -38,22 +41,33 @@ public class TvSeriesViewHolder extends RecyclerView.ViewHolder implements View.
 
     public void bindTvSeries(TvSeries tvSeries) {
         this.tvSeries = tvSeries;
-        int[] genreIds = tvSeries.getGenreIds();
+
+        if(tvSeries.getName()!=null)
         mTvSeriesName.setText(tvSeries.getName());
-        List<String> s = tvSeries.getTvSeriesGenres();
-        // Genre ids sometimes empty
-        if(s.size()>0)
-            mTvSeriesGenre.setText(s.get(0));
+
+        List<String> g = tvSeries.getTvSeriesGenres();
+
+        if(tvSeries.getTvSeriesGenres().size()>0){
+            mTvSeriesGenre.setText(tvSeries.getTvSeriesGenres().get(0));
+        }
         else
-            mTvSeriesGenre.setText("Not Sorted"); ///!!!!!!
-        mTvSeriesReleaseDate.setText("(TV Series"+" "+tvSeries.getFirstAirDate()+"-)");
-        mTvSeriesRating.setText(Float.toString(tvSeries.getVoteAverage()));
-        Glide.with(mTvSeriesImage.getContext()).load(tvSeries.getPosterUrl()).into(mTvSeriesImage);
+            mTvSeriesGenre.setText(" ");
+
+
+        // no fin date!
+        if(tvSeries.getReleaseYear()!=null)
+            mTvSeriesReleaseDate.setText("(TV Series"+" "+tvSeries.getReleaseYear()+""+")");
+        if(String.format(Locale.getDefault(),"%1$.1f",tvSeries.getVoteAverage())!=null)
+            mTvSeriesRating.setText(String.format(Locale.getDefault(),"%1$.1f",tvSeries.getVoteAverage()));
+        if(tvSeries.getPosterPath()!=null)
+            Glide.with(mTvSeriesImage.getContext()).load(tvSeries.getPosterUrl()).into(mTvSeriesImage);
     }
 
     @Override
     public void onClick(View view) {
-        Toast.makeText(view.getContext(), tvSeries.getName(), Toast.LENGTH_SHORT).show();
-
+        //Toast.makeText(view.getContext(), tvSeries.getName(), Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(view.getContext(), TVSeriesDetailsActivity.class);
+        i.putExtra("TVSeries", tvSeries);
+        view.getContext().startActivity(i);
     }
 }

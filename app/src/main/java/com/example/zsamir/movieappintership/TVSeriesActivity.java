@@ -34,14 +34,21 @@ public class TVSeriesActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setBottomNavigationBar();
 
         mSectionsPagerAdapter = new TVSeriesSectionsPagerAdapter(getSupportFragmentManager());
 
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation_tv_series);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tv_series_tabs);
+        tabLayout.setupWithViewPager(mViewPager);
+        // Set up the ViewPager with the sections adapterr
 
+    }
+
+    public void setBottomNavigationBar(){
+        AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation_tv_series);
         AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.movies_label, R.drawable.ic_menu_camera, R.color.colorAccent);
         AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.tv_series_name, R.drawable.ic_menu_slideshow, R.color.colorMovieItemText);
         bottomNavigation.addItem(item1);
@@ -65,11 +72,6 @@ public class TVSeriesActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tv_series_tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-        // Set up the ViewPager with the sections adapterr
-
     }
 
     @Override
