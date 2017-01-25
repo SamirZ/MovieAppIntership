@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true"
     android:background="@color/colorPrimaryDark"
     android:label="@string/movies_label"
-    tools:context="com.example.zsamir.movieappintership.MoviesActivity">
+    tools:context="com.example.zsamir.movieappintership.Movies.MoviesActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

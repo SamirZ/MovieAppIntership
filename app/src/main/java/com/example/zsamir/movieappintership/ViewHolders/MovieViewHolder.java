@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.MovieDetailsActivity;
+import com.example.zsamir.movieappintership.Movies.MovieDetailsActivity;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.List;
@@ -54,8 +54,8 @@ public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnC
             mMovieReleaseDate.setText(movie.getReleaseDate());
         if(Float.toString(movie.getVoteAverage())!=null)
             mMovieRating.setText(Float.toString(movie.getVoteAverage()));
-        if(movie.getPosterPath()!=null)
-            Glide.with(mMovieImage.getContext()).load(movie.getPosterUrl()).into(mMovieImage);
+
+        Glide.with(mMovieImage.getContext()).load(movie.getPosterUrl()).into(mMovieImage);
     }
 
     @Override
@@ -63,6 +63,7 @@ public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnC
         //Toast.makeText(view.getContext(), mMovie.getTitle(), Toast.LENGTH_SHORT).show();
         Intent i = new Intent(view.getContext(), MovieDetailsActivity.class);
         i.putExtra("Movie", mMovie);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         view.getContext().startActivity(i);
     }
 }

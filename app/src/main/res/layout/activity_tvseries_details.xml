@@ -11,7 +11,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/colorMovieDetailsBackground"
-    tools:context="com.example.zsamir.movieappintership.TVSeriesDetailsActivity">
+    tools:context="com.example.zsamir.movieappintership.TVSeries.TVSeriesDetailsActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_series_details_name"
             android:textColor="@color/colorMovieItemText"
-            android:textSize="8sp"/>
+            android:textSize="12sp"/>
 
         <TextView
             android:layout_marginLeft="10dp"
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_series_details_genre"
             android:textColor="@color/colorMovieItemText"
-            android:textSize="8sp"/>
+            android:textSize="12sp"/>
 
         <View
             android:id="@+id/tv_series_break_line_details"
@@ -89,7 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/director"
-                android:textSize="9.3sp"
+                android:textSize="13sp"
                 android:textColor="@color/colorTextDetails"
                 />
             <TextView
@@ -99,7 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/writers"
-                android:textSize="9.3sp"
+                android:textSize="13sp"
                 android:textColor="@color/colorTextDetails"
                 />
             <TextView
@@ -109,7 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/stars"
-                android:textSize="9.3sp"
+                android:textSize="13sp"
                 android:textColor="@color/colorTextDetails"
                 />
 
@@ -123,21 +123,21 @@
                 android:id="@+id/tv_series_details_director_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="9.3sp"
+                android:textSize="13sp"
                 android:textColor="@color/colorMovieItemText"
                 />
             <TextView
                 android:id="@+id/tv_series_details_writers_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="9.3sp"
+                android:textSize="13sp"
                 android:textColor="@color/colorMovieItemText"
-                />
+                android:gravity="clip_horizontal" />
             <TextView
                 android:id="@+id/tv_series_details_stars_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="9.3sp"
+                android:textSize="13sp"
                 android:textColor="@color/colorMovieItemText"
                 />
         </LinearLayout>
@@ -148,7 +148,7 @@
         android:id="@+id/tv_series_details_raiting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="9.3sp"
+        android:textSize="13sp"
         android:textColor="@color/colorText"
         />
 
@@ -161,7 +161,7 @@
         android:id="@+id/tv_series_details_overview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="9.3sp"
+        android:textSize="13sp"
         android:textColor="@color/colorTextDetails"
         />
 
@@ -179,76 +179,81 @@
         android:weightSum="5">
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
             android:layout_margin="10dp">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp">
 
             <TextView
-                android:layout_marginRight="10dp"
-                android:layout_marginEnd="10dp"
                 android:id="@+id/tv_series_details_seasons_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/seasons"
-                android:textSize="8sp"
+                android:textSize="12sp"
                 android:textColor="@color/colorTextDetails"
                 />
+
             <TextView
-                android:layout_marginRight="10dp"
-                android:layout_marginEnd="10dp"
-                android:id="@+id/tv_series_details_years_1"
-                android:layout_width="match_parent"
+                android:layout_marginLeft="4.7dp"
+                android:layout_marginStart="4.7dp"
+                android:id="@+id/tv_series_details_seasons_2"
+                android:layout_width="181.3dp"
                 android:layout_height="wrap_content"
-                android:text="@string/years"
-                android:textSize="8sp"
-                android:textColor="@color/colorTextDetails"
+                android:textSize="13sp"
+                android:textColor="@color/colorMovieItemText"
                 />
 
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="3">
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp">
 
                 <TextView
-                    android:id="@+id/tv_series_details_seasons_2"
+                    android:id="@+id/tv_series_details_years_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="9.3sp"
-                    android:textColor="@color/colorMovieItemText"
+                    android:text="@string/years"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorTextDetails"
                     />
 
                 <TextView
+                    android:layout_marginLeft="21dp"
+                    android:layout_marginStart="21dp"
                     android:id="@+id/tv_series_details_years_2"
-                    android:layout_width="match_parent"
+                    android:layout_width="181.3dp"
                     android:layout_height="wrap_content"
-                    android:textSize="9.3sp"
+                    android:textSize="13sp"
                     android:textColor="@color/colorMovieItemText"
                     />
+
+                <TextView
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="18.7dp"
+                    android:layout_marginEnd="18.7dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/see_all"
+                    android:id="@+id/tv_series_seasons_see_all"
+                    android:clickable="true"
+                    android:layout_gravity="end"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorAccent" />
             </LinearLayout>
         </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/tv_series_seasons_see_all"
-
-                android:clickable="true"
-                android:layout_gravity="center_vertical"
-                android:textSize="8sp"
-                android:textColor="@color/colorAccent" />
     </LinearLayout>
 
     <View
@@ -270,7 +275,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/images"
-            android:textSize="9.3sp"
+            android:textSize="13sp"
             android:textColor="@color/colorText"
             android:layout_weight="4"
             />
@@ -282,7 +287,7 @@
             android:layout_gravity="end"
             android:id="@+id/tv_series_see_all"
             android:text="@string/see_all"
-            android:textSize="8sp"
+            android:textSize="12sp"
             android:textColor="@color/colorAccent"
             android:layout_weight="1"
             />
@@ -312,7 +317,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/cast"
-        android:textSize="9.3sp"
+        android:textSize="13sp"
         android:textColor="@color/colorText"
         />
 

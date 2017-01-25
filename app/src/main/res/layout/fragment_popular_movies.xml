@@ -2,8 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="6dp"
     android:orientation="vertical"
+    android:layout_marginRight="4.7dp"
+    android:layout_marginStart="4.7dp"
+    android:layout_marginEnd="4.7dp"
+    android:layout_marginLeft="4.7dp"
+    android:layout_marginTop="8.7dp"
     tools:context="com.example.zsamir.movieappintership.Fragments.PopularMoviesFragment">
 
     <android.support.v7.widget.RecyclerView

@@ -5,7 +5,8 @@ import com.example.zsamir.movieappintership.Modules.Credits;
 import com.example.zsamir.movieappintership.Modules.MovieDetails;
 import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.MovieList;
-import com.example.zsamir.movieappintership.Modules.TvSeries;
+import com.example.zsamir.movieappintership.Modules.MovieReviews;
+import com.example.zsamir.movieappintership.Modules.SeasonDetails;
 import com.example.zsamir.movieappintership.Modules.TvSeriesDetails;
 import com.example.zsamir.movieappintership.Modules.TvSeriesList;
 
@@ -64,4 +65,19 @@ interface ApiService {
 
     @GET("tv/{id}")
     Call<TvSeriesDetails> fetchTvSeriesProducers(@Path("id") int id, @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/reviews")
+    Call<MovieReviews> fetchMovieReviews(@Path("id") int id, @Query("api_key") String apiKey);
+
+
+
+
+
+    @GET("tv/{id}/season/{season_number}")
+    Call<SeasonDetails> fetchTvSeriesSeason(@Path("id") int id, @Path("season_number") String season_number, @Query("api_key") String apiKey);
+    //https://api.themoviedb.org/3/tv/44217/season/1?api_key=bc269ac4441457a0c9182c49437eaf89
+
+    @GET("tv/{tv_id}/season/{season_number}")
+    Call<SeasonDetails> fetchSeason(@Path("tv_id") int tv_id, @Path("season_number") Integer season_number, @Query("api_key") String apiKey);
+
 }

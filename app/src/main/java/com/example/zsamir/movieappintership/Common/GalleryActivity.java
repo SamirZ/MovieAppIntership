@@ -1,4 +1,4 @@
-package com.example.zsamir.movieappintership;
+package com.example.zsamir.movieappintership.Common;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -6,14 +6,18 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.ImageGalleryAdapter;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
 import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
+import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
+
+import io.fabric.sdk.android.Fabric;
 
 public class GalleryActivity extends AppCompatActivity {
 
@@ -27,6 +31,7 @@ public class GalleryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+        Fabric.with(this, new Crashlytics());
 
         if(getIntent().hasExtra("Movie")){
             movie = getIntent().getParcelableExtra("Movie");

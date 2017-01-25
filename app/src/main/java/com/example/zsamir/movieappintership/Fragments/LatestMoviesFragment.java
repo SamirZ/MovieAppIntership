@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.MovieAdapter;
-import com.example.zsamir.movieappintership.EndlessRecyclerViewScrollListener;
+import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.MovieList;
 import com.example.zsamir.movieappintership.R;
@@ -48,7 +48,7 @@ public class LatestMoviesFragment extends Fragment {
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadLatestMovies(page);
+                loadLatestMovies(page+1);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);

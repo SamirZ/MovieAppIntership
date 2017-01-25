@@ -10,7 +10,8 @@ import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
-import com.example.zsamir.movieappintership.EndlessRecyclerViewScrollListener;
+import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
+import com.example.zsamir.movieappintership.Common.TVSeriesEndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
 import com.example.zsamir.movieappintership.Modules.TvSeriesList;
 import com.example.zsamir.movieappintership.R;
@@ -37,8 +38,8 @@ public class LatestTVSeriesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_popular_tvseries, container, false);
-        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.popular_tv_series_recyclerView);
+        View rootView = inflater.inflate(R.layout.fragment_latest_tvseries, container, false);
+        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.latest_tv_series_recyclerView);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
         mRecyclerView.setAdapter(mTvSeriesAdapter);
@@ -46,10 +47,10 @@ public class LatestTVSeriesFragment extends Fragment {
         loadLatestTvSeries(1);
 
         mRecyclerView.setLayoutManager(gridLayoutManager);
-        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
+        TVSeriesEndlessRecyclerViewScrollListener scrollListener = new TVSeriesEndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadLatestTvSeries(page);
+                loadLatestTvSeries(page+1);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);

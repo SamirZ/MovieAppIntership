@@ -1,10 +1,14 @@
 package com.example.zsamir.movieappintership.Modules;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TvSeriesDetails {
+public class TvSeriesDetails implements Parcelable {
 
     @SerializedName("backdrop_path")
     @Expose
@@ -339,4 +343,83 @@ public class TvSeriesDetails {
         this.voteCount = voteCount;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.backdropPath);
+        dest.writeTypedList(this.createdBy);
+        dest.writeList(this.episodeRunTime);
+        dest.writeString(this.firstAirDate);
+        dest.writeTypedList(this.genres);
+        dest.writeString(this.homepage);
+        dest.writeValue(this.id);
+        dest.writeValue(this.inProduction);
+        dest.writeStringList(this.languages);
+        dest.writeString(this.lastAirDate);
+        dest.writeString(this.name);
+        dest.writeTypedList(this.networks);
+        dest.writeValue(this.numberOfEpisodes);
+        dest.writeValue(this.numberOfSeasons);
+        dest.writeStringList(this.originCountry);
+        dest.writeString(this.originalLanguage);
+        dest.writeString(this.originalName);
+        dest.writeString(this.overview);
+        dest.writeValue(this.popularity);
+        dest.writeString(this.posterPath);
+        dest.writeTypedList(this.productionCompanies);
+        dest.writeTypedList(this.seasons);
+        dest.writeString(this.status);
+        dest.writeString(this.type);
+        dest.writeValue(this.voteAverage);
+        dest.writeValue(this.voteCount);
+    }
+
+    public TvSeriesDetails() {
+    }
+
+    protected TvSeriesDetails(Parcel in) {
+        this.backdropPath = in.readString();
+        this.createdBy = in.createTypedArrayList(CreatedBy.CREATOR);
+        this.episodeRunTime = new ArrayList<Integer>();
+        in.readList(this.episodeRunTime, Integer.class.getClassLoader());
+        this.firstAirDate = in.readString();
+        this.genres = in.createTypedArrayList(Genre.CREATOR);
+        this.homepage = in.readString();
+        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.inProduction = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.languages = in.createStringArrayList();
+        this.lastAirDate = in.readString();
+        this.name = in.readString();
+        this.networks = in.createTypedArrayList(Network.CREATOR);
+        this.numberOfEpisodes = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.numberOfSeasons = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.originCountry = in.createStringArrayList();
+        this.originalLanguage = in.readString();
+        this.originalName = in.readString();
+        this.overview = in.readString();
+        this.popularity = (Float) in.readValue(Float.class.getClassLoader());
+        this.posterPath = in.readString();
+        this.productionCompanies = in.createTypedArrayList(ProductionCompany.CREATOR);
+        this.seasons = in.createTypedArrayList(Season.CREATOR);
+        this.status = in.readString();
+        this.type = in.readString();
+        this.voteAverage = (Float) in.readValue(Float.class.getClassLoader());
+        this.voteCount = (Integer) in.readValue(Integer.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<TvSeriesDetails> CREATOR = new Parcelable.Creator<TvSeriesDetails>() {
+        @Override
+        public TvSeriesDetails createFromParcel(Parcel source) {
+            return new TvSeriesDetails(source);
+        }
+
+        @Override
+        public TvSeriesDetails[] newArray(int size) {
+            return new TvSeriesDetails[size];
+        }
+    };
 }

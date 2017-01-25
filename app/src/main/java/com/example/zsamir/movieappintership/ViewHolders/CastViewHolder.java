@@ -7,11 +7,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.zsamir.movieappintership.ActorProfileActivity;
+import com.example.zsamir.movieappintership.Common.ActorProfileActivity;
 import com.example.zsamir.movieappintership.Modules.Cast;
 import com.example.zsamir.movieappintership.R;
-
-import java.util.List;
 
 public class CastViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
@@ -43,6 +41,7 @@ public class CastViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     public void onClick(View view) {
         Intent i = new Intent(view.getContext(), ActorProfileActivity.class);
         i.putExtra("Actor", actor);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         view.getContext().startActivity(i);
     }
 }

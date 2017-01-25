@@ -5,17 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.zsamir.movieappintership.Modules.Genre;
-import com.example.zsamir.movieappintership.Modules.TVSeriesGenres;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
-import com.example.zsamir.movieappintership.MovieDetailsActivity;
 import com.example.zsamir.movieappintership.R;
-import com.example.zsamir.movieappintership.TVSeriesDetailsActivity;
+import com.example.zsamir.movieappintership.TVSeries.TVSeriesDetailsActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -59,7 +54,7 @@ public class TvSeriesViewHolder extends RecyclerView.ViewHolder implements View.
             mTvSeriesReleaseDate.setText("(TV Series"+" "+tvSeries.getReleaseYear()+""+")");
         if(String.format(Locale.getDefault(),"%1$.1f",tvSeries.getVoteAverage())!=null)
             mTvSeriesRating.setText(String.format(Locale.getDefault(),"%1$.1f",tvSeries.getVoteAverage()));
-        if(tvSeries.getPosterPath()!=null)
+
             Glide.with(mTvSeriesImage.getContext()).load(tvSeries.getPosterUrl()).into(mTvSeriesImage);
     }
 
@@ -68,6 +63,7 @@ public class TvSeriesViewHolder extends RecyclerView.ViewHolder implements View.
         //Toast.makeText(view.getContext(), tvSeries.getName(), Toast.LENGTH_SHORT).show();
         Intent i = new Intent(view.getContext(), TVSeriesDetailsActivity.class);
         i.putExtra("TVSeries", tvSeries);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         view.getContext().startActivity(i);
     }
 }

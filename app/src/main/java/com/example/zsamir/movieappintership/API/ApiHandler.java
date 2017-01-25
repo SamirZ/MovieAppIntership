@@ -1,6 +1,7 @@
 package com.example.zsamir.movieappintership.API;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.example.zsamir.movieappintership.BuildConfig;
 import com.example.zsamir.movieappintership.Modules.Actor;
@@ -8,6 +9,8 @@ import com.example.zsamir.movieappintership.Modules.Credits;
 import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.MovieDetails;
 import com.example.zsamir.movieappintership.Modules.MovieList;
+import com.example.zsamir.movieappintership.Modules.MovieReviews;
+import com.example.zsamir.movieappintership.Modules.SeasonDetails;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
 import com.example.zsamir.movieappintership.Modules.TvSeriesDetails;
 import com.example.zsamir.movieappintership.Modules.TvSeriesList;
@@ -34,6 +37,10 @@ public class ApiHandler {
 
     public ApiHandler() {
 
+    }
+
+    public interface MovieReviewsListener {
+        void success(MovieReviews response);
     }
 
     public interface MovieListListener {
@@ -68,6 +75,10 @@ public class ApiHandler {
         void success(TvSeriesList response);
     }
 
+    public interface TvSeriesSeasonListener {
+        void success(SeasonDetails response);
+    }
+
     public static ApiHandler getInstance() {
 
         if (sInstance == null) {
@@ -78,6 +89,24 @@ public class ApiHandler {
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void requestMovieReviews(int id,@Nullable final MovieReviewsListener listener){
+
+        getApiService().fetchMovieReviews(id, sApiKey).enqueue(new Callback<MovieReviews>() {
+            @Override
+            public void onResponse(Call<MovieReviews> call, Response<MovieReviews> response) {
+                if (listener != null) {
+                    listener.success(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieReviews> call, Throwable t) {
+
+            }
+        });
+
+    }
 
     public void requestMovie(int id, @Nullable final MovieDetailsListener listener) {
 
@@ -91,8 +120,6 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<MovieDetails> call, Throwable t) {
-                if (listener != null) {
-                }
             }
         });
     }
@@ -109,8 +136,6 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<MovieList> call, Throwable t) {
-                if (listener != null) {
-                }
             }
         });
     }
@@ -127,8 +152,6 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<MovieList> call, Throwable t) {
-                if (listener != null) {
-                }
             }
         });
     }
@@ -144,8 +167,6 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<Credits> call, Throwable t) {
-                if (listener != null) {
-                }
             }
         });
     }
@@ -161,8 +182,6 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<Credits> call, Throwable t) {
-                if (listener != null) {
-                }
             }
         });
     }
@@ -178,8 +197,6 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<Actor> call, Throwable t) {
-                if (listener != null) {
-                }
             }
         });
     }
@@ -195,8 +212,6 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<MovieList> call, Throwable t) {
-                if (listener != null) {
-                }
             }
         });
     }
@@ -219,8 +234,6 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<MovieList> call, Throwable t) {
-                if (listener != null) {
-                }
             }
         });
     }
@@ -236,8 +249,6 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<Images> call, Throwable t) {
-                if (listener != null) {
-                }
             }
         });
     }
@@ -253,8 +264,6 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<Images> call, Throwable t) {
-                if (listener != null) {
-                }
             }
         });
     }
@@ -274,8 +283,6 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<TvSeriesList> call, Throwable t) {
-                if (listener != null) {
-                }
             }
         });
     }
@@ -292,8 +299,6 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<TvSeriesList> call, Throwable t) {
-                if (listener != null) {
-                }
             }
         });
     }
@@ -310,8 +315,6 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<TvSeriesList> call, Throwable t) {
-                if (listener != null) {
-                }
             }
         });
     }
@@ -334,8 +337,6 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<TvSeriesList> call, Throwable t) {
-                if (listener != null) {
-                }
             }
         });
     }
@@ -353,8 +354,21 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<TvSeriesDetails> call, Throwable t) {
+            }
+        });
+    }
+
+    public void requestTVSeriesSeasons(int id, int season_num, @Nullable final TvSeriesSeasonListener listener){
+        getApiService().fetchSeason(id,season_num,sApiKey).enqueue(new Callback<SeasonDetails>() {
+            @Override
+            public void onResponse(Call<SeasonDetails> call, Response<SeasonDetails> response) {
                 if (listener != null) {
+                    listener.success(response.body());
                 }
+            }
+
+            @Override
+            public void onFailure(Call<SeasonDetails> call, Throwable t) {
             }
         });
     }

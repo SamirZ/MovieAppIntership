@@ -133,6 +133,10 @@ public class Movie implements Parcelable {
 
     public String getReleaseDate() {
         String[] s = releaseDate.split("-");
+        if(s[2].startsWith("0")){
+            String s1 = s[2].substring(1);
+            return s1 + " " + getMonth(Integer.parseInt(s[1])) + " " + s[0];
+        }
         return s[2]+" "+ getMonth(Integer.parseInt(s[1]))+ " "+ s[0];
 
     }

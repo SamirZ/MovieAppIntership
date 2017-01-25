@@ -11,7 +11,7 @@ import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Modules.Cast;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.Credits;
-import com.example.zsamir.movieappintership.MovieDetailsActivity;
+import com.example.zsamir.movieappintership.Movies.MovieDetailsActivity;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
@@ -38,6 +38,7 @@ public class ActorMovieViewHolder extends RecyclerView.ViewHolder implements Vie
     @Override
     public void onClick(View view) {
         Intent i = new Intent(view.getContext(), MovieDetailsActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.putExtra("Movie", mMovie);
         view.getContext().startActivity(i);
     }

@@ -1,4 +1,4 @@
 <menu
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.zsamir.movieappintership.MoviesActivity">
+    tools:context="com.example.zsamir.movieappintership.Movies.MoviesActivity">
 </menu>

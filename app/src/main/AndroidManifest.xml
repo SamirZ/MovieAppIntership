@@ -11,35 +11,50 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MoviesActivity"
+            android:name=".Movies.MoviesActivity"
             android:label="@string/movies_label"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".Movies.MovieDetailsActivity"
+            android:label="@string/movies_label"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Common.ActorProfileActivity"
+            android:label="@string/actor_activity_label"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Common.GalleryActivity"
+            android:label="@string/movies_label"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Common.ImageDetailsActivity" />
+        <activity
+            android:name=".TVSeries.TVSeriesActivity"
+            android:label="@string/tv_series_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".TVSeries.TVSeriesDetailsActivity"
+            android:label="@string/tv_series_name"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TVSeries.SeasonActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Common.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".MovieDetailsActivity"
-            android:label="@string/movies_label"
+            android:name=".NewsFeed.NewsFeedActivity"
+            android:label="@string/news_feed_name"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name=".ActorProfileActivity"
-            android:label="@string/actor_activity_label"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".GalleryActivity"
-            android:label="@string/movies_label"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ImageDetailsActivity" />
-        <activity
-            android:name=".TVSeriesActivity"
-            android:label="@string/tv_series_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".TVSeriesDetailsActivity"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="7441d02155685acc10fd1c60286364bb5d941e54" />
     </application>
 
 </manifest>

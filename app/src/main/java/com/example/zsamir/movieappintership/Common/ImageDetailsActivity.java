@@ -1,4 +1,4 @@
-package com.example.zsamir.movieappintership;
+package com.example.zsamir.movieappintership.Common;
 
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -7,13 +7,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.crashlytics.android.Crashlytics;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
 import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
+import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
+
+import io.fabric.sdk.android.Fabric;
 
 public class ImageDetailsActivity extends AppCompatActivity {
 
@@ -24,6 +28,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_details);
+        Fabric.with(this, new Crashlytics());
 
         if (getIntent().hasExtra("Movie")) {
             mMovie = getIntent().getParcelableExtra("Movie");

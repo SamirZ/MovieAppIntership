@@ -9,7 +9,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/colorMovieDetailsBackground"
-    tools:context="com.example.zsamir.movieappintership.MovieDetailsActivity">
+    tools:context="com.example.zsamir.movieappintership.Movies.MovieDetailsActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/movie_details_release_date"
             android:textColor="@color/colorMovieItemText"
-            android:textSize="8sp"/>
+            android:textSize="12sp"/>
 
         <TextView
             android:layout_marginLeft="10dp"
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/break_line_details"
             android:textColor="@color/colorMovieItemText"
-            android:textSize="8sp"/>
+            android:textSize="12sp"/>
 
         <View
             android:id="@+id/break_line_details"
@@ -88,7 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/director"
-                android:textSize="9.3sp"
+                android:textSize="13sp"
                 android:textColor="@color/colorTextDetails"
                 />
             <TextView
@@ -98,7 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/writers"
-                android:textSize="9.3sp"
+                android:textSize="13sp"
                 android:textColor="@color/colorTextDetails"
                 />
             <TextView
@@ -108,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/stars"
-                android:textSize="9.3sp"
+                android:textSize="13sp"
                 android:textColor="@color/colorTextDetails"
                 />
 
@@ -122,21 +122,21 @@
                 android:id="@+id/movie_details_director_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="9.3sp"
+                android:textSize="13sp"
                 android:textColor="@color/colorMovieItemText"
                 />
             <TextView
                 android:id="@+id/movie_details_writers_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="9.3sp"
+                android:textSize="13sp"
                 android:textColor="@color/colorMovieItemText"
                 />
             <TextView
                 android:id="@+id/movie_details_stars_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="9.3sp"
+                android:textSize="13sp"
                 android:textColor="@color/colorMovieItemText"
             />
         </LinearLayout>
@@ -147,7 +147,7 @@
         android:id="@+id/movie_details_raiting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="9.3sp"
+        android:textSize="13sp"
         android:textColor="@color/colorText"
         />
 
@@ -160,13 +160,13 @@
         android:id="@+id/movie_details_overview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="9.3sp"
+        android:textSize="13sp"
         android:textColor="@color/colorTextDetails"
         />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.7dp"
         android:background="@color/colorBreakLine"
         android:alpha="0.5"
         />
@@ -183,7 +183,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/images"
-            android:textSize="9.3sp"
+            android:textSize="13sp"
             android:textColor="@color/colorText"
             android:layout_weight="4"
             />
@@ -195,7 +195,7 @@
             android:layout_gravity="end"
             android:id="@+id/see_all"
             android:text="@string/see_all"
-            android:textSize="8sp"
+            android:textSize="12sp"
             android:textColor="@color/colorAccent"
             android:layout_weight="1"
             />
@@ -212,7 +212,7 @@
     <View
         android:id="@+id/breakline_details"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.7dp"
         android:background="@color/colorBreakLine"
         android:alpha="0.5"
         />
@@ -225,7 +225,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/cast"
-        android:textSize="9.3sp"
+        android:textSize="13sp"
         android:textColor="@color/colorText"
         />
 
@@ -237,6 +237,34 @@
         android:layout_marginStart="10dp"
         android:layout_marginBottom="13.3dp"
         android:scrollbars="vertical" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:background="@color/colorBreakLine"
+        android:alpha="0.5"
+        />
+
+    <TextView
+        android:layout_marginTop="13.3dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10.7dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/movie_reviews"
+        android:text="@string/reviews"
+        android:textSize="13sp"
+        android:textColor="@color/colorText"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/reviews_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="13.3dp" />
 
 
 </LinearLayout>

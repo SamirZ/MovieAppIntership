@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_season"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context="com.example.zsamir.movieappintership.TVSeries.SeasonActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seasons"
+        android:text="@string/season"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/colorText"
+        android:layout_marginStart="19.3dp"
+        android:layout_marginLeft="19.3dp"
+        android:layout_marginTop="8.7dp"
+        android:layout_marginBottom="6.7dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/seasons"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/season_recycler_view"
+        android:background="@color/colorImageGalleryTwo">
+    </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:layout_below="@+id/season_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/season_year"
+        android:layout_marginStart="19.3dp"
+        android:layout_marginLeft="19.3dp"
+        android:layout_marginTop="6.7dp"
+        android:layout_marginBottom="8.7dp"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/colorText" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/season_year"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="11.3dp"
+        android:id="@+id/episode_recycler_view"
+        android:scrollbars="vertical"
+        android:background="@color/colorEpisodeItem">
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>

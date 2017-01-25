@@ -4,11 +4,15 @@
     <color name="colorPrimaryDark">#303030</color>
     <color name="colorBlack">#000000</color>
     <color name="colorAccent">#F8CA00</color>
+    <color name="colorAccentPressed">#7ff8ca00</color>
     <color name="colorText">#FFFFFF</color>
+    <color name="colorTransparent">#00000000</color>
     <color name="colorMovieItemText">#898885</color>
     <color name="colorBreakLine">#d8d8d8</color>
     <color name="colorMovieDetailsBackground">#0f100f</color>
     <color name="colorTextDetails">#cecece</color>
     <color name="colorImageGalleryOne">#2f2f2f</color>
     <color name="colorImageGalleryTwo">#191919</color>
+    <color name="colorEpisodeItem">#292929</color>
+    <color name="colorActorWebsite">#4a90e2</color>
 </resources>

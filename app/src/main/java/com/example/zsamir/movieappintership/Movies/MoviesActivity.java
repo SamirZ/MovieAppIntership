@@ -1,4 +1,4 @@
-package com.example.zsamir.movieappintership;
+package com.example.zsamir.movieappintership.Movies;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,7 +12,13 @@ import android.view.Menu;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.crashlytics.android.Crashlytics;
 import com.example.zsamir.movieappintership.Adapters.MovieSectionsPagerAdapter;
+import com.example.zsamir.movieappintership.NewsFeed.NewsFeedActivity;
+import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity;
+
+import io.fabric.sdk.android.Fabric;
 
 public class MoviesActivity extends AppCompatActivity {
 
@@ -25,6 +31,7 @@ public class MoviesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
+        Fabric.with(this, new Crashlytics());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -43,21 +50,27 @@ public class MoviesActivity extends AppCompatActivity {
     private void setBottomNavigationBar() {
 
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation_movies);
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.movies_label, R.drawable.ic_menu_camera, R.color.colorAccent);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.tv_series_name, R.drawable.ic_menu_slideshow, R.color.colorMovieItemText);
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.news_feed_name, R.drawable.ic_menu_share, R.color.colorMovieItemText);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.movies_label, R.drawable.ic_menu_camera, R.color.colorAccent);
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem(R.string.tv_series_name, R.drawable.ic_menu_slideshow, R.color.colorMovieItemText);
         bottomNavigation.addItem(item1);
         bottomNavigation.addItem(item2);
+        bottomNavigation.addItem(item3);
         bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#212121"));
         bottomNavigation.setAccentColor(Color.parseColor("#F8CA00"));
         bottomNavigation.setInactiveColor(Color.parseColor("#898885"));
         bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
-
+        bottomNavigation.setCurrentItem(1);
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
-                // 0 movies
-                // 1 tv series
-                if(position==1) {
+                // 0 news feed
+                if(position==0) {
+                    startNewsFeedActivity();
+                }
+                // 1 movies
+                // 2 tv series
+                if(position==2) {
                     startTVSeriesActivity();
                 }
                 return false;
@@ -65,28 +78,17 @@ public class MoviesActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation_movies);
-        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(int position, boolean wasSelected) {
-                // 0 movies
-                // 1 tv series
-                if(position==1) {
-                    startTVSeriesActivity();
-                }
-                return false;
-            }
-        });
 
+    private void startNewsFeedActivity() {
+        Intent intent = new Intent(MoviesActivity.this,NewsFeedActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void startTVSeriesActivity() {
         Intent intent = new Intent(MoviesActivity.this,TVSeriesActivity.class);
-        startActivityForResult(intent,0);
+        startActivity(intent);
+        finish();
     }
 
 

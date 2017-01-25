@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
-import com.example.zsamir.movieappintership.EndlessRecyclerViewScrollListener;
+import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
+import com.example.zsamir.movieappintership.Common.TVSeriesEndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
 import com.example.zsamir.movieappintership.Modules.TvSeriesList;
 import com.example.zsamir.movieappintership.R;
@@ -47,10 +48,13 @@ public class AiringTodayTVSeriesFragment extends Fragment {
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
         loadAiringTodayTvSeries(1);
-        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
+
+
+        /// Not working
+        TVSeriesEndlessRecyclerViewScrollListener scrollListener = new TVSeriesEndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadAiringTodayTvSeries(page);
+                loadAiringTodayTvSeries(page+1);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);
