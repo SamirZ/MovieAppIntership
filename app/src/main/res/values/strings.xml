@@ -6,9 +6,9 @@
     <string name="writers">Writers:</string>
     <string name="stars">Stars:</string>
     <string name="tv_series_name">TV Shows</string>
-    <string name="news_feed_name">Feed</string>
+    <string name="news_feed_name">News Feed</string>
     <string name="cast">Cast</string>
-    <string name="actor_activity_label">Actors</string>
+    <string name="actor_activity_label">Actor</string>
     <string name="website">Website:</string>
     <string name="date_of_birth">Date of birth:</string>
     <string name="biography">Biography:</string>
@@ -18,5 +18,13 @@
     <string name="images1">images</string>
     <string name="of">of</string>
     <string name="title_activity_tvseries">TVSeriesActivity</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="section_format">%1$d</string>
+    <string name="years">Years:</string>
+    <string name="seasons">Seasons:</string>
+    <string name="season">Season</string>
+    <string name="title_activity_seasons">SeasonsActivity</string>
+    <string name="reviews">Reviews</string>
+    <string name="see_more">Read more</string>
+    <string name="hide_text">Hide</string>
+    <string name="see_full_bio">See full bio</string>
 </resources>

@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
-import com.example.zsamir.movieappintership.EndlessRecyclerViewScrollListener;
+import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
+import com.example.zsamir.movieappintership.Common.TVSeriesEndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
 import com.example.zsamir.movieappintership.Modules.TvSeriesList;
 import com.example.zsamir.movieappintership.R;
@@ -44,31 +45,21 @@ public class PopularTVSeriesFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        loadInitialPopularTvSeries();
+        loadPopularTvSeries(1);
 
         mRecyclerView.setLayoutManager(gridLayoutManager);
-        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
+        TVSeriesEndlessRecyclerViewScrollListener scrollListener = new TVSeriesEndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadNextPopularTvSeries(page);
+                loadPopularTvSeries(page+1);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);
         return rootView;
     }
 
-    private void loadInitialPopularTvSeries() {
-        movieDbApi.requestMostPopularTvSeries(new ApiHandler.TvSeriesListListener() {
-            @Override
-            public void success(TvSeriesList response) {
-                tvSeriesList.clear();
-                tvSeriesList.addAll(response.getTvSeries());
-                mTvSeriesAdapter.notifyDataSetChanged();
-            }
-        });
-    }
 
-    private void loadNextPopularTvSeries(int page) {
+    private void loadPopularTvSeries(int page) {
         movieDbApi.requestMostPopularTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
             public void success(TvSeriesList response) {

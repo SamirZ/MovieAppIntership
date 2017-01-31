@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.zsamir.movieappintership.Fragments.HighestRatedMoviesFragment;
+import com.example.zsamir.movieappintership.Fragments.LatestMoviesFragment;
 import com.example.zsamir.movieappintership.Fragments.PopularMoviesFragment;
 
 /**
@@ -23,6 +24,8 @@ public class MovieSectionsPagerAdapter extends FragmentPagerAdapter {
         if(position == 0)
             return PopularMoviesFragment.getInstance();
         else if(position == 1)
+            return LatestMoviesFragment.getInstance();
+        else if(position == 2)
             return HighestRatedMoviesFragment.getInstance();
         return  null;
     }
@@ -30,7 +33,7 @@ public class MovieSectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // Show 3 total pages.
-        return 2;
+        return 3;
     }
 
     @Override
@@ -39,9 +42,9 @@ public class MovieSectionsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return "Most Popular";
             case 1:
-                return "Highest-Rated";
+                return "Latest";
             case 2:
-                return "Airing Today";
+                return "Highest-Rated";
         }
         return null;
     }

@@ -1,15 +1,14 @@
 package com.example.zsamir.movieappintership.Modules;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TvSeries implements Parcelable
-{
+public class TvSeries implements Parcelable {
 
     @SerializedName("poster_path")
     @Expose
@@ -34,10 +33,10 @@ public class TvSeries implements Parcelable
     private String firstAirDate;
     @SerializedName("origin_country")
     @Expose
-    private ArrayList originCountry = null;
+    private List<String> originCountry = null;
     @SerializedName("genre_ids")
     @Expose
-    int[] genreIds = new int[0];
+    private int[] genreIds  = new int[0];
     @SerializedName("original_language")
     @Expose
     private String originalLanguage;
@@ -52,46 +51,80 @@ public class TvSeries implements Parcelable
     private String originalName;
 
 
-    protected TvSeries(Parcel in) {
-        this.posterPath = in.readString();
-        this.popularity = in.readFloat();
-        this.id = in.readInt();
-        this.backdropPath = in.readString();
-        this.voteAverage = in.readFloat();
-        this.overview = in.readString();
-        this.firstAirDate = in.readString();
-        this.originCountry = in.readArrayList(String.class.getClassLoader());
-        this.genreIds = in.createIntArray();
-        this.originalLanguage = in.readString();
-        this.voteCount = in.readInt();
-        this.name = in.readString();
-        this.originalName = in.readString();
+    public String getBackdropPath() {
+        return backdropPath;
     }
 
-    public static final Parcelable.Creator<TvSeries> CREATOR = new Parcelable.Creator<TvSeries>() {
-        public TvSeries createFromParcel(Parcel source) {
-            return new TvSeries(source);
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
+    }
+
+    public String getFirstAirDate(){
+        String[] s = firstAirDate.split("-");
+        if(s[2].startsWith("0")){
+            String s1 = s[2].substring(1);
+            return s1 + " " + getMonth(Integer.parseInt(s[1])) + " " + s[0];
         }
+        return s[2]+" "+ getMonth(Integer.parseInt(s[1]))+ " "+ s[0];
+    }
 
-        public TvSeries[] newArray(int size) {
-            return new TvSeries[size];
+    private String getMonth(int i) {
+        switch (i){
+            case 1:
+                return "January";
+            case 2:
+                return "February";
+            case 3:
+                return "March";
+            case 4:
+                return "April";
+            case 5:
+                return "May";
+            case 6:
+                return "June";
+            case 7:
+                return "July";
+            case 8:
+                return "August";
+            case 9:
+                return "September";
+            case 10:
+                return "October";
+            case 11:
+                return "November";
+            case 12:
+                return "December";
         }
-    };
-
-    public String getPosterPath() {
-        return posterPath;
+        return "Wrong Month Format";
     }
 
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
+    public String getReleaseYear() {
+        String[] s = firstAirDate.split("-");
+        return s[0];
     }
 
-    public float getPopularity() {
-        return popularity;
+    public void setFirstAirDate(String firstAirDate) {
+        this.firstAirDate = firstAirDate;
     }
 
-    public void setPopularity(float popularity) {
-        this.popularity = popularity;
+    public int[] getGenres() {
+        return genreIds;
+    }
+
+    public List<String> getTvSeriesGenres() {
+        List<String> genres = new ArrayList<>();
+        int[] ids = getGenres();
+        for (int i=0; i<getGenres().length; i++) {
+            TVSeriesGenres genre = TVSeriesGenres.getById(ids[i]);
+            if (genre != null) {
+                genres.add(genre.getTitle());
+            }
+        }
+        return genres;
+    }
+
+    public void setGenres(int[] genres) {
+        this.genreIds = genres;
     }
 
     public int getId() {
@@ -102,52 +135,12 @@ public class TvSeries implements Parcelable
         this.id = id;
     }
 
-    public String getBackdropPath() {
-        return backdropPath;
+    public String getName() {
+        return name;
     }
 
-    public void setBackdropPath(String backdropPath) {
-        this.backdropPath = backdropPath;
-    }
-
-    public float getVoteAverage() {
-        return voteAverage;
-    }
-
-    public void setVoteAverage(float voteAverage) {
-        this.voteAverage = voteAverage;
-    }
-
-    public String getOverview() {
-        return overview;
-    }
-
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
-    public String getFirstAirDate() {
-        return firstAirDate;
-    }
-
-    public void setFirstAirDate(String firstAirDate) {
-        this.firstAirDate = firstAirDate;
-    }
-
-    public List<String> getOriginCountry() {
-        return originCountry;
-    }
-
-    public void setOriginCountry(ArrayList<String> originCountry) {
-        this.originCountry = originCountry;
-    }
-
-    public int[] getGenreIds() {
-        return genreIds;
-    }
-
-    public void setGenreIds(int[] genreIds) {
-        this.genreIds = genreIds;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getOriginalLanguage() {
@@ -158,22 +151,6 @@ public class TvSeries implements Parcelable
         this.originalLanguage = originalLanguage;
     }
 
-    public int getVoteCount() {
-        return voteCount;
-    }
-
-    public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getOriginalName() {
         return originalName;
     }
@@ -182,61 +159,128 @@ public class TvSeries implements Parcelable
         this.originalName = originalName;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(posterPath);
-        dest.writeValue(popularity);
-        dest.writeValue(id);
-        dest.writeValue(backdropPath);
-        dest.writeValue(voteAverage);
-        dest.writeValue(overview);
-        dest.writeValue(firstAirDate);
-        dest.writeList(originCountry);
-        dest.writeIntArray(genreIds);
-        dest.writeValue(originalLanguage);
-        dest.writeValue(voteCount);
-        dest.writeValue(name);
-        dest.writeValue(originalName);
+    public String getOverview() {
+        return overview;
     }
 
-    public int describeContents() {
-        return 0;
+    public void setOverview(String overview) {
+        this.overview = overview;
     }
 
-    static final String BASE_IMG_URL = "http://image.tmdb.org/t/p/";
+    public float getPopularity() {
+        return popularity;
+    }
 
+    public void setPopularity(float popularity) {
+        this.popularity = popularity;
+    }
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public float getVoteAverage() {
+        return voteAverage;
+    }
+
+    public void setVoteAverage(float voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+
+    public int getVoteCount() {
+        return voteCount;
+    }
+
+    public void setVoteCount(int voteCount) {
+        this.voteCount = voteCount;
+    }
+
+    public int numOfBackdrops;
+    public int lastLoadedBackdrop;
+
+    private static final String BASE_IMG_URL = "http://image.tmdb.org/t/p/";
     // Poster image sizes
-    static final String POSTER_SIZE_W92 = "w92";
-    static final String POSTER_SIZE_W154 = "w154";
-    static final String POSTER_SIZE_W185 = "w185";
-    static final String POSTER_SIZE_W342 = "w342";
-    static final String POSTER_SIZE_W500 = "w500";
-    static final String POSTER_W780 = "w780";
-    static final String POSTER_SIZE_ORIGINAL = "original";
+    private static final String POSTER_SIZE_W92 = "w92";
+    private static final String POSTER_SIZE_W154 = "w154";
+    private static final String POSTER_SIZE_W185 = "w185";
+    private static final String POSTER_SIZE_W342 = "w342";
+    private static final String POSTER_SIZE_W500 = "w500";
+    private static final String POSTER_W780 = "w780";
+    private static final String POSTER_SIZE_ORIGINAL = "original";
 
     // Backdrop image sizes
-    static final String BACKDROP_SIZE_W300 = "w300";
-    static final String BACKDROP_SIZE_W780 = "w780";
-    static final String BACKDROP_SIZE_W1280 = "w1280";
-    static final String BACKDROP_SIZE_ORIGINAL = "original";
-
-    // recommended for most phones:
-    static final String SIZE_DEFAULT = POSTER_SIZE_W185;
-
+    private static final String BACKDROP_SIZE_W300 = "w300";
+    private static final String BACKDROP_SIZE_W780 = "w780";
+    private static final String BACKDROP_SIZE_W1280 = "w1280";
+    private static final String BACKDROP_SIZE_ORIGINAL = "original";
     public String getPosterUrl() {
         return BASE_IMG_URL + POSTER_SIZE_W185 + posterPath;
     }
 
-    public List<String> getTvSeriesGenres() {
-        List<String> genres = new ArrayList<>();
-        int[] ids = getGenreIds();
-        for (int i=0; i<getGenreIds().length-1; i++) {
-            Genres genre = Genres.getById(ids[i]);
-            if (genre != null) {
-                genres.add(genre.getTitle());
-            }
-        }
-        return genres;
+    public String getBackdropUrl() {
+        return BASE_IMG_URL + BACKDROP_SIZE_W1280+ backdropPath;
     }
 
-}
+    public String getBackdropSizeOriginalUrl() {
+        return BASE_IMG_URL + BACKDROP_SIZE_ORIGINAL+ backdropPath;
+    }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.backdropPath);
+        dest.writeString(this.firstAirDate);
+        dest.writeIntArray(this.genreIds);
+        dest.writeInt(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.originalLanguage);
+        dest.writeString(this.originalName);
+        dest.writeString(this.overview);
+        dest.writeFloat(this.popularity);
+        dest.writeString(this.posterPath);
+        dest.writeInt(this.voteCount);
+        dest.writeInt(this.numOfBackdrops);
+        dest.writeInt(this.lastLoadedBackdrop);
+    }
+
+    public TvSeries() {
+    }
+
+    protected TvSeries(Parcel in) {
+        this.backdropPath = in.readString();
+        this.firstAirDate = in.readString();
+        this.genreIds = in.createIntArray();
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.originalLanguage = in.readString();
+        this.originalName = in.readString();
+        this.overview = in.readString();
+        this.popularity = in.readFloat();
+        this.posterPath = in.readString();
+        this.voteAverage = in.readFloat();
+        this.numOfBackdrops = in.readInt();
+        this.lastLoadedBackdrop = in.readInt();
+        this.voteCount = in.readInt();
+
+    }
+
+    public static final Creator<TvSeries> CREATOR = new Creator<TvSeries>() {
+        @Override
+        public TvSeries createFromParcel(Parcel source) {
+            return new TvSeries(source);
+        }
+
+        @Override
+        public TvSeries[] newArray(int size) {
+            return new TvSeries[size];
+        }
+    };
+}

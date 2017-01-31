@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:orientation="vertical"
-    tools:context="com.example.zsamir.movieappintership.MovieGalleryActivity">
+    tools:context="com.example.zsamir.movieappintership.Common.GalleryActivity">
 
     <TextView
-        android:id="@+id/image_gallery_movie_name"
+        android:id="@+id/image_gallery_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="20.7dp"
@@ -17,6 +17,7 @@
         android:paddingEnd="20.7dp"
         android:paddingTop="8dp"
         android:paddingBottom="7.7dp"
+        android:textSize="13sp"
         android:textColor="@color/colorMovieItemText"
         android:background="@color/colorImageGalleryOne"
         />
@@ -30,6 +31,7 @@
         android:paddingEnd="20.7dp"
         android:paddingTop="7.7dp"
         android:paddingBottom="7.7dp"
+        android:textSize="13sp"
         android:textColor="@color/colorMovieItemText"
         android:background="@color/colorImageGalleryTwo"
         />

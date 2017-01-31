@@ -16,38 +16,46 @@
     <View
         android:layout_above="@+id/breakline"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="180dp"
         android:background="@drawable/gradient" />
 
 
     <TextView
+        android:layout_marginLeft="6.7dp"
+        android:layout_marginStart="6.7dp"
         android:id="@+id/movie_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/movie_genre"
         android:textColor="@color/colorText"
-        android:textSize="10.7sp"/>
+        android:textSize="14sp"/>
 
     <TextView
+        android:layout_marginLeft="6.7dp"
+        android:layout_marginStart="6.7dp"
         android:id="@+id/movie_genre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/movie_release_date"
         android:textColor="@color/colorMovieItemText"
-        android:textSize="5.3sp"/>
+        android:textSize="11sp"/>
 
     <TextView
+        android:layout_marginLeft="6.7dp"
+        android:layout_marginStart="6.7dp"
         android:id="@+id/movie_release_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/breakline"
+        android:layout_marginBottom="6.7dp"
         android:textColor="@color/colorMovieItemText"
-        android:textSize="6.7sp"/>
+        android:textSize="11sp"/>
 
     <View
         android:id="@+id/breakline"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.7dp"
+        android:alpha="0.5"
         android:background="@color/colorBreakLine"
         android:layout_below="@id/movie_image"/>
 
@@ -55,9 +63,11 @@
         android:layout_below="@+id/movie_image"
         android:id="@+id/movie_rating"
         android:layout_width="match_parent"
-        android:layout_height="20.7dp"
+        android:layout_height="21dp"
+        android:layout_marginTop="6.7dp"
+        android:layout_marginBottom="6dp"
         android:gravity="center"
         android:textColor="@color/colorMovieItemText"
-        android:textSize="6.7sp"/>
+        android:textSize="11sp"/>
 
 </RelativeLayout>

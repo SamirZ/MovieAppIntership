@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.zsamir.movieappintership.Fragments.AiringTodayTVSeriesFragment;
 import com.example.zsamir.movieappintership.Fragments.HighestRatedTVSeriesFragment;
+import com.example.zsamir.movieappintership.Fragments.LatestTVSeriesFragment;
 import com.example.zsamir.movieappintership.Fragments.PopularTVSeriesFragment;
 
 public class TVSeriesSectionsPagerAdapter extends FragmentPagerAdapter {
@@ -18,9 +19,11 @@ public class TVSeriesSectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         if(position == 0)
             return PopularTVSeriesFragment.getInstance();
-        else if(position == 1)
-            return HighestRatedTVSeriesFragment.getInstance();
+        else if(position ==1)
+            return LatestTVSeriesFragment.getInstance();
         else if(position == 2)
+            return HighestRatedTVSeriesFragment.getInstance();
+        else if(position == 3)
             return AiringTodayTVSeriesFragment.getInstance();
         return  null;
     }
@@ -28,7 +31,7 @@ public class TVSeriesSectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // Show 3 total pages.
-        return 3;
+        return 4;
     }
 
     @Override
@@ -37,8 +40,10 @@ public class TVSeriesSectionsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return "Most Popular";
             case 1:
-                return "Highest-Rated";
+                return "Latest";
             case 2:
+                return "Highest-Rated";
+            case 3:
                 return "Airing Today";
         }
         return null;

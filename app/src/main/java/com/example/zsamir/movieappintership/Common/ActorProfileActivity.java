@@ -1,13 +1,18 @@
-package com.example.zsamir.movieappintership;
+package com.example.zsamir.movieappintership.Common;
 
+import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.crashlytics.android.Crashlytics;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.ActorMovieAdapter;
 import com.example.zsamir.movieappintership.Adapters.MovieAdapter;
@@ -15,22 +20,35 @@ import com.example.zsamir.movieappintership.Modules.Actor;
 import com.example.zsamir.movieappintership.Modules.Cast;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.MovieList;
+import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.Widgets.ExpandableTextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+
+import io.fabric.sdk.android.Fabric;
 
 public class ActorProfileActivity extends AppCompatActivity {
 
     Actor mActor;
     Cast cast;
-
+    private boolean clicked = false;
     ArrayList<Movie> mMovies = new ArrayList<>();
     ActorMovieAdapter mMovieAdapter;
     ApiHandler apiHandler = ApiHandler.getInstance();
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actor_profile);
+        Fabric.with(this, new Crashlytics());
+        setFinishOnTouchOutside(true);
 
         // Get actor id trough cast details
         if (getIntent().hasExtra("Actor")) {
@@ -51,20 +69,62 @@ public class ActorProfileActivity extends AppCompatActivity {
     private void initializeActor() {
 
         ImageView mActorImage = (ImageView) findViewById(R.id.actor_details_image);
+        if(cast.getPosterUrl()!=null)
         Glide.with(this).load(cast.getPosterUrl()).into(mActorImage);
 
         TextView mActorName = (TextView) findViewById(R.id.actor_details_name);
-        mActorName.setText(mActor.name);
+        if(mActor.name!=null)
+            mActorName.setText(mActor.name);
+        else
+            mActorName.setVisibility(View.GONE);
 
         TextView mActorDateOfBirth = (TextView) findViewById(R.id.actor_details_date_of_birth_2);
-        mActorDateOfBirth.setText(getDate(mActor.birthday)+", "+mActor.placeOfBirth);
+        LinearLayout mDateOfBirth = (LinearLayout)findViewById(R.id.actor_details_date_of_birth);
+        if(mActor.birthday!=null && mActor.placeOfBirth!=null) {
+            mActorDateOfBirth.setText(getDate(mActor.birthday) + ", " + mActor.placeOfBirth);
+        }else {
+            mDateOfBirth.setVisibility(View.GONE);
+        }
 
         TextView mActorWebsite = (TextView) findViewById(R.id.actor_details_website_2);
-        mActorWebsite.setText(mActor.homepage);
+        LinearLayout mWebsite = (LinearLayout)findViewById(R.id.actor_details_website);
+        if(mActor.homepage!=null && mActor.homepage.length()>3){
+            mActorWebsite.setText(mActor.homepage);
+            mActorWebsite.setTextColor(ContextCompat.getColor(this, R.color.colorActorWebsite));
+        }else {
+            mWebsite.setVisibility(View.GONE);
+        }
 
-        TextView mActorBio = (TextView) findViewById(R.id.actor_details_biography_2);
-        mActorBio.setText(mActor.biography);
-
+        final TextView more = (TextView) findViewById(R.id.see_full_bio);
+        TextView mActorBioLabel = (TextView) findViewById(R.id.actor_details_biography_1);
+        final ExpandableTextView mActorBio = (ExpandableTextView) findViewById(R.id.actor_details_biography_2);
+        mActorBio.setTrimLength(335);
+        if(mActor.biography!=null){
+            mActorBio.setText(mActor.biography);
+            if(mActorBio.getOriginalTextSize()>335){
+                more.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mActorBio.trim = !mActorBio.trim;
+                        mActorBio.setText();
+                        //text.requestFocusFromTouch();
+                        if(!clicked) {
+                            more.setText(R.string.hide_text);
+                            clicked = true;
+                        }else{
+                            more.setText(R.string.see_full_bio);
+                            clicked = false;
+                        }
+                    }
+                });
+            }else{
+                more.setEnabled(false);
+                more.setTextColor(ContextCompat.getColor(this, R.color.colorAccentPressed));
+            }
+        }else{
+            mActorBioLabel.setVisibility(View.GONE);
+            mActorBio.setVisibility(View.GONE);
+        }
         apiHandler.requestMovieWithActor(mActor.id, new ApiHandler.MovieListListener() {
             @Override
             public void success(MovieList response) {
@@ -80,8 +140,17 @@ public class ActorProfileActivity extends AppCompatActivity {
     }
 
     public String getDate(String date) {
-        String[] s = date.split("-");
-        return s[2]+" "+getMonth(Integer.parseInt(s[1]))+ " "+ s[0];
+        if(!date.equals("")) {
+            String[] s = date.split("-");
+            if(s.length>2) {
+                if(s[2].startsWith("0")){
+                    String s1 = s[2].substring(1);
+                    return s1 + " " + getMonth(Integer.parseInt(s[1])) + " " + s[0];
+                }
+                return s[2] + " " + getMonth(Integer.parseInt(s[1])) + " " + s[0]; /// TO DO
+            }
+        }
+        return "";
     }
 
     private String getMonth(int i) {

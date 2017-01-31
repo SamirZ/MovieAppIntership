@@ -2,29 +2,25 @@ package com.example.zsamir.movieappintership.ViewHolders;
 
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.example.zsamir.movieappintership.ImageDetailsActivity;
+import com.example.zsamir.movieappintership.Common.ImageDetailsActivity;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
 import com.example.zsamir.movieappintership.Modules.Movie;
+import com.example.zsamir.movieappintership.Modules.TvSeries;
 import com.example.zsamir.movieappintership.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by zsami on 08-Jan-17.
- */
 public class ImageGalleryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
     private List<Backdrop> backdropList;
     private Backdrop backdrop;
-    Movie movie;
+    private Movie movie;
+    private TvSeries tvSeries;
     private ImageView mMovieImage;
 
     public ImageGalleryViewHolder(View itemView) {
@@ -37,21 +33,49 @@ public class ImageGalleryViewHolder extends RecyclerView.ViewHolder implements V
         this.backdrop = backdrop;
         this.movie = movie;
         this.backdropList = backdropList;
-        Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
+        if(backdrop.getBackdropSizeW300()!=null)
+            Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
+    }
+
+    public void bindImage(Backdrop backdrop , TvSeries tvSeries, List<Backdrop> backdropList){
+        this.backdrop = backdrop;
+        this.tvSeries = tvSeries;
+        this.backdropList = backdropList;
+        if(backdrop.getBackdropSizeW300()!=null)
+            Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
     }
 
     @Override
     public void onClick(View view) {
-        Movie sendMovie = movie;
-        sendMovie.numOfBackdrops = backdropList.size();
-        sendMovie.lastLoadedBackdrop = findBackdropInList();
-        sendMovie.setBackdropPath(backdrop.getFilePath());
-        Intent i = new Intent(view.getContext(), ImageDetailsActivity.class);
-        i.putExtra("Movie", sendMovie);
-        view.getContext().startActivity(i);
+        if(movie!=null) {
+            Movie sendMovie = movie;
+
+            sendMovie.numOfBackdrops = backdropList.size();
+            sendMovie.lastLoadedBackdrop = findBackdropInList();
+
+            if(backdrop.getFilePath()!=null)
+                sendMovie.setBackdropPath(backdrop.getFilePath());
+
+            Intent i = new Intent(view.getContext(), ImageDetailsActivity.class);
+            i.putExtra("Movie", sendMovie);
+            view.getContext().startActivity(i);
+        }
+        if(tvSeries!=null) {
+            TvSeries sendTVSeries = tvSeries;
+
+            sendTVSeries.numOfBackdrops = backdropList.size();
+            sendTVSeries.lastLoadedBackdrop = findBackdropInList();
+
+            if(backdrop.getFilePath()!=null)
+                sendTVSeries.setBackdropPath(backdrop.getFilePath());
+
+            Intent j = new Intent(view.getContext(), ImageDetailsActivity.class);
+            j.putExtra("TVSeries", sendTVSeries);
+            view.getContext().startActivity(j);
+        }
     }
 
-    public int findBackdropInList(){
+    private int findBackdropInList(){
         return backdropList.indexOf(backdrop);
     }
 

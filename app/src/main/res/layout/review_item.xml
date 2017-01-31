@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorMovieDetailsBackground"
+    android:layout_marginRight="8.7dp"
+    android:layout_marginEnd="8.7dp"
+    android:layout_marginBottom="20dp">
+
+    <TextView
+        android:id="@+id/review_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6.7dp"
+        android:textColor="@color/colorMovieItemText"
+        android:textSize="12sp"/>
+
+    <com.example.zsamir.movieappintership.Widgets.ExpandableTextView
+        android:id="@+id/review_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextDetails"
+        android:textSize="12sp"/>
+
+    <TextView
+        android:id="@+id/review_more"
+        android:text="@string/see_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorAccent"
+        android:layout_marginTop="12dp"
+        android:clickable="true"
+        android:textSize="12sp"/>
+
+
+</LinearLayout>

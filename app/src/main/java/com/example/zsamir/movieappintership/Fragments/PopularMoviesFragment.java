@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
-import com.example.zsamir.movieappintership.EndlessRecyclerViewScrollListener;
+import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.MovieList;
 import com.example.zsamir.movieappintership.Adapters.MovieAdapter;
@@ -41,13 +41,13 @@ public class PopularMoviesFragment extends Fragment{
         RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.popular_recyclerView);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
-        loadInitialPopularMovies();
+        loadPopularMovies(1);
 
         mRecyclerView.setLayoutManager(gridLayoutManager );
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadNextPopularMovies(page);
+                loadPopularMovies(page+1);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);
@@ -56,17 +56,8 @@ public class PopularMoviesFragment extends Fragment{
         return rootView;
     }
 
-    private void loadInitialPopularMovies(){
-        apiHandler.requestMostPopularMovies(new ApiHandler.MovieListListener() {
-            @Override
-            public void success(MovieList response) {
-                moviesList.addAll(response.getMovies());
-                mMovieAdapter.notifyDataSetChanged();
-            }
-        });
-    }
 
-    private void loadNextPopularMovies(int page){
+    private void loadPopularMovies(int page){
         apiHandler.requestMostPopularMovies(page, new ApiHandler.MovieListListener() {
             @Override
             public void success(MovieList response) {

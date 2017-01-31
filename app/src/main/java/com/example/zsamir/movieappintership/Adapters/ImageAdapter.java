@@ -7,32 +7,39 @@ import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.Modules.Backdrop;
 import com.example.zsamir.movieappintership.Modules.Movie;
+import com.example.zsamir.movieappintership.Modules.TvSeries;
 import com.example.zsamir.movieappintership.R;
-import com.example.zsamir.movieappintership.ViewHolders.MovieImagesViewHolder;
+import com.example.zsamir.movieappintership.ViewHolders.DetailsImagesViewHolder;
 import java.util.List;
 
-/**
- * Created by zsami on 08-Jan-17.
- */
-public class ImageAdapter extends RecyclerView.Adapter<MovieImagesViewHolder> {
-    List<Backdrop> backdrops;
-    Movie movie;
+public class ImageAdapter extends RecyclerView.Adapter<DetailsImagesViewHolder> {
+    private List<Backdrop> backdrops;
+    private Movie movie;
+    private TvSeries tvSeries;
 
     public ImageAdapter(List<Backdrop> backdrops,Movie movie) {
         this.movie = movie;
         this.backdrops = backdrops;
     }
 
-    @Override
-    public MovieImagesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflatedView = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_image_item, parent, false);
-        return new MovieImagesViewHolder(inflatedView);
+    public ImageAdapter(List<Backdrop> backdrops, TvSeries tvSeries){
+        this.backdrops = backdrops;
+        this.tvSeries = tvSeries;
     }
 
     @Override
-    public void onBindViewHolder(MovieImagesViewHolder holder, int position) {
+    public DetailsImagesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View inflatedView = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_image_item, parent, false);
+        return new DetailsImagesViewHolder(inflatedView);
+    }
+
+    @Override
+    public void onBindViewHolder(DetailsImagesViewHolder holder, int position) {
         Backdrop backdrop = backdrops.get(position);
-        holder.bindImage(backdrop, movie, backdrops);
+        if(movie!=null)
+            holder.bindImage(backdrop, movie, backdrops);
+        if(tvSeries!=null)
+            holder.bindImage(backdrop, tvSeries, backdrops);
     }
 
     @Override

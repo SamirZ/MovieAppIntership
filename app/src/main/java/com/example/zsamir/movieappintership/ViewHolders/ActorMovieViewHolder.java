@@ -11,7 +11,7 @@ import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Modules.Cast;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.Credits;
-import com.example.zsamir.movieappintership.MovieDetailsActivity;
+import com.example.zsamir.movieappintership.Movies.MovieDetailsActivity;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
@@ -38,6 +38,7 @@ public class ActorMovieViewHolder extends RecyclerView.ViewHolder implements Vie
     @Override
     public void onClick(View view) {
         Intent i = new Intent(view.getContext(), MovieDetailsActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.putExtra("Movie", mMovie);
         view.getContext().startActivity(i);
     }
@@ -49,7 +50,7 @@ public class ActorMovieViewHolder extends RecyclerView.ViewHolder implements Vie
         // Not the best implementation
         final List<Cast> allActors = new ArrayList<>();
         ApiHandler apiHandler = ApiHandler.getInstance();
-        apiHandler.requestMovieCredits(movie.getId(), new ApiHandler.MovieCreditsListener() {
+        apiHandler.requestMovieCredits(movie.getId(), new ApiHandler.CreditsListener() {
             @Override
             public void success(Credits response) {
                 allActors.addAll(response.cast);
@@ -61,10 +62,10 @@ public class ActorMovieViewHolder extends RecyclerView.ViewHolder implements Vie
 
             }
         });
-
+        if(movie.getTitle()!=null)
         mMovieName.setText(movie.getTitle());
         // from this movie not previous one
-
+        if(movie.getPosterUrl()!=null)
         Glide.with(mMovieImage.getContext()).load(movie.getPosterUrl()).into(mMovieImage);
 
     }

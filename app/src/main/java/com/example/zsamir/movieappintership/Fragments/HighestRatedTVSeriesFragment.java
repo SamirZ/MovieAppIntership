@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
-import com.example.zsamir.movieappintership.EndlessRecyclerViewScrollListener;
+import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
+import com.example.zsamir.movieappintership.Common.TVSeriesEndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
 import com.example.zsamir.movieappintership.Modules.TvSeriesList;
 import com.example.zsamir.movieappintership.R;
@@ -46,11 +47,11 @@ public class HighestRatedTVSeriesFragment extends Fragment {
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        loadInitialTopRatedTvSeries();
-        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
+        loadTopRatedTvSeries(1);
+        TVSeriesEndlessRecyclerViewScrollListener scrollListener = new TVSeriesEndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadNextTopRatedTvSeries(page);
+                loadTopRatedTvSeries(page+1);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);
@@ -58,18 +59,8 @@ public class HighestRatedTVSeriesFragment extends Fragment {
         return rootView;
     }
 
-    private void loadInitialTopRatedTvSeries() {
-        movieDbApi.requestHighestRatedTvSeries(new ApiHandler.TvSeriesListListener() {
-            @Override
-            public void success(TvSeriesList response) {
-                tvSeriesList.clear();
-                tvSeriesList.addAll(response.getTvSeries());
-                mTvSeriesAdapter.notifyDataSetChanged();
-            }
-        });
-    }
 
-    private void loadNextTopRatedTvSeries(int page) {
+    private void loadTopRatedTvSeries(int page) {
         movieDbApi.requestHighestRatedTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
             public void success(TvSeriesList response) {

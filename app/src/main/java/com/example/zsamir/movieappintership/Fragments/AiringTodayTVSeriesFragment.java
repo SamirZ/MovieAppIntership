@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
-import com.example.zsamir.movieappintership.EndlessRecyclerViewScrollListener;
+import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
+import com.example.zsamir.movieappintership.Common.TVSeriesEndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
 import com.example.zsamir.movieappintership.Modules.TvSeriesList;
 import com.example.zsamir.movieappintership.R;
@@ -46,11 +47,14 @@ public class AiringTodayTVSeriesFragment extends Fragment {
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        loadInitialAiringTodayTvSeries();
-        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
+        loadAiringTodayTvSeries(1);
+
+
+        /// Not working
+        TVSeriesEndlessRecyclerViewScrollListener scrollListener = new TVSeriesEndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadNextAiringTodayTvSeries(page);
+                loadAiringTodayTvSeries(page+1);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);
@@ -58,18 +62,7 @@ public class AiringTodayTVSeriesFragment extends Fragment {
         return rootView;
     }
 
-    private void loadInitialAiringTodayTvSeries() {
-        movieDbApi.requestAiringTodayTvSeries(new ApiHandler.TvSeriesListListener() {
-            @Override
-            public void success(TvSeriesList response) {
-                tvSeriesList.clear();
-                tvSeriesList.addAll(response.getTvSeries());
-                mTvSeriesAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    private void loadNextAiringTodayTvSeries(int page) {
+    private void loadAiringTodayTvSeries(int page) {
         movieDbApi.requestAiringTodayTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
             public void success(TvSeriesList response) {

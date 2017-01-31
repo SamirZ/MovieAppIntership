@@ -5,12 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.zsamir.movieappintership.Modules.Genres;
 import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.MovieDetailsActivity;
+import com.example.zsamir.movieappintership.Movies.MovieDetailsActivity;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.List;
@@ -42,16 +40,21 @@ public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnC
     public void bindMovie(Movie movie) {
         mMovie = movie;
 
-        int[] genreIds = movie.getGenreIds();
+
+        if(movie.getTitle()!=null && movie.getReleaseYear()!=null)
         mMovieName.setText(movie.getTitle()+" ("+movie.getReleaseYear()+")");
+
         List<String> s = movie.getMovieGenres();
         // Genre ids sometimes empty
         if(s.size()>0)
             mMovieGenre.setText(s.get(0));
         else
             mMovieGenre.setText("Not Sorted"); ///!!!!!!
-        mMovieReleaseDate.setText(movie.getReleaseDate());
-        mMovieRating.setText(Float.toString(movie.getVoteAverage()));
+        if(movie.getReleaseDate()!=null)
+            mMovieReleaseDate.setText(movie.getReleaseDate());
+        if(Float.toString(movie.getVoteAverage())!=null)
+            mMovieRating.setText(Float.toString(movie.getVoteAverage()));
+
         Glide.with(mMovieImage.getContext()).load(movie.getPosterUrl()).into(mMovieImage);
     }
 
@@ -60,6 +63,7 @@ public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnC
         //Toast.makeText(view.getContext(), mMovie.getTitle(), Toast.LENGTH_SHORT).show();
         Intent i = new Intent(view.getContext(), MovieDetailsActivity.class);
         i.putExtra("Movie", mMovie);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         view.getContext().startActivity(i);
     }
 }
