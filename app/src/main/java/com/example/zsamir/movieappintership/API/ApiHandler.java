@@ -6,14 +6,18 @@ import android.util.Log;
 import com.example.zsamir.movieappintership.BuildConfig;
 import com.example.zsamir.movieappintership.Modules.Actor;
 import com.example.zsamir.movieappintership.Modules.Credits;
+import com.example.zsamir.movieappintership.Modules.EpisodeCredits;
+import com.example.zsamir.movieappintership.Modules.EpisodeDetails;
 import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.MovieDetails;
 import com.example.zsamir.movieappintership.Modules.MovieList;
 import com.example.zsamir.movieappintership.Modules.MovieReviews;
+import com.example.zsamir.movieappintership.Modules.SearchResult;
 import com.example.zsamir.movieappintership.Modules.SeasonDetails;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
 import com.example.zsamir.movieappintership.Modules.TvSeriesDetails;
 import com.example.zsamir.movieappintership.Modules.TvSeriesList;
+import com.example.zsamir.movieappintership.Modules.Videos;
 
 import java.util.Calendar;
 
@@ -34,9 +38,16 @@ public class ApiHandler {
 
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
 
-
     public ApiHandler() {
 
+    }
+
+    public interface VideosListener {
+        void success(Videos response);
+    }
+
+    public interface EpisodeDetailsListener {
+        void success(EpisodeDetails response);
     }
 
     public interface MovieReviewsListener {
@@ -53,6 +64,14 @@ public class ApiHandler {
 
     public interface CreditsListener {
         void success(Credits response);
+    }
+
+    public interface EpisodeCreditsListener {
+        void success(EpisodeCredits response);
+    }
+
+    public interface SearchResultListener {
+        void success(SearchResult response);
     }
 
     public interface ActorDetailsListener{
@@ -186,6 +205,38 @@ public class ApiHandler {
         });
     }
 
+    public void requestEpisodeCredits(int id, int s_num, int e_num, @Nullable final EpisodeCreditsListener listener){
+        getApiService().fetchEpisodeCast(id,s_num,e_num,sApiKey).enqueue(new Callback<EpisodeCredits>() {
+            @Override
+            public void onResponse(Call<EpisodeCredits> call, Response<EpisodeCredits> response) {
+                if (listener != null) {
+                    listener.success(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EpisodeCredits> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void requestEpisodeDetails(int id, int s_num, int e_num, @Nullable final EpisodeDetailsListener listener){
+        getApiService().fetchEpisodeDetails(id,s_num,e_num,sApiKey).enqueue(new Callback<EpisodeDetails>() {
+            @Override
+            public void onResponse(Call<EpisodeDetails> call, Response<EpisodeDetails> response) {
+                if (listener != null) {
+                    listener.success(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EpisodeDetails> call, Throwable t) {
+
+            }
+        });
+    }
+
     public void requestActor(int id, @Nullable final ActorDetailsListener listener){
         getApiService().fetchActorProfile(id,sApiKey).enqueue(new Callback<Actor>() {
             @Override
@@ -227,6 +278,7 @@ public class ApiHandler {
         getApiService().fetchLatestMovies(sApiKey,"en-US", "primary_release_date.desc", p, s, 1).enqueue(new Callback<MovieList>() {
             @Override
             public void onResponse(Call<MovieList> call, Response<MovieList> response) {
+                Log.d("CALL",call.request().toString());
                 if (listener != null) {
                     listener.success(response.body());
                 }
@@ -276,6 +328,7 @@ public class ApiHandler {
         getApiService().fetchPopularTvSeries(sApiKey , page).enqueue(new Callback<TvSeriesList>() {
             @Override
             public void onResponse(Call<TvSeriesList> call, Response<TvSeriesList> response) {
+                Log.d("CALL",call.request().toString());
                 if (listener != null) {
                     listener.success(response.body());
                 }
@@ -372,6 +425,60 @@ public class ApiHandler {
             }
         });
     }
+
+    public void requestSearch(String query, int page, @Nullable final SearchResultListener listener){
+        getApiService().fetchSearch(query,page,sApiKey).enqueue(new Callback<SearchResult>() {
+            @Override
+            public void onResponse(Call<SearchResult> call, Response<SearchResult> response) {
+                if (listener != null) {
+                    listener.success(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SearchResult> call, Throwable t) {
+            }
+        });
+    }
+
+    public void requestMovieVideos(int id, @Nullable final VideosListener listener){
+        getApiService().fetchMovieVideos(id,sApiKey).enqueue(new Callback<Videos>() {
+            @Override
+            public void onResponse(Call<Videos> call, Response<Videos> response) {
+                if (listener != null) {
+                    Log.d("CALL",call.request().toString());
+                    Log.d("CODE", String.valueOf(response.code()));
+                    listener.success(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Videos> call, Throwable t) {
+            }
+        });
+    }
+
+    public void requestTVSeriesVideos(int id, @Nullable final VideosListener listener){
+        getApiService().fetchTVSeriesVideos(id,sApiKey).enqueue(new Callback<Videos>() {
+            @Override
+            public void onResponse(Call<Videos> call, Response<Videos> response) {
+                if (listener != null) {
+                    Log.d("CALL",call.request().toString());
+                    Log.d("CODE", String.valueOf(response.code()));
+                    listener.success(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Videos> call, Throwable t) {
+                Log.d("URLError",t.getMessage());
+
+            }
+        });
+    }
+
+
+
 
     // SERVICES
     private ApiService getApiService() {

@@ -46,23 +46,11 @@ public class Backdrop implements Parcelable
     };
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.aspectRatio);
-        dest.writeValue(this.filePath);
-        dest.writeValue(this.height);
-        dest.writeValue(this.iso6391);
-        dest.writeValue(this.voteAverage);
-        dest.writeValue(this.voteCount);
-        dest.writeValue(this.width);
+        dest.writeString(this.filePath);
     }
 
     protected Backdrop(Parcel in) {
-        this.aspectRatio = in.readFloat();
         this.filePath = in.readString();
-        this.height = in.readInt();
-        this.iso6391 = in.readString();
-        this.width = in.readInt();
-        this.voteAverage = in.readFloat();
-        this.voteCount = in.readInt();
     }
 
     public int describeContents() {

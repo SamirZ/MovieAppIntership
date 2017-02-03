@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
@@ -50,11 +52,11 @@ public class SeasonActivity extends AppCompatActivity {
 
             // Season 0 Specials not included
 
-            for(int i = 1; i<tvSeriesDetails.getSeasons().size();i++){
-                list.add(Integer.toString(tvSeriesDetails.getSeasons().get(i).getSeasonNumber()));
-            }
-            for(int i = 1;i<tvSeriesDetails.getSeasons().size();i++){
-                years.add(tvSeriesDetails.getSeasons().get(i).getAirYear());
+            for(int i = 0; i<tvSeriesDetails.getSeasons().size();i++){
+                if(tvSeriesDetails.getSeasons().get(i).getSeasonNumber()!=0){
+                    list.add(Integer.toString(tvSeriesDetails.getSeasons().get(i).getSeasonNumber()));
+                    years.add(tvSeriesDetails.getSeasons().get(i).getAirYear());
+                }
             }
 
             seasonsAdapter = new SeasonsAdapter(list,years,this);
@@ -66,7 +68,7 @@ public class SeasonActivity extends AppCompatActivity {
 
             episodes = new ArrayList<>();
 
-            episodeAdapter = new EpisodeAdapter(episodes);
+            episodeAdapter = new EpisodeAdapter(episodes,tvSeriesDetails);
             RecyclerView mEpisodeRecyclerView = (RecyclerView) findViewById(R.id.episode_recycler_view);
             LinearLayoutManager linearVerticalLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
             mEpisodeRecyclerView.setLayoutManager(linearVerticalLayoutManager);
@@ -86,7 +88,10 @@ public class SeasonActivity extends AppCompatActivity {
             @Override
             public void success(SeasonDetails response) {
                 episodes.clear();
-                episodes.addAll(response.episodes);
+                if(response!=null)
+                    if(response.episodes!=null)
+                        if(response.episodes.size()>0)
+                        episodes.addAll(response.episodes);
                 episodeAdapter.notifyDataSetChanged();
             }
         });
@@ -94,5 +99,24 @@ public class SeasonActivity extends AppCompatActivity {
 
     public void setYear(String year) {
         seasonYear.setText(year);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_season_details, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem)
+    {
+        switch (menuItem.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(menuItem);
+        }
     }
 }

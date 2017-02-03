@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,6 @@ import com.example.zsamir.movieappintership.API.ApiHandler;
 
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
 import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
-import com.example.zsamir.movieappintership.Common.TVSeriesEndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
 import com.example.zsamir.movieappintership.Modules.TvSeriesList;
 import com.example.zsamir.movieappintership.R;
@@ -25,6 +25,7 @@ public class AiringTodayTVSeriesFragment extends Fragment {
     ArrayList<TvSeries> tvSeriesList = new ArrayList<>();
     ApiHandler movieDbApi = ApiHandler.getInstance();
     TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(tvSeriesList);
+    int numberOfPages;
 
     public AiringTodayTVSeriesFragment() {
     }
@@ -47,14 +48,19 @@ public class AiringTodayTVSeriesFragment extends Fragment {
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        loadAiringTodayTvSeries(1);
+        if(tvSeriesList.size()==0)
+            loadAiringTodayTvSeries(1);
+        else{
+            tvSeriesList.clear();
+            loadAiringTodayTvSeries(1);
+            mTvSeriesAdapter.notifyDataSetChanged();
+        }
 
-
-        /// Not working
-        TVSeriesEndlessRecyclerViewScrollListener scrollListener = new TVSeriesEndlessRecyclerViewScrollListener(gridLayoutManager ) {
+        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadAiringTodayTvSeries(page+1);
+                //if(page<=numberOfPages)
+                    loadAiringTodayTvSeries(page);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);
@@ -66,6 +72,8 @@ public class AiringTodayTVSeriesFragment extends Fragment {
         movieDbApi.requestAiringTodayTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
             public void success(TvSeriesList response) {
+                numberOfPages = response.getTotalPages();
+                Log.d("Total pages", String.valueOf(numberOfPages));
                 tvSeriesList.addAll(response.getTvSeries());
                 mTvSeriesAdapter.notifyDataSetChanged();
             }

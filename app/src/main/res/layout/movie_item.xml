@@ -8,7 +8,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="180dp"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
         android:id="@+id/movie_image"/>
@@ -17,7 +17,7 @@
         android:layout_above="@+id/breakline"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:background="@drawable/gradient" />
+        android:background="@drawable/gradient_3" />
 
 
     <TextView
@@ -59,15 +59,35 @@
         android:background="@color/colorBreakLine"
         android:layout_below="@id/movie_image"/>
 
-    <TextView
+    <RelativeLayout
         android:layout_below="@+id/movie_image"
-        android:id="@+id/movie_rating"
         android:layout_width="match_parent"
         android:layout_height="21dp"
         android:layout_marginTop="6.7dp"
-        android:layout_marginBottom="6dp"
-        android:gravity="center"
-        android:textColor="@color/colorMovieItemText"
-        android:textSize="11sp"/>
+        android:layout_marginBottom="9.3dp"
+        android:layout_marginLeft="6.7dp"
+        android:layout_marginStart="6.7dp"
+        >
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:id="@+id/movie_star_image"
+            android:background="@mipmap/star_1_copy_4"/>
+
+        <TextView
+            android:layout_toRightOf="@id/movie_star_image"
+            android:layout_margin="3dp"
+            android:gravity="top"
+            android:id="@+id/movie_rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textColor="@color/colorMovieItemText"
+            android:textSize="11sp"
+            />
+    </RelativeLayout>
 
 </RelativeLayout>

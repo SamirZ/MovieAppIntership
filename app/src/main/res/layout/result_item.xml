@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/colorImageGalleryTwo"
+    android:layout_height="80dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_marginStart="17.1dp"
+            android:layout_marginLeft="17.1dp"
+            android:layout_marginTop="4dp"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            android:id="@+id/result_image"/>
+
+        <RelativeLayout
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:textSize="16sp"
+                android:textColor="@color/colorText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/result_name"/>
+
+            <TextView
+                android:textSize="12sp"
+                android:textColor="@color/colorMovieItemText"
+                android:layout_below="@+id/result_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:id="@+id/result_date"/>
+
+            <TextView
+                android:textSize="12sp"
+                android:textColor="@color/colorMovieItemText"
+                android:layout_below="@+id/result_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:id="@+id/result_rating"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        android:alpha="0.5"
+        android:background="@color/colorBreakLine" />
+
+</LinearLayout>

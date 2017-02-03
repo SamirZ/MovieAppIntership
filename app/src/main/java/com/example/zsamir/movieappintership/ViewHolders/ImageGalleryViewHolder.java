@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.example.zsamir.movieappintership.Common.ImageDetailsActivity;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
+import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
 import com.example.zsamir.movieappintership.R;
@@ -52,12 +53,14 @@ public class ImageGalleryViewHolder extends RecyclerView.ViewHolder implements V
 
             sendMovie.numOfBackdrops = backdropList.size();
             sendMovie.lastLoadedBackdrop = findBackdropInList();
+            sendMovie.backdropList = backdropList;
 
             if(backdrop.getFilePath()!=null)
                 sendMovie.setBackdropPath(backdrop.getFilePath());
 
             Intent i = new Intent(view.getContext(), ImageDetailsActivity.class);
             i.putExtra("Movie", sendMovie);
+
             view.getContext().startActivity(i);
         }
         if(tvSeries!=null) {
@@ -65,12 +68,14 @@ public class ImageGalleryViewHolder extends RecyclerView.ViewHolder implements V
 
             sendTVSeries.numOfBackdrops = backdropList.size();
             sendTVSeries.lastLoadedBackdrop = findBackdropInList();
+            sendTVSeries.backdropList = backdropList;
 
             if(backdrop.getFilePath()!=null)
                 sendTVSeries.setBackdropPath(backdrop.getFilePath());
 
             Intent j = new Intent(view.getContext(), ImageDetailsActivity.class);
             j.putExtra("TVSeries", sendTVSeries);
+
             view.getContext().startActivity(j);
         }
     }

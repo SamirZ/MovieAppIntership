@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
@@ -34,6 +35,7 @@ public class GalleryActivity extends AppCompatActivity {
         Fabric.with(this, new Crashlytics());
 
         if(getIntent().hasExtra("Movie")){
+            setTitle(getString(R.string.movies_label));
             movie = getIntent().getParcelableExtra("Movie");
             imageGalleryAdapter = new ImageGalleryAdapter(backdrops,movie);
             TextView name = (TextView)findViewById(R.id.image_gallery_name);
@@ -42,6 +44,7 @@ public class GalleryActivity extends AppCompatActivity {
             loadInitialMovieImages();
         }
         if(getIntent().hasExtra("TVSeries")){
+            setTitle(getString(R.string.tv_series_name));
             tvSeries = getIntent().getParcelableExtra("TVSeries");
             imageGalleryAdapter = new ImageGalleryAdapter(backdrops,tvSeries);
             TextView name = (TextView)findViewById(R.id.image_gallery_name);
@@ -81,5 +84,14 @@ public class GalleryActivity extends AppCompatActivity {
         });
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

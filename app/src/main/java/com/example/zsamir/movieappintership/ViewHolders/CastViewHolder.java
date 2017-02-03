@@ -9,11 +9,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.zsamir.movieappintership.Common.ActorProfileActivity;
 import com.example.zsamir.movieappintership.Modules.Cast;
+import com.example.zsamir.movieappintership.Modules.Episode;
+import com.example.zsamir.movieappintership.Modules.EpisodeCast;
 import com.example.zsamir.movieappintership.R;
 
 public class CastViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
     private Cast actor;
+    private EpisodeCast cast;
     private ImageView mCastImage;
     private TextView mCastName;
     private TextView mCastRoleName;
@@ -37,10 +40,24 @@ public class CastViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         Glide.with(mCastImage.getContext()).load(actor.getImageUrl()).into(mCastImage);
     }
 
+    public void bindCast(EpisodeCast cast) {
+        this.cast = cast;
+
+        if(cast.name!=null)
+            mCastName.setText(cast.name);
+        if(cast.character!=null)
+            mCastRoleName.setText(cast.character);
+        if(cast.getImageUrl()!=null)
+            Glide.with(mCastImage.getContext()).load(cast.getImageUrl()).into(mCastImage);
+    }
+
     @Override
     public void onClick(View view) {
         Intent i = new Intent(view.getContext(), ActorProfileActivity.class);
-        i.putExtra("Actor", actor);
+        if(actor!=null)
+            i.putExtra("Actor", actor);
+        if(cast!=null)
+            i.putExtra("Actor1",cast);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         view.getContext().startActivity(i);
     }

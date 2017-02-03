@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.example.zsamir.movieappintership.Common.ImageDetailsActivity;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
+import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
 import com.example.zsamir.movieappintership.R;
@@ -50,14 +51,20 @@ public class DetailsImagesViewHolder extends RecyclerView.ViewHolder implements 
         if(movie!=null) {
             Movie sendMovie = movie;
 
+
+            //MOVIE DTO for image details activity
+            // name,date, bellow
+
             sendMovie.numOfBackdrops = backdropList.size();
             sendMovie.lastLoadedBackdrop = findBackdropInList();
+            sendMovie.backdropList = backdropList;
 
             if(backdrop.getFilePath()!=null)
                 sendMovie.setBackdropPath(backdrop.getFilePath());
 
             Intent i = new Intent(view.getContext(), ImageDetailsActivity.class);
             i.putExtra("Movie", sendMovie);
+
             view.getContext().startActivity(i);
         }
         if(tvSeries!=null) {
@@ -65,6 +72,7 @@ public class DetailsImagesViewHolder extends RecyclerView.ViewHolder implements 
 
             sendTVSeries.numOfBackdrops = backdropList.size();
             sendTVSeries.lastLoadedBackdrop = findBackdropInList();
+            sendTVSeries.backdropList = backdropList;
 
             if(backdrop.getFilePath()!=null)
                 sendTVSeries.setBackdropPath(backdrop.getFilePath());

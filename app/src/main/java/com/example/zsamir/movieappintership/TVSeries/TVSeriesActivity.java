@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.crashlytics.android.Crashlytics;
 import com.example.zsamir.movieappintership.Adapters.TVSeriesSectionsPagerAdapter;
+import com.example.zsamir.movieappintership.Common.SearchActivity;
 import com.example.zsamir.movieappintership.Movies.MoviesActivity;
 import com.example.zsamir.movieappintership.NewsFeed.NewsFeedActivity;
 import com.example.zsamir.movieappintership.R;
@@ -57,9 +59,9 @@ public class TVSeriesActivity extends AppCompatActivity {
 
     private void setBottomNavigationBar() {
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation_tv_series);
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.news_feed_name, R.drawable.ic_menu_share, R.color.colorMovieItemText);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.movies_label, R.drawable.ic_menu_camera, R.color.colorMovieItemText);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem(R.string.tv_series_name, R.drawable.ic_menu_slideshow, R.color.colorAccent);
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.news_feed_name, R.mipmap.news_feed_icon, R.color.colorMovieItemText);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.movies_label, R.mipmap.movies_icon, R.color.colorMovieItemText);
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem(R.string.tv_series_name, R.mipmap.tv_shows_icon, R.color.colorAccent);
         bottomNavigation.addItem(item1);
         bottomNavigation.addItem(item2);
         bottomNavigation.addItem(item3);
@@ -100,8 +102,23 @@ public class TVSeriesActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_tvseries, menu);
+        getMenuInflater().inflate(R.menu.menu_movies,menu);
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_search:
+                Intent i = new Intent(this,SearchActivity.class);
+                startActivity(i);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
 }

@@ -9,11 +9,13 @@ import android.support.v7.widget.Toolbar;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.crashlytics.android.Crashlytics;
 import com.example.zsamir.movieappintership.Adapters.MovieSectionsPagerAdapter;
+import com.example.zsamir.movieappintership.Common.SearchActivity;
 import com.example.zsamir.movieappintership.NewsFeed.NewsFeedActivity;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity;
@@ -50,9 +52,9 @@ public class MoviesActivity extends AppCompatActivity {
     private void setBottomNavigationBar() {
 
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation_movies);
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.news_feed_name, R.drawable.ic_menu_share, R.color.colorMovieItemText);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.movies_label, R.drawable.ic_menu_camera, R.color.colorAccent);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem(R.string.tv_series_name, R.drawable.ic_menu_slideshow, R.color.colorMovieItemText);
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.news_feed_name, R.mipmap.news_feed_icon, R.color.colorAccent);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.movies_label, R.mipmap.movies_icon, R.color.colorMovieItemText);
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem(R.string.tv_series_name, R.mipmap.tv_shows_icon, R.color.colorMovieItemText);
         bottomNavigation.addItem(item1);
         bottomNavigation.addItem(item2);
         bottomNavigation.addItem(item3);
@@ -91,12 +93,25 @@ public class MoviesActivity extends AppCompatActivity {
         finish();
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_movies, menu);
+        getMenuInflater().inflate(R.menu.menu_movies,menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_search:
+                Intent i = new Intent(this,SearchActivity.class);
+                startActivity(i);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
 }

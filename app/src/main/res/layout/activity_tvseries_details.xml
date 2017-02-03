@@ -143,14 +143,45 @@
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:layout_margin="10dp"
-        android:id="@+id/tv_series_details_raiting"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="13sp"
-        android:textColor="@color/colorText"
-        />
+        android:layout_margin = "10dp"
+        >
+
+        <ImageView
+            android:layout_marginTop="4dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/tv_series_details_star_image"
+            android:background="@mipmap/star_1_copy_4"/>
+
+        <TextView
+            android:layout_toRightOf="@id/tv_series_details_star_image"
+            android:layout_toEndOf="@+id/tv_series_details_star_image"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:id="@+id/tv_series_details_rating_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/colorText"
+            android:gravity="top"
+            />
+        <TextView
+            android:layout_toRightOf="@id/tv_series_details_rating_1"
+            android:layout_toEndOf="@+id/tv_series_details_rating_1"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="4dp"
+            android:id="@+id/tv_series_details_rating_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:textColor="@color/colorRatingPart2"
+            android:gravity="top"/>
+    </RelativeLayout>
 
     <TextView
         android:layout_marginStart="10dp"
@@ -257,6 +288,7 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/tv_series_details_images_breakline"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorBreakLine"
@@ -270,6 +302,7 @@
         android:orientation="horizontal"
         android:weightSum="5">
         <TextView
+            android:id="@+id/tv_series_details_images_label"
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
@@ -317,6 +350,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/cast"
+        android:id="@+id/tv_series_cast_label"
         android:textSize="13sp"
         android:textColor="@color/colorText"
         />

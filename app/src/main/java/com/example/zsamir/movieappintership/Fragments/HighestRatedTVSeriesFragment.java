@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,6 @@ import com.example.zsamir.movieappintership.API.ApiHandler;
 
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
 import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
-import com.example.zsamir.movieappintership.Common.TVSeriesEndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.TvSeries;
 import com.example.zsamir.movieappintership.Modules.TvSeriesList;
 import com.example.zsamir.movieappintership.R;
@@ -25,6 +25,7 @@ public class HighestRatedTVSeriesFragment extends Fragment {
     ArrayList<TvSeries> tvSeriesList = new ArrayList<>();
     ApiHandler movieDbApi = ApiHandler.getInstance();
     TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(tvSeriesList);
+    int numberOfPages;
 
     public HighestRatedTVSeriesFragment() {
     }
@@ -47,11 +48,19 @@ public class HighestRatedTVSeriesFragment extends Fragment {
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        loadTopRatedTvSeries(1);
-        TVSeriesEndlessRecyclerViewScrollListener scrollListener = new TVSeriesEndlessRecyclerViewScrollListener(gridLayoutManager ) {
+        if(tvSeriesList.size()==0)
+            loadTopRatedTvSeries(1);
+        else{
+            tvSeriesList.clear();
+            loadTopRatedTvSeries(1);
+            mTvSeriesAdapter.notifyDataSetChanged();
+        }
+
+        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadTopRatedTvSeries(page+1);
+                //if(page+1<=numberOfPages)
+                loadTopRatedTvSeries(page);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);
@@ -64,7 +73,13 @@ public class HighestRatedTVSeriesFragment extends Fragment {
         movieDbApi.requestHighestRatedTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
             public void success(TvSeriesList response) {
-                tvSeriesList.addAll(response.getTvSeries());
+                numberOfPages = response.getTotalPages();
+                // addition
+                for (TvSeries t: response.getTvSeries()) {
+                    if(!tvSeriesList.contains(t))
+                        tvSeriesList.add(t);
+                }
+                //tvSeriesList.addAll(response.getTvSeries());
                 mTvSeriesAdapter.notifyDataSetChanged();
             }
         });

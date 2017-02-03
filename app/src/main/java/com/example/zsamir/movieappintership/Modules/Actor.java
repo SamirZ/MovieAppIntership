@@ -12,43 +12,148 @@ public class Actor implements Parcelable
 
     @SerializedName("adult")
     @Expose
-    public boolean adult;
+    private boolean adult;
     @SerializedName("also_known_as")
     @Expose
-    public List<String> alsoKnownAs = null;
+    private List<String> alsoKnownAs = null;
     @SerializedName("biography")
     @Expose
-    public String biography;
+    private String biography;
     @SerializedName("birthday")
     @Expose
-    public String birthday;
+    private String birthday;
     @SerializedName("deathday")
     @Expose
-    public String deathday;
+    private String deathday;
     @SerializedName("gender")
     @Expose
-    public int gender;
+    private int gender;
     @SerializedName("homepage")
     @Expose
-    public String homepage;
+    private String homepage;
     @SerializedName("id")
     @Expose
-    public int id;
+    private int id;
     @SerializedName("imdb_id")
     @Expose
-    public String imdbId;
+    private String imdbId;
     @SerializedName("name")
     @Expose
-    public String name;
+    private String name;
     @SerializedName("place_of_birth")
     @Expose
-    public String placeOfBirth;
+    private String placeOfBirth;
     @SerializedName("popularity")
     @Expose
-    public float popularity;
+    private float popularity;
     @SerializedName("profile_path")
     @Expose
-    public String profilePath;
+    private String profilePath;
+
+    public boolean isAdult() {
+        return adult;
+    }
+
+    public void setAdult(boolean adult) {
+        this.adult = adult;
+    }
+
+    public List<String> getAlsoKnownAs() {
+        return alsoKnownAs;
+    }
+
+    public void setAlsoKnownAs(List<String> alsoKnownAs) {
+        this.alsoKnownAs = alsoKnownAs;
+    }
+
+    public String getBiography() {
+        return biography;
+    }
+
+    public void setBiography(String biography) {
+        this.biography = biography;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getDeathday() {
+        return deathday;
+    }
+
+    public void setDeathday(String deathday) {
+        this.deathday = deathday;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
+
+    public String getHomepage() {
+        return homepage;
+    }
+
+    public void setHomepage(String homepage) {
+        this.homepage = homepage;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getImdbId() {
+        return imdbId;
+    }
+
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPlaceOfBirth() {
+        return placeOfBirth;
+    }
+
+    public void setPlaceOfBirth(String placeOfBirth) {
+        this.placeOfBirth = placeOfBirth;
+    }
+
+    public float getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(float popularity) {
+        this.popularity = popularity;
+    }
+
+    public String getProfilePath() {
+        return profilePath;
+    }
+
+    public void setProfilePath(String profilePath) {
+        this.profilePath = profilePath;
+    }
+
     public final static Parcelable.Creator<Actor> CREATOR = new Creator<Actor>() {
 
 
