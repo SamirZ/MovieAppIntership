@@ -8,6 +8,18 @@ import com.google.gson.annotations.SerializedName;
 
 public class Cast implements Parcelable
 {
+    public Cast() {
+    }
+
+    public Cast(int castId, String character, String creditId, int id, String name, int order, String profilePath) {
+        this.castId = castId;
+        this.character = character;
+        this.creditId = creditId;
+        this.id = id;
+        this.name = name;
+        this.order = order;
+        this.profilePath = profilePath;
+    }
 
     static final String BASE_IMG_URL = "http://image.tmdb.org/t/p/";
     // Poster image sizes

@@ -2,13 +2,17 @@ package com.example.zsamir.movieappintership.API;
 
 import com.example.zsamir.movieappintership.Modules.Actor;
 import com.example.zsamir.movieappintership.Modules.Credits;
+import com.example.zsamir.movieappintership.Modules.EpisodeCredits;
+import com.example.zsamir.movieappintership.Modules.EpisodeDetails;
 import com.example.zsamir.movieappintership.Modules.MovieDetails;
 import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.MovieList;
 import com.example.zsamir.movieappintership.Modules.MovieReviews;
+import com.example.zsamir.movieappintership.Modules.SearchResult;
 import com.example.zsamir.movieappintership.Modules.SeasonDetails;
 import com.example.zsamir.movieappintership.Modules.TvSeriesDetails;
 import com.example.zsamir.movieappintership.Modules.TvSeriesList;
+import com.example.zsamir.movieappintership.Modules.Videos;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -72,12 +76,30 @@ interface ApiService {
 
 
 
-
-    @GET("tv/{id}/season/{season_number}")
-    Call<SeasonDetails> fetchTvSeriesSeason(@Path("id") int id, @Path("season_number") String season_number, @Query("api_key") String apiKey);
-    //https://api.themoviedb.org/3/tv/44217/season/1?api_key=bc269ac4441457a0c9182c49437eaf89
+    @GET("tv/{id}/season/{season_number}/episode/{episode_number}/credits")
+    Call<EpisodeCredits> fetchEpisodeCast(@Path("id") int tv_id,
+                                          @Path("season_number") Integer season_number,
+                                          @Path("episode_number") Integer episode_number,
+                                          @Query("api_key") String apiKey);
 
     @GET("tv/{tv_id}/season/{season_number}")
-    Call<SeasonDetails> fetchSeason(@Path("tv_id") int tv_id, @Path("season_number") Integer season_number, @Query("api_key") String apiKey);
+    Call<SeasonDetails> fetchSeason(@Path("tv_id") int tv_id,
+                                    @Path("season_number") Integer season_number,
+                                    @Query("api_key") String apiKey);
+
+    @GET("tv/{id}/season/{season_number}/episode/{episode_number}")
+    Call<EpisodeDetails> fetchEpisodeDetails(@Path("id") int tv_id,
+                                          @Path("season_number") Integer season_number,
+                                          @Path("episode_number") Integer episode_number,
+                                          @Query("api_key") String apiKey);
+
+    @GET("search/multi")
+    Call<SearchResult> fetchSearch(@Query("query") String query, @Query("page") int page, @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/videos")
+    Call<Videos> fetchMovieVideos(@Path("id") int id, @Query("api_key") String apiKey);
+
+    @GET("tv/{tv_id}/videos")
+    Call<Videos> fetchTVSeriesVideos(@Path("tv_id") int id, @Query("api_key") String apiKey);
 
 }

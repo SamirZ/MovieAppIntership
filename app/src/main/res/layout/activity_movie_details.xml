@@ -6,7 +6,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/colorMovieDetailsBackground"
     tools:context="com.example.zsamir.movieappintership.Movies.MovieDetailsActivity">
@@ -76,7 +76,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
-        android:layout_marginRight="10dp">
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
@@ -142,14 +143,46 @@
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:layout_margin="10dp"
-        android:id="@+id/movie_details_raiting"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="13sp"
-        android:textColor="@color/colorText"
-        />
+        android:layout_margin = "10dp"
+        >
+
+        <ImageView
+            android:layout_marginTop="4dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/movie_details_star_image"
+            android:background="@mipmap/star_1_copy_4"/>
+
+        <TextView
+            android:layout_toRightOf="@id/movie_details_star_image"
+            android:layout_toEndOf="@+id/movie_details_star_image"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:id="@+id/movie_details_rating_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/colorText"
+            android:gravity="top"
+            />
+        <TextView
+            android:layout_toRightOf="@id/movie_details_rating_1"
+            android:layout_toEndOf="@+id/movie_details_rating_1"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="4dp"
+            android:id="@+id/movie_details_rating_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:textColor="@color/colorRatingPart2"
+            android:gravity="top"
+            />
+    </RelativeLayout>
 
     <TextView
         android:layout_marginStart="10dp"
@@ -168,6 +201,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.7dp"
         android:background="@color/colorBreakLine"
+        android:id="@+id/movie_details_images_breakline"
         android:alpha="0.5"
         />
 
@@ -183,6 +217,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/images"
+            android:id="@+id/movie_details_images_label"
             android:textSize="13sp"
             android:textColor="@color/colorText"
             android:layout_weight="4"
@@ -210,7 +245,7 @@
         android:scrollbars="vertical" />
 
     <View
-        android:id="@+id/breakline_details"
+        android:id="@+id/movie_details_cast_breakline"
         android:layout_width="match_parent"
         android:layout_height="0.7dp"
         android:background="@color/colorBreakLine"
@@ -227,6 +262,7 @@
         android:text="@string/cast"
         android:textSize="13sp"
         android:textColor="@color/colorText"
+        android:id="@+id/movie_details_cast_label"
         />
 
     <android.support.v7.widget.RecyclerView
@@ -242,6 +278,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.7dp"
         android:background="@color/colorBreakLine"
+        android:id="@+id/review_breakline"
         android:alpha="0.5"
         />
 

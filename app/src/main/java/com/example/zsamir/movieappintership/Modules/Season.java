@@ -88,7 +88,7 @@ public class Season implements Parcelable
             return s[0];
         }
         else
-            return "Announced";
+            return "TBD";
     }
 
     public void setAirDate(String airDate) {

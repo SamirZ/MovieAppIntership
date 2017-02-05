@@ -115,6 +115,10 @@ public class TvSeriesDetails implements Parcelable {
 
     public String getFirstAirDate(){
         String[] s = firstAirDate.split("-");
+        if(s[2].startsWith("0")){
+            String s1 = s[2].substring(1);
+            return s1 + " " + getMonth(Integer.parseInt(s[1])) + " " + s[0];
+        }
         return s[2]+" "+ getMonth(Integer.parseInt(s[1]))+ " "+ s[0];
     }
 
@@ -149,17 +153,28 @@ public class TvSeriesDetails implements Parcelable {
     }
 
     public String getReleaseYear() {
+        if(firstAirDate!=null){
         String[] s = firstAirDate.split("-");
-        return s[0];
+        if(s.length>0){
+            return s[0];
+        }else{
+            return null;
+        }
+        }else return null;
     }
 
     public String getFinishYear() {
         if(!inProduction){
             String[] s = lastAirDate.split("-");
-            return s[0];
+            if(s.length>0){
+                return s[0];
+            }else{
+                return null;
+            }
+
         }
         else
-            return "";
+            return null;
     }
 
     public void setFirstAirDate(String firstAirDate) {
@@ -208,6 +223,10 @@ public class TvSeriesDetails implements Parcelable {
 
     public String getLastAirDate() {
         String[] s = lastAirDate.split("-");
+        if(s[2].startsWith("0")){
+            String s1 = s[2].substring(1);
+            return s1 + " " + getMonth(Integer.parseInt(s[1])) + " " + s[0];
+        }
         return s[2]+" "+ getMonth(Integer.parseInt(s[1]))+ " "+ s[0];
     }
 
@@ -422,4 +441,31 @@ public class TvSeriesDetails implements Parcelable {
             return new TvSeriesDetails[size];
         }
     };
+
+    private static final String BASE_IMG_URL = "http://image.tmdb.org/t/p/";
+    // Poster image sizes
+    private static final String POSTER_SIZE_W92 = "w92";
+    private static final String POSTER_SIZE_W154 = "w154";
+    private static final String POSTER_SIZE_W185 = "w185";
+    private static final String POSTER_SIZE_W342 = "w342";
+    private static final String POSTER_SIZE_W500 = "w500";
+    private static final String POSTER_W780 = "w780";
+    private static final String POSTER_SIZE_ORIGINAL = "original";
+
+    // Backdrop image sizes
+    private static final String BACKDROP_SIZE_W300 = "w300";
+    private static final String BACKDROP_SIZE_W780 = "w780";
+    private static final String BACKDROP_SIZE_W1280 = "w1280";
+    private static final String BACKDROP_SIZE_ORIGINAL = "original";
+    public String getPosterUrl() {
+        return BASE_IMG_URL + POSTER_SIZE_W185 + posterPath;
+    }
+
+    public String getBackdropUrl() {
+        return BASE_IMG_URL + BACKDROP_SIZE_W1280+ backdropPath;
+    }
+
+    public String getBackdropSizeOriginalUrl() {
+        return BASE_IMG_URL + BACKDROP_SIZE_ORIGINAL+ backdropPath;
+    }
 }

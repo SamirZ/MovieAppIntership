@@ -8,6 +8,7 @@
     <color name="colorText">#FFFFFF</color>
     <color name="colorTransparent">#00000000</color>
     <color name="colorMovieItemText">#898885</color>
+    <color name="colorRatingPart2">#8f8d8d</color>
     <color name="colorBreakLine">#d8d8d8</color>
     <color name="colorMovieDetailsBackground">#0f100f</color>
     <color name="colorTextDetails">#cecece</color>

@@ -14,20 +14,50 @@
             android:name=".Movies.MoviesActivity"
             android:label="@string/movies_label"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Movies.MovieDetailsActivity"
             android:label="@string/movies_label"
-            android:screenOrientation="portrait" />
+            android:parentActivityName=".Movies.MoviesActivity"
+            android:screenOrientation="portrait">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.Movies.MoviesActivity" />
+        </activity>
         <activity
             android:name=".Common.ActorProfileActivity"
             android:label="@string/actor_activity_label"
-            android:screenOrientation="portrait" />
+            android:parentActivityName=".Movies.MovieDetailsActivity"
+            android:screenOrientation="portrait">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.Movies.MovieDetailsActivity" />
+        </activity>
         <activity
             android:name=".Common.GalleryActivity"
             android:label="@string/movies_label"
-            android:screenOrientation="portrait" />
-        <activity android:name=".Common.ImageDetailsActivity" />
+            android:parentActivityName=".TVSeries.TVSeriesActivity"
+            android:screenOrientation="portrait">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity" />
+        </activity>
+        <activity
+            android:name=".Common.ImageDetailsActivity"
+            android:parentActivityName=".TVSeries.TVSeriesActivity"
+            android:screenOrientation="portrait">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity" />
+        </activity>
         <activity
             android:name=".TVSeries.TVSeriesActivity"
             android:label="@string/tv_series_name"
@@ -36,25 +66,61 @@
         <activity
             android:name=".TVSeries.TVSeriesDetailsActivity"
             android:label="@string/tv_series_name"
-            android:screenOrientation="portrait" />
+            android:parentActivityName=".TVSeries.TVSeriesActivity"
+            android:screenOrientation="portrait">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity" />
+        </activity>
         <activity
             android:name=".TVSeries.SeasonActivity"
-            android:screenOrientation="portrait"/>
+            android:parentActivityName=".TVSeries.TVSeriesDetailsActivity"
+            android:screenOrientation="portrait">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesDetailsActivity" />
+        </activity>
         <activity
             android:name=".Common.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".NewsFeed.NewsFeedActivity"
             android:label="@string/news_feed_name"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="7441d02155685acc10fd1c60286364bb5d941e54" />
+
+        <activity
+            android:name=".TVSeries.EpisodeActivity"
+            android:parentActivityName=".TVSeries.SeasonActivity"
+            android:screenOrientation="portrait">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.TVSeries.SeasonActivity" />
+        </activity>
+        <activity
+            android:name=".Common.SearchActivity"
+            android:label="@string/search_title"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.TVSeries.SeasonActivity" />
+        </activity>
+        <activity android:name=".Common.TrailerActivity"></activity>
     </application>
 
 </manifest>

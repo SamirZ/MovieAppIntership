@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,7 +17,6 @@ import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.CastAdapter;
 import com.example.zsamir.movieappintership.Adapters.ImageAdapter;
 import com.example.zsamir.movieappintership.Adapters.ReviewAdapter;
-import com.example.zsamir.movieappintership.Common.ActorProfileActivity;
 import com.example.zsamir.movieappintership.Common.GalleryActivity;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
 import com.example.zsamir.movieappintership.Modules.Cast;
@@ -31,6 +31,7 @@ import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -55,6 +56,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+
         Fabric.with(this, new Crashlytics());
 
         setFinishOnTouchOutside(true);
@@ -64,14 +66,26 @@ public class MovieDetailsActivity extends AppCompatActivity {
             mImageAdapter = new ImageAdapter(backdrops,mMovie);
         }
 
+
+        final TextView movieImagesLabel = (TextView) findViewById(R.id.movie_details_images_label);
+        final TextView movieImagesSeeAll = (TextView) findViewById(R.id.see_all);
+        final View movieImagesBreakline = findViewById(R.id.movie_details_images_breakline);
         ApiHandler apiHandler = ApiHandler.getInstance();
 
         apiHandler.requestMovieImages(mMovie.getId(), new ApiHandler.ImagesListener() {
             @Override
             public void success(Images response) {
-                mMovieImages = response;
-                backdrops.addAll(mMovieImages.backdrops);
-                mImageAdapter.notifyDataSetChanged();
+                if(response!=null){
+                    mMovieImages = response;
+                    if(mMovieImages.backdrops.size()>0){
+                        backdrops.addAll(mMovieImages.backdrops);
+                        mImageAdapter.notifyDataSetChanged();
+                    }else{
+                        movieImagesLabel.setVisibility(View.GONE);
+                        movieImagesSeeAll.setVisibility(View.GONE);
+                        movieImagesBreakline.setVisibility(View.GONE);
+                    }
+                }
             }
         });
 
@@ -111,11 +125,21 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     mMovieDirectorLabel.setVisibility(View.GONE);
                 }
                 StringBuilder sb = new StringBuilder();
+
+                TextView movieDetailsCastLabel = (TextView) findViewById(R.id.movie_details_cast_label);
+                View movieDetailsCastBreaklinne = findViewById(R.id.movie_details_cast_breakline);
+
+
                 TextView mMovieStarsLabel = (TextView) findViewById(R.id.movie_details_stars_1);
                 TextView mMovieStars = (TextView) findViewById(R.id.movie_details_stars_2);
                 if(mCredits.cast!=null){
-                actors.addAll(mCredits.cast);
-                mCastAdapter.notifyDataSetChanged();
+                    if(mCredits.cast.size()>0){
+                        actors.addAll(mCredits.cast);
+                        mCastAdapter.notifyDataSetChanged();
+                    }else{
+                        movieDetailsCastLabel.setVisibility(View.GONE);
+                        movieDetailsCastBreaklinne.setVisibility(View.GONE);
+                    }
                 if(actors.size()>0) {
                     for(int i=0;i<actors.size() && i<3;i++){
                         sb.append(actors.get(i).name);
@@ -147,15 +171,22 @@ public class MovieDetailsActivity extends AppCompatActivity {
         });
 
         final TextView reviews = (TextView) findViewById(R.id.movie_reviews);
-
+        final View breakline = (View) findViewById(R.id.review_breakline);
+;
         apiHandler.requestMovieReviews(mMovie.getId(), new ApiHandler.MovieReviewsListener() {
             @Override
             public void success(MovieReviews response) {
                 mMovieReviews = response;
                 if(response!=null){
-                reviewList.addAll(response.getResults());
+                    if(response.getResults().size()>0){
+                        reviewList.addAll(response.getResults());
+                    }else{
+                        reviews.setVisibility(View.GONE);
+                        breakline.setVisibility(View.GONE);
+                    }
                 }else{
                     reviews.setVisibility(View.GONE);
+                    breakline.setVisibility(View.GONE);
                 }
                 mReviewAdapter.notifyDataSetChanged();
             }
@@ -163,12 +194,24 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
 
         ImageView mMovieImage = (ImageView) findViewById(R.id.movie_details_image);
-        if(mMovie.getBackdropUrl()!=null)
-        Glide.with(this).load(mMovie.getBackdropUrl()).into(mMovieImage);
+        if(mMovie.getBackdropUrl()!=null){
+            Glide.with(this).load(mMovie.getBackdropUrl()).into(mMovieImage);
+            mMovieImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Intent i = new Intent(MovieDetailsActivity.this, TrailerActivity.class);
+                    //i.putExtra("MovieID",String.valueOf(mMovie.getId()));
+                    //startActivity(i);
+                }
+            });
+        }
 
         TextView mMovieName = (TextView) findViewById(R.id.movie_details_name);
         if(mMovie.getTitle()!=null && mMovie.getReleaseYear()!=null)
-        mMovieName.setText(mMovie.getTitle()+" ("+mMovie.getReleaseYear()+")");
+        mMovieName.setText(mMovie.getTitle());
+        if(mMovie.getReleaseYear()!=null){
+            mMovieName.append(" ("+mMovie.getReleaseYear()+")");
+        }
 
         TextView mMovieGenre = (TextView) findViewById(R.id.movie_details_genre);
         if(mMovie.getMovieGenres().size()>0)
@@ -190,8 +233,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if(mMovie.getOverview()!=null)
         mMovieOverview.setText(mMovie.getOverview());
 
-        TextView mRating = (TextView) findViewById(R.id.movie_details_raiting);
-        mRating.setText(Float.toString(mMovie.getVoteAverage())+" /10");
+        TextView mRating = (TextView) findViewById(R.id.movie_details_rating_1);
+        TextView mRating2 = (TextView) findViewById(R.id.movie_details_rating_2);
+        mRating.setText(String.format(Locale.getDefault(),"%1$.1f",mMovie.getVoteAverage()));
+        mRating2.setText(" /10");
 
         RecyclerView mReviewRecyclerView = (RecyclerView) findViewById(R.id.reviews_recyclerView);
         LinearLayoutManager layoutManagerReview = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -210,10 +255,22 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mCastRecyclerView.setAdapter(mCastAdapter);
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_movies, menu);
+        getMenuInflater().inflate(R.menu.menu_movie_details, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

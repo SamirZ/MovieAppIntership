@@ -6,7 +6,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
     android:orientation="vertical"
     android:background="@color/colorPrimary"
     tools:context="com.example.zsamir.movieappintership.Common.ActorProfileActivity">
@@ -20,8 +21,8 @@
         <ImageView
             android:alpha="0.5"
             android:layout_width="match_parent"
-            android:layout_height="216dp"
-            android:scaleType="centerCrop"
+            android:layout_height="260dp"
+            android:scaleType="centerInside"
             android:adjustViewBounds="true"
             android:id="@+id/actor_details_image"/>
 
@@ -175,6 +176,7 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="10.7dp"
         android:layout_marginStart="10.7dp"
+        android:layout_marginBottom="10dp"
         android:scrollbars="vertical" />
 
 </LinearLayout>

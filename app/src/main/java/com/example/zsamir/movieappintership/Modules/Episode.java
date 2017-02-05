@@ -15,29 +15,13 @@ public class Episode implements Parcelable {
     @Expose
     private String airDate;
 
-    @SerializedName("crew")
-    @Expose
-    private List<Crew> crew = null;
-
     @SerializedName("episode_number")
     @Expose
     private int episodeNumber;
 
-    @SerializedName("guest_stars")
-    @Expose
-    private List<GuestStar> guestStars = null;
-
     @SerializedName("name")
     @Expose
     private String name;
-
-    @SerializedName("overview")
-    @Expose
-    private String overview;
-
-    @SerializedName("id")
-    @Expose
-    private int id;
 
     @SerializedName("season_number")
     @Expose
@@ -46,22 +30,11 @@ public class Episode implements Parcelable {
     @SerializedName("vote_average")
     @Expose
     private double voteAverage;
-
-    @SerializedName("vote_count")
-    @Expose
-    private int voteCount;
+    private int seasaonNumber;
 
 
     public void setAirDate(String airDate) {
         this.airDate = airDate;
-    }
-
-    public List<Crew> getCrew() {
-        return crew;
-    }
-
-    public void setCrew(List<Crew> crew) {
-        this.crew = crew;
     }
 
     public int getEpisodeNumber() {
@@ -72,36 +45,12 @@ public class Episode implements Parcelable {
         this.episodeNumber = episodeNumber;
     }
 
-    public List<GuestStar> getGuestStars() {
-        return guestStars;
-    }
-
-    public void setGuestStars(List<GuestStar> guestStars) {
-        this.guestStars = guestStars;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getOverview() {
-        return overview;
-    }
-
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getSeasonNumber() {
@@ -120,14 +69,6 @@ public class Episode implements Parcelable {
         this.voteAverage = voteAverage;
     }
 
-    public int getVoteCount() {
-        return voteCount;
-    }
-
-    public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -136,15 +77,10 @@ public class Episode implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.airDate);
-        dest.writeTypedList(this.crew);
         dest.writeInt(this.episodeNumber);
-        dest.writeList(this.guestStars);
         dest.writeString(this.name);
-        dest.writeString(this.overview);
-        dest.writeInt(this.id);
         dest.writeInt(this.seasonNumber);
         dest.writeDouble(this.voteAverage);
-        dest.writeInt(this.voteCount);
     }
 
     public Episode() {
@@ -152,16 +88,10 @@ public class Episode implements Parcelable {
 
     protected Episode(Parcel in) {
         this.airDate = in.readString();
-        this.crew = in.createTypedArrayList(Crew.CREATOR);
         this.episodeNumber = in.readInt();
-        this.guestStars = new ArrayList<GuestStar>();
-        in.readList(this.guestStars, GuestStar.class.getClassLoader());
         this.name = in.readString();
-        this.overview = in.readString();
-        this.id = in.readInt();
         this.seasonNumber = in.readInt();
         this.voteAverage = in.readDouble();
-        this.voteCount = in.readInt();
     }
 
     public static final Parcelable.Creator<Episode> CREATOR = new Parcelable.Creator<Episode>() {
@@ -189,7 +119,7 @@ public class Episode implements Parcelable {
             }
 
         }
-        return "To be dated";
+        return "TBD";
     }
 
 
@@ -222,5 +152,14 @@ public class Episode implements Parcelable {
                 return "December";
         }
         return "Wrong Month Format";
+    }
+
+    public String getAirYear() {
+        if(airDate!=null){
+        if(!airDate.equalsIgnoreCase("TBD")){
+        String[] s = airDate.split("-");
+        return s[0];
+        }return "";
+        }return "";
     }
 }

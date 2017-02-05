@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorMovieDetailsBackground"
+    android:fillViewport="true">
+<RelativeLayout
+    android:id="@+id/activity_episode"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:background="@color/colorMovieDetailsBackground"
+    tools:context="com.example.zsamir.movieappintership.TVSeries.EpisodeActivity">
+    
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/episode_details_image"/>
+
+    <View
+        android:id="@+id/episode_break_line_details"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/colorBreakLine"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/episode_details_image"/>
+
+    <View
+        android:layout_above="@+id/episode_break_line_details"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="@drawable/gradient" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="14.7dp"
+        android:layout_marginStart="14.7dp"
+        android:layout_marginBottom="5dp"
+        android:textSize="18sp"
+        android:textColor="@color/colorText"
+        android:id="@+id/episode_details_name"
+        android:layout_above="@+id/episode_details_date"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="14.7dp"
+        android:layout_marginStart="14.7dp"
+        android:textSize="13sp"
+        android:textColor="@color/colorMovieItemText"
+        android:id="@+id/episode_details_date"
+        android:layout_above="@+id/episode_details_rating_container"/>
+
+    <RelativeLayout
+        android:layout_above="@+id/episode_break_line_details_1"
+        android:id="@+id/episode_details_rating_container"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="15.3dp"
+        android:layout_marginStart="15.3dp"
+        >
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:id="@+id/episode_star_image"
+            android:background="@mipmap/star_1_copy_4"/>
+
+        <TextView
+            android:layout_toRightOf="@id/episode_star_image"
+            android:layout_toEndOf="@+id/episode_star_image"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:id="@+id/episode_details_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textSize="13sp"
+            android:textColor="@color/colorText"
+            />
+        <TextView
+            android:layout_toRightOf="@id/episode_details_rating"
+            android:layout_toEndOf="@+id/episode_details_rating"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="4dp"
+            android:id="@+id/episode_details_rating_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:textColor="@color/colorRatingPart2"
+            />
+    </RelativeLayout>
+
+    <View
+        android:layout_marginTop="13.3dp"
+        android:id="@+id/episode_break_line_details_1"
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:alpha="0.5"
+        android:background="@color/colorBreakLine"
+        android:layout_below="@id/episode_details_image"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/colorText"
+        android:id="@+id/episode_details_overview"
+        android:layout_below="@id/episode_break_line_details_1"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="13.3dp"
+        android:layout_marginLeft="14.7dp"
+        android:layout_marginStart="14.7dp"
+        android:layout_marginRight="8.7dp"
+        android:layout_marginEnd="8.7dp"/>
+
+    <View
+        android:id="@+id/episode_break_line_details_2"
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:alpha="0.5"
+        android:background="@color/colorBreakLine"
+        android:layout_below="@id/episode_details_overview"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/episode_details_cast_label"
+        android:text="@string/cast"
+        android:textColor="@color/colorText"
+        android:layout_below="@+id/episode_break_line_details_2"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="15.3dp"
+        android:layout_marginLeft="15.3dp"
+        android:layout_marginBottom="10.7dp"
+
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginStart="14.7dp"
+        android:layout_marginLeft="14.7dp"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/episode_details_cast_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/episode_details_recyclerView">
+
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>
+
+</ScrollView>

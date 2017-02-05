@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -14,6 +16,7 @@ import android.webkit.WebViewClient;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.crashlytics.android.Crashlytics;
+import com.example.zsamir.movieappintership.Common.SearchActivity;
 import com.example.zsamir.movieappintership.Movies.MoviesActivity;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity;
@@ -42,9 +45,9 @@ public class NewsFeedActivity extends AppCompatActivity {
 
     private void setBottomNavigationBar() {
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation_news_feed);
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.news_feed_name, R.drawable.ic_menu_share, R.color.colorAccent);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.movies_label, R.drawable.ic_menu_camera, R.color.colorMovieItemText);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem(R.string.tv_series_name, R.drawable.ic_menu_slideshow, R.color.colorMovieItemText);
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.news_feed_name, R.mipmap.news_feed_icon, R.color.colorMovieItemText);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.movies_label, R.mipmap.movies_icon, R.color.colorAccent);
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem(R.string.tv_series_name, R.mipmap.tv_shows_icon, R.color.colorMovieItemText);
         bottomNavigation.addItem(item1);
         bottomNavigation.addItem(item2);
         bottomNavigation.addItem(item3);
@@ -82,5 +85,26 @@ public class NewsFeedActivity extends AppCompatActivity {
         Intent intent = new Intent(NewsFeedActivity.this,MoviesActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_movies,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_search:
+                Intent i = new Intent(this,SearchActivity.class);
+                startActivity(i);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 }

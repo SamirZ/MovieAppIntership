@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class PopularMoviesFragment extends Fragment{
     ArrayList<Movie> moviesList = new ArrayList<>();
     ApiHandler apiHandler = ApiHandler.getInstance();
     MovieAdapter mMovieAdapter = new MovieAdapter(moviesList);
+    int numberOfPages;
 
     public PopularMoviesFragment() {
     }
@@ -41,13 +43,20 @@ public class PopularMoviesFragment extends Fragment{
         RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.popular_recyclerView);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
-        loadPopularMovies(1);
+        if(moviesList.size()==0)
+            loadPopularMovies(1);
+        else{
+            moviesList.clear();
+            loadPopularMovies(1);
+            mMovieAdapter.notifyDataSetChanged();
+        }
 
         mRecyclerView.setLayoutManager(gridLayoutManager );
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadPopularMovies(page+1);
+                //if(page+1<=numberOfPages)
+                loadPopularMovies(page);
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);
@@ -61,7 +70,13 @@ public class PopularMoviesFragment extends Fragment{
         apiHandler.requestMostPopularMovies(page, new ApiHandler.MovieListListener() {
             @Override
             public void success(MovieList response) {
-                moviesList.addAll(response.getMovies());
+                numberOfPages = response.getTotalPages();
+                // addition
+                for (Movie m: response.getMovies()) {
+                    if(!moviesList.contains(m))
+                        moviesList.add(m);
+                }
+                //moviesList.addAll(response.getMovies());
                 mMovieAdapter.notifyDataSetChanged();
             }
         });
