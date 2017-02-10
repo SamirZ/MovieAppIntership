@@ -46,7 +46,6 @@ public class ActorProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actor_profile);
-        Fabric.with(this, new Crashlytics());
         setFinishOnTouchOutside(true);
 
         // Get actor id trough cast details

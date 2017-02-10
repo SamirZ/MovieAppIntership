@@ -24,7 +24,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginLeft="30dp"
             android:id="@+id/episode_star_image"
-            android:background="@mipmap/star_1_copy_4"/>
+            android:background="@drawable/star_1_copy_4"/>
 
 
         <TextView

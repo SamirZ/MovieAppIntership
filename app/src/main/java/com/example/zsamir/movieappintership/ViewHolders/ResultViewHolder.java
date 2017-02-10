@@ -28,8 +28,7 @@ public class ResultViewHolder extends RecyclerView.ViewHolder implements View.On
     private TextView date;
     private TextView rating;
     private ImageView image;
-    private Movie m;
-    private TvSeries tv;
+    private Result media;
 
     public ResultViewHolder(View itemView) {
         super(itemView);
@@ -44,38 +43,45 @@ public class ResultViewHolder extends RecyclerView.ViewHolder implements View.On
     }
 
     public void bindResult(Result result) {
-        if(result.title!=null){
-            //tv series
-            m = result.toMovie();
-            name.setText(m.getTitle());
-            date.setText("("+m.getReleaseYear()+")");
-            rating.setText(String.format(Locale.getDefault(),"%1$.1f",m.getVoteAverage())+" /10");
-            Glide.with(image.getContext()).load(m.getPosterUrl()).into(image);
-        }
 
-        if(result.mediaType.equals("tv")){
-            //movie
-            tv = result.toTvSeries();
-            name.setText(tv.getName());
-            date.setText("("+tv.getReleaseYear()+")");
-            rating.setText(String.format(Locale.getDefault(),"%1$.1f",tv.getVoteAverage())+" /10");
-            Glide.with(image.getContext()).load(tv.getPosterUrl()).into(image);
+        media = result;
+        if(result.mediaType.equalsIgnoreCase("movie")){
+            name.setText(result.toMovie().getTitle());
+            date.setText("("+result.toMovie().getReleaseYear()+")");
+            rating.setText(String.format(Locale.getDefault(),"%1$.1f",result.toMovie().getVoteAverage())+" /10");
+            if(result.toMovie().getPosterPath()==null){
+                Glide.with(image.getContext()).load(R.color.colorBlack).into(image);
+            }else{
+                Glide.with(image.getContext()).load(result.toMovie().getPosterUrl()).into(image);
+            }
+        }
+        if(result.mediaType.equalsIgnoreCase("tv")){
+            name.setText(result.toTvSeries().getName());
+            date.setText("("+itemView.getContext().getString(R.string.tv_series_name)+" "+result.toTvSeries().getReleaseYear()+")");
+            rating.setText(String.format(Locale.getDefault(),"%1$.1f",result.toTvSeries().getVoteAverage())+" /10");
+            if(result.toTvSeries().getPosterPath()==null){
+                Glide.with(image.getContext()).load(R.color.colorBlack).into(image);
+            }else{
+                Glide.with(image.getContext()).load(result.toTvSeries().getPosterUrl()).into(image);
+            }
         }
     }
 
     @Override
     public void onClick(View v) {
-        if(m!=null) {
+
+        if(media.mediaType.equalsIgnoreCase("movie")){
             Intent i = new Intent(v.getContext(), MovieDetailsActivity.class);
-            i.putExtra("Movie", m);
+            i.putExtra("Movie", media.toMovie());
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             v.getContext().startActivity(i);
         }
-        if(tv!=null){
+        if(media.mediaType.equalsIgnoreCase("tv")){
             Intent i = new Intent(v.getContext(), TVSeriesDetailsActivity.class);
-            i.putExtra("TVSeries", tv);
+            i.putExtra("TVSeries", media.toTvSeries());
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             v.getContext().startActivity(i);
         }
+
     }
 }

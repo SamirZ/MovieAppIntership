@@ -32,7 +32,6 @@ public class GalleryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
-        Fabric.with(this, new Crashlytics());
 
         if(getIntent().hasExtra("Movie")){
             setTitle(getString(R.string.movies_label));

@@ -4,6 +4,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.zsamir.movieappintership.BuildConfig;
+import com.example.zsamir.movieappintership.LoginModules.Account;
+import com.example.zsamir.movieappintership.LoginModules.Session;
+import com.example.zsamir.movieappintership.LoginModules.Token;
 import com.example.zsamir.movieappintership.Modules.Actor;
 import com.example.zsamir.movieappintership.Modules.Credits;
 import com.example.zsamir.movieappintership.Modules.EpisodeCredits;
@@ -40,6 +43,17 @@ public class ApiHandler {
 
     public ApiHandler() {
 
+    }
+    public interface AccountListener {
+        void success(Account response);
+    }
+
+    public interface TokenListener {
+        void success(Token response);
+    }
+
+    public interface SessionListener {
+        void success(Session response);
     }
 
     public interface VideosListener {
@@ -477,6 +491,83 @@ public class ApiHandler {
         });
     }
 
+    // USER ACCOUNT REQUESTS
+
+    public void requestToken(@Nullable final TokenListener listener){
+        getApiService().fetchToken(sApiKey).enqueue(new Callback<Token>() {
+            @Override
+            public void onResponse(Call<Token> call, Response<Token> response) {
+                if (listener != null) {
+                    Log.d("CALL",call.request().toString());
+                    Log.d("CODE", String.valueOf(response.code()));
+                    listener.success(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Token> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void validateToken(String username,String password,String token,@Nullable final TokenListener listener){
+        getApiService().validateToken(sApiKey,username,password,token).enqueue(new Callback<Token>() {
+            @Override
+            public void onResponse(Call<Token> call, Response<Token> response) {
+                if (listener != null) {
+                    //Log.d("CALL",call.request().toString());
+                    //Log.d("CODE", String.valueOf(response.code()));
+                    listener.success(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Token> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void requestSession(String token ,@Nullable final SessionListener listener){
+
+        getApiService().fetchSession(sApiKey , token).enqueue(new Callback<Session>() {
+            @Override
+            public void onResponse(Call<Session> call, Response<Session> response) {
+                if (listener != null) {
+                    Log.d("CALL",call.request().toString());
+                    Log.d("CODE", String.valueOf(response.code()));
+                    listener.success(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Session> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    public void requestAccount(String sessionId ,@Nullable final AccountListener listener){
+
+        getApiService().fetchAccount(sApiKey , sessionId).enqueue(new Callback<Account>() {
+            @Override
+            public void onResponse(Call<Account> call, Response<Account> response) {
+                if (listener != null) {
+                    Log.d("CALL",call.request().toString());
+                    Log.d("CODE", String.valueOf(response.code()));
+                    listener.success(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Account> call, Throwable t) {
+
+            }
+        });
+
+    }
 
 
 
