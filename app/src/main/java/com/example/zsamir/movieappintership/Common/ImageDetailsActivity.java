@@ -44,7 +44,6 @@ public class ImageDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_details);
-        Fabric.with(this, new Crashlytics());
 
         movieName = (TextView) findViewById(R.id.image_details_movie_name);
         movieImageNumber = (TextView) findViewById(R.id.image_details_num_of_images);

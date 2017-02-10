@@ -57,7 +57,6 @@ public class TVSeriesDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tvseries_details);
-        Fabric.with(this, new Crashlytics());
 
         if (getIntent().hasExtra("TVSeries")) {
             mTVSeries = getIntent().getParcelableExtra("TVSeries");

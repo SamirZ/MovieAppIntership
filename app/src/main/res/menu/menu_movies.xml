@@ -4,8 +4,9 @@
 
     <item
         android:id="@+id/action_search"
-        android:icon="@android:drawable/ic_menu_search"
         android:title="@string/search_title"
-        app:showAsAction="ifRoom"/>
+        android:icon="@android:drawable/ic_search_category_default"
+        app:showAsAction="always">
+    </item>
 
 </menu>

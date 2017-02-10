@@ -32,6 +32,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        setTitle("");
         recyclerView = (RecyclerView) findViewById(R.id.search_recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -44,8 +45,9 @@ public class SearchActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_search,menu);
 
         MenuItem item = menu.findItem(R.id.menuSearch);
-        SearchView searchView = (SearchView)item.getActionView();
+        final SearchView searchView = (SearchView)item.getActionView();
         searchView.setQueryHint(getString(R.string.search_title));
+        searchView.setIconified(false);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -65,9 +67,8 @@ public class SearchActivity extends AppCompatActivity {
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                resultList.clear();
-                recyclerView.removeAllViews();
-                mResultAdapter.notifyDataSetChanged();
+                searchView.setVisibility(View.GONE);
+                onBackPressed();
                 return false;
             }
         });
@@ -83,6 +84,11 @@ public class SearchActivity extends AppCompatActivity {
                 resultList.clear();
                 recyclerView.removeAllViews();
                 resultList.addAll(response.results);
+                for (int i=0;i<resultList.size();i++){
+                    if(resultList.get(i).mediaType.equalsIgnoreCase("person")){
+                        resultList.remove(i);
+                    }
+                }
                 mResultAdapter.notifyDataSetChanged();
             }
         });

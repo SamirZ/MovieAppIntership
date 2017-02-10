@@ -1,5 +1,6 @@
 package com.example.zsamir.movieappintership.Modules;
 
+import java.util.Arrays;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -58,4 +59,16 @@ public class Result {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "Result{" +
+                ", id=" + id +
+                ", voteAverage=" + voteAverage +
+                ", mediaType='" + mediaType + '\'' +
+                ", firstAirDate='" + firstAirDate + '\'' +
+                ", name='" + name + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }

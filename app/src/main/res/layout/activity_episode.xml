@@ -71,7 +71,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:id="@+id/episode_star_image"
-            android:background="@mipmap/star_1_copy_4"/>
+            android:background="@drawable/star_1_copy_4"/>
 
         <TextView
             android:layout_toRightOf="@id/episode_star_image"

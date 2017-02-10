@@ -1,5 +1,8 @@
 package com.example.zsamir.movieappintership.API;
 
+import com.example.zsamir.movieappintership.LoginModules.Account;
+import com.example.zsamir.movieappintership.LoginModules.Session;
+import com.example.zsamir.movieappintership.LoginModules.Token;
 import com.example.zsamir.movieappintership.Modules.Actor;
 import com.example.zsamir.movieappintership.Modules.Credits;
 import com.example.zsamir.movieappintership.Modules.EpisodeCredits;
@@ -101,5 +104,20 @@ interface ApiService {
 
     @GET("tv/{tv_id}/videos")
     Call<Videos> fetchTVSeriesVideos(@Path("tv_id") int id, @Query("api_key") String apiKey);
+
+
+    //// USER ACCOUNT
+
+    @GET("authentication/token/new")
+    Call<Token> fetchToken(@Query("api_key") String apiKey);
+
+    @GET("authentication/token/validate_with_login")
+    Call<Token> validateToken(@Query("api_key") String apiKey,@Query("username") String username,@Query("password") String password,@Query("request_token") String request_token);
+
+    @GET("authentication/session/new")
+    Call<Session> fetchSession(@Query("api_key") String apiKey,@Query("request_token") String request_token);
+
+    @GET("account")
+    Call<Account> fetchAccount(@Query("api_key") String apiKey,@Query("session_id") String session_id);
 
 }

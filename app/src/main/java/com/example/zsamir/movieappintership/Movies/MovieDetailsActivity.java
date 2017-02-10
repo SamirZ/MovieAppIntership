@@ -56,9 +56,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-
-        Fabric.with(this, new Crashlytics());
-
         setFinishOnTouchOutside(true);
 
         if (getIntent().hasExtra("Movie")) {
