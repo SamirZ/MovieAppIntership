@@ -5,10 +5,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.example.zsamir.movieappintership.Adapters.NewsFeedAdapter;
-import com.example.zsamir.movieappintership.R;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,23 +21,17 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-/**
- * Created by zsami on 21-Jan-17.
- */
-
-public class ReadRss extends AsyncTask<Void,Void,Void> {
+class ReadRss extends AsyncTask<Void,Void,Void> {
 
     private ArrayList<FeedItem> feedItems;
     private Context context;
     private ProgressDialog progressDialog;
-    private String address = "http://www.boxofficemojo.com/data/rss.php?file=topstories.xml";
-    private URL url;
     private RecyclerView recyclerView;
 
-    public ReadRss(Context context, RecyclerView recyclerView){
+    ReadRss(Context context, RecyclerView recyclerView){
         this.context = context;
         this.recyclerView = recyclerView;
-        progressDialog = new ProgressDialog(context);
+        progressDialog = new ProgressDialog(context,ProgressDialog.THEME_HOLO_DARK);
         progressDialog.setMessage("Loading...");
     }
 
@@ -54,7 +46,7 @@ public class ReadRss extends AsyncTask<Void,Void,Void> {
         super.onPostExecute(aVoid);
         progressDialog.dismiss();
 
-        NewsFeedAdapter newsFeedAdapter = new NewsFeedAdapter(feedItems,context);
+        NewsFeedAdapter newsFeedAdapter = new NewsFeedAdapter(feedItems);
         recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
         recyclerView.setAdapter(newsFeedAdapter);
     }
@@ -101,8 +93,9 @@ public class ReadRss extends AsyncTask<Void,Void,Void> {
 
     public Document getData(){
         try {
-            url = new URL(address);
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            String address = "http://www.boxofficemojo.com/data/rss.php?file=topstories.xml";
+            URL url = new URL(address);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             InputStream inputStream = connection.getInputStream();
             DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = builderFactory.newDocumentBuilder();

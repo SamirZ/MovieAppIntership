@@ -6,17 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.zsamir.movieappintership.Modules.TvSeries;
+import com.example.zsamir.movieappintership.Modules.TVSeries;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.ViewHolders.TvSeriesViewHolder;
 
 import java.util.ArrayList;
 
 public class TvSeriesAdapter extends RecyclerView.Adapter<TvSeriesViewHolder>{
-    ArrayList<TvSeries> mTvSeries;
+    private ArrayList<TVSeries> mTVSeries;
 
-    public TvSeriesAdapter(ArrayList<TvSeries> mTvSeries) {
-        this.mTvSeries = mTvSeries;
+    public TvSeriesAdapter(ArrayList<TVSeries> mTVSeries) {
+        this.mTVSeries = mTVSeries;
     }
 
     @Override
@@ -27,17 +27,13 @@ public class TvSeriesAdapter extends RecyclerView.Adapter<TvSeriesViewHolder>{
 
     @Override
     public void onBindViewHolder(TvSeriesViewHolder holder, int position) {
-        TvSeries tvSeries = mTvSeries.get(position);
-        holder.bindTvSeries(tvSeries);
+        TVSeries TVSeries = mTVSeries.get(position);
+        holder.bindTvSeries(TVSeries);
     }
 
     @Override
     public int getItemCount() {
-        return mTvSeries.size();
+        return mTVSeries.size();
     }
 
-    public void addItem(TvSeries tvSeries) {
-        mTvSeries.add(0, tvSeries);
-        notifyItemInserted(0);
-    }
 }

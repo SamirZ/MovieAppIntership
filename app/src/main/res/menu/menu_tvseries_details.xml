@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_watchlist_tv"
+        android:title="@string/watchlist"
+        android:icon="@drawable/bookmark_menu"
+        app:showAsAction="always">
+    </item>
+
+    <item
+        android:id="@+id/action_like_tv"
+        android:title="@string/favourites"
+        android:icon="@drawable/like_menu"
+        app:showAsAction="always">
+    </item>
+
+</menu>

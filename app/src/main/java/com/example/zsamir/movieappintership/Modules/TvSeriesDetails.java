@@ -8,7 +8,7 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TvSeriesDetails implements Parcelable {
+public class TVSeriesDetails implements Parcelable {
 
     @SerializedName("backdrop_path")
     @Expose
@@ -397,10 +397,10 @@ public class TvSeriesDetails implements Parcelable {
         dest.writeValue(this.voteCount);
     }
 
-    public TvSeriesDetails() {
+    public TVSeriesDetails() {
     }
 
-    protected TvSeriesDetails(Parcel in) {
+    protected TVSeriesDetails(Parcel in) {
         this.backdropPath = in.readString();
         this.createdBy = in.createTypedArrayList(CreatedBy.CREATOR);
         this.episodeRunTime = new ArrayList<Integer>();
@@ -430,15 +430,15 @@ public class TvSeriesDetails implements Parcelable {
         this.voteCount = (Integer) in.readValue(Integer.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<TvSeriesDetails> CREATOR = new Parcelable.Creator<TvSeriesDetails>() {
+    public static final Parcelable.Creator<TVSeriesDetails> CREATOR = new Parcelable.Creator<TVSeriesDetails>() {
         @Override
-        public TvSeriesDetails createFromParcel(Parcel source) {
-            return new TvSeriesDetails(source);
+        public TVSeriesDetails createFromParcel(Parcel source) {
+            return new TVSeriesDetails(source);
         }
 
         @Override
-        public TvSeriesDetails[] newArray(int size) {
-            return new TvSeriesDetails[size];
+        public TVSeriesDetails[] newArray(int size) {
+            return new TVSeriesDetails[size];
         }
     };
 

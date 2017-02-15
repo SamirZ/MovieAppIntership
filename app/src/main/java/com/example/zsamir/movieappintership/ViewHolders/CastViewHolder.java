@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.zsamir.movieappintership.Common.ActorProfileActivity;
 import com.example.zsamir.movieappintership.Modules.Cast;
-import com.example.zsamir.movieappintership.Modules.Episode;
 import com.example.zsamir.movieappintership.Modules.EpisodeCast;
 import com.example.zsamir.movieappintership.R;
 

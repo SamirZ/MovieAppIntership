@@ -5,18 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.zsamir.movieappintership.Modules.Episode;
 import com.example.zsamir.movieappintership.Modules.Result;
-import com.example.zsamir.movieappintership.Modules.TvSeriesDetails;
 import com.example.zsamir.movieappintership.R;
-import com.example.zsamir.movieappintership.ViewHolders.EpisodeViewHolder;
 import com.example.zsamir.movieappintership.ViewHolders.ResultViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zsami on 19-Jan-17.
- */
 public class SearchResultAdapter extends RecyclerView.Adapter<ResultViewHolder> {
 
     private List<Result> resultsList;

@@ -25,6 +25,8 @@
         android:layout_below="@+id/seasons"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
+        android:paddingRight="10dp"
+        android:paddingEnd="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/season_recycler_view"

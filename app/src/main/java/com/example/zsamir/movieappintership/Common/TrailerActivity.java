@@ -1,18 +1,15 @@
 package com.example.zsamir.movieappintership.Common;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
+import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Modules.Videos;
 import com.example.zsamir.movieappintership.R;
 
-public class TrailerActivity extends AppCompatActivity {
+public class TrailerActivity extends BaseActivity {
 
     String url = "https://www.youtube.com/watch?v=";
     WebView webView;

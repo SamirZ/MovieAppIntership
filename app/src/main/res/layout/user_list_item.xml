@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/colorImageGalleryTwo">
+
+    <ImageView
+        android:layout_marginStart="17.1dp"
+        android:layout_marginLeft="17.1dp"
+        android:layout_marginTop="4dp"
+        android:paddingBottom="4dp"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:id="@+id/result_image"/>
+
+        <RelativeLayout
+            android:layout_toRightOf="@id/result_image"
+            android:layout_toEndOf="@id/result_image"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:textSize="16sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/colorText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/result_name"/>
+
+            <TextView
+                android:textSize="12sp"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/colorMovieItemText"
+                android:layout_below="@+id/result_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:id="@+id/result_date"/>
+
+            <ImageView
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/result_date"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:scaleType="fitXY"
+                android:background="@drawable/star_1_copy_4"
+                android:id="@+id/result_rating_image"/>
+
+            <TextView
+                android:textSize="12sp"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/result_rating_image"
+                android:layout_toEndOf="@id/result_rating_image"
+                android:textColor="@color/colorMovieItemText"
+                android:layout_below="@+id/result_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:id="@+id/result_rating"/>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="@string/remove"
+            android:textColor="@color/colorImageGalleryTwo"
+            android:scaleType="fitXY"
+            android:background="@color/colorAccent"
+            android:id="@+id/delete_item"/>
+
+        <View
+            android:layout_alignParentBottom="true"
+            android:id="@+id/user_list_break_line"
+            android:layout_width="match_parent"
+            android:layout_height="0.7dp"
+            android:layout_marginTop="5dp"
+            android:alpha="0.5"
+            android:background="@color/colorBreakLine" />
+
+</RelativeLayout>

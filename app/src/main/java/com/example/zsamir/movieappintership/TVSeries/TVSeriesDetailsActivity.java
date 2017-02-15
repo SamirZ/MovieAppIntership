@@ -1,10 +1,11 @@
 package com.example.zsamir.movieappintership.TVSeries;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,35 +13,38 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.crashlytics.android.Crashlytics;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.CastAdapter;
 import com.example.zsamir.movieappintership.Adapters.ImageAdapter;
+import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Common.GalleryActivity;
-import com.example.zsamir.movieappintership.Common.TrailerActivity;
+import com.example.zsamir.movieappintership.MovieAppApplication;
+import com.example.zsamir.movieappintership.LoginModules.Favorite;
+import com.example.zsamir.movieappintership.LoginModules.PostResponse;
+import com.example.zsamir.movieappintership.LoginModules.Watchlist;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
 import com.example.zsamir.movieappintership.Modules.Cast;
 import com.example.zsamir.movieappintership.Modules.Credits;
 import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.Season;
-import com.example.zsamir.movieappintership.Modules.TvSeries;
-import com.example.zsamir.movieappintership.Modules.TvSeriesDetails;
+import com.example.zsamir.movieappintership.Modules.TVSeries;
+import com.example.zsamir.movieappintership.Modules.TVSeriesDetails;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.Common.RatingActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import io.fabric.sdk.android.Fabric;
 
-// TO DO
+public class TVSeriesDetailsActivity extends BaseActivity {
 
-public class TVSeriesDetailsActivity extends AppCompatActivity {
-
-    TvSeries mTVSeries;
-    TvSeriesDetails mTVSeriesDetails;
+    TVSeries mTVSeries;
+    TVSeriesDetails mTVSeriesDetails;
     Credits mCredits;
     Images mTVSeriesImages = new Images();
+    private boolean liked = false;
+    private boolean watchlist = false;
 
     List<Season> seasons = new ArrayList<>();
     ArrayList<Cast> actors = new ArrayList<>();
@@ -63,6 +67,7 @@ public class TVSeriesDetailsActivity extends AppCompatActivity {
             mImageAdapter = new ImageAdapter(backdrops, mTVSeries);
         }
 
+
         setDetailedData();
         setKnowData();
 
@@ -75,6 +80,21 @@ public class TVSeriesDetailsActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mCastRecyclerView.setLayoutManager(layoutManager);
         mCastRecyclerView.setAdapter(mCastAdapter);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    recreate();
+                    // TO DO
+                    // UPDATE RESULT
+                }
+            });
+        }
     }
 
     private void setKnowData() {
@@ -129,7 +149,7 @@ public class TVSeriesDetailsActivity extends AppCompatActivity {
         ApiHandler apiHandler = ApiHandler.getInstance();
         apiHandler.requestTVSeriesDetails(mTVSeries.getId(), new ApiHandler.TvSeriesDetailsListener() {
             @Override
-            public void success(TvSeriesDetails response) {
+            public void success(TVSeriesDetails response) {
 
                 mTVSeriesDetails = response;
 
@@ -169,8 +189,28 @@ public class TVSeriesDetailsActivity extends AppCompatActivity {
                 TextView mRating2 = (TextView) findViewById(R.id.tv_series_details_rating_2);
                 if(response.getVoteAverage()!=null){
                     mRating.setText(String.format(Locale.getDefault(),"%1$.1f",response.getVoteAverage()));
-                    mRating2.setText(" /10");
+                    mRating2.setText(getString(R.string.max_rating));
                 }
+
+                ImageView rateImage = (ImageView) findViewById(R.id.tv_series_details_star_image);
+                TextView rateText = (TextView) findViewById(R.id.tv_series_details_rating_3);
+
+                View.OnClickListener onClickListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(MovieAppApplication.isUserLoggedIn()){
+                            Intent i = new Intent(TVSeriesDetailsActivity.this, RatingActivity.class);
+                            i.putExtra("TV",mTVSeries);
+                            startActivityForResult(i,1);
+                        }else{
+                            showLoginDialog();
+                        }
+                    }
+                };
+
+                rateImage.setOnClickListener(onClickListener);
+                rateText.setOnClickListener(onClickListener);
+
 
                 TextView mTVSeriesWritersLablel = (TextView) findViewById(R.id.tv_series_details_writers_1);
                 TextView mTVSeriesWriters = (TextView) findViewById(R.id.tv_series_details_writers_2);
@@ -285,7 +325,23 @@ public class TVSeriesDetailsActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_movie_details, menu);
+        getMenuInflater().inflate(R.menu.menu_tvseries_details, menu);
+
+        if(MovieAppApplication.isUserLoggedIn()){
+            if(MovieAppApplication.getUser().getFavTVSeriesList()!=null)
+                if(MovieAppApplication.getUser().getFavTVSeriesList().contains(mTVSeries.getId())){
+                    MenuItem item = menu.findItem(R.id.action_like_tv);
+                    item.setIcon(ContextCompat.getDrawable(this,R.drawable.like_filled_menu));
+                    liked = true;
+                }
+
+            if(MovieAppApplication.getUser().getWatchlistTVSeriesList()!=null)
+                if(MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(mTVSeries.getId())){
+                    MenuItem item = menu.findItem(R.id.action_watchlist_tv);
+                    item.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_filled_menu));
+                    watchlist = true;
+                }
+        }
         return true;
     }
 
@@ -295,6 +351,84 @@ public class TVSeriesDetailsActivity extends AppCompatActivity {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                return true;
+            case R.id.action_like_tv:
+                if(!liked && MovieAppApplication.isUserLoggedIn()){
+                    menuItem.setIcon(ContextCompat.getDrawable(this,R.drawable.like_filled_menu));
+                    if(!MovieAppApplication.getUser().getFavTVSeriesList().contains(mTVSeries.getId())){
+                        MovieAppApplication.getUser().addToFavoriteTVSeriesList(mTVSeries.getId());
+
+                        ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
+                                MovieAppApplication.getUser().getSessionId(),
+                                new Favorite("tv",mTVSeries.getId(),true),
+                                new ApiHandler.PostResponseListener() {
+                                    @Override
+                                    public void success(PostResponse response) {
+                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
+                                        Log.d("RESPONSE", response.statusMessage);
+                                    }
+                                });
+                    }
+                    liked = true;
+                }else if(liked && MovieAppApplication.isUserLoggedIn()){
+                    menuItem.setIcon(ContextCompat.getDrawable(this,R.drawable.like_menu));
+                    if(MovieAppApplication.getUser().getFavTVSeriesList().contains(mTVSeries.getId())){
+                        MovieAppApplication.getUser().removeFromFavoriteTVSeriesList(mTVSeries.getId());
+
+                        ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
+                                MovieAppApplication.getUser().getSessionId(),
+                                new Favorite("tv",mTVSeries.getId(),false),
+                                new ApiHandler.PostResponseListener() {
+                                    @Override
+                                    public void success(PostResponse response) {
+                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
+                                        Log.d("RESPONSE", response.statusMessage);
+                                    }
+                                });
+                    }
+                    liked = false;
+                }else if(!MovieAppApplication.isUserLoggedIn()){
+                        showLoginDialog();
+                }
+                return true;
+            case R.id.action_watchlist_tv:
+                if(!watchlist && MovieAppApplication.isUserLoggedIn()){
+                    menuItem.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_filled_menu));
+                    if(!MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(mTVSeries.getId())){
+                        MovieAppApplication.getUser().addToWatchlistTVSeriesList(mTVSeries.getId());
+
+                        ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
+                                MovieAppApplication.getUser().getSessionId(),
+                                new Watchlist("tv",mTVSeries.getId(),true),
+                                new ApiHandler.PostResponseListener() {
+                                    @Override
+                                    public void success(PostResponse response) {
+                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
+                                        Log.d("RESPONSE", response.statusMessage);
+                                    }
+                                });
+                    }
+                    watchlist = true;
+                }else if(watchlist && MovieAppApplication.isUserLoggedIn()){
+                    menuItem.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_menu));
+                    if(MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(mTVSeries.getId())){
+                        MovieAppApplication.getUser().removeFromWatchlistTVSeriesList(mTVSeries.getId());
+
+                        ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
+                                MovieAppApplication.getUser().getSessionId(),
+                                new Watchlist("tv",mTVSeries.getId(),false),
+                                new ApiHandler.PostResponseListener() {
+                                    @Override
+                                    public void success(PostResponse response) {
+                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
+                                        Log.d("RESPONSE", response.statusMessage);
+                                    }
+                                });
+                    }
+                    watchlist = false;
+                }else if(!MovieAppApplication.isUserLoggedIn()){
+                    showLoginDialog();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(menuItem);

@@ -38,14 +38,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/favourites"
+        android:id="@+id/favorites"
         android:background="@color/colorNavBar"
         android:clickable="true">
 
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:background="@drawable/like"
+            android:background="@drawable/like_filled"
             android:id="@+id/favourites_icon"
             android:layout_marginLeft="25dp"
             android:layout_marginStart="25dp"
@@ -83,7 +83,7 @@
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:background="@drawable/bookmark_black_tool_symbol"
+            android:background="@drawable/bookmark_filled"
             android:id="@+id/your_watchlist_icon"
             android:layout_marginLeft="25dp"
             android:layout_marginStart="25dp"

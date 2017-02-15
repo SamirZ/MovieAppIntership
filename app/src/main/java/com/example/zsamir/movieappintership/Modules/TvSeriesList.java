@@ -4,11 +4,11 @@ package com.example.zsamir.movieappintership.Modules;
 import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TvSeriesList implements Parcelable
+public class TVSeriesList implements Parcelable
 {
 
     @SerializedName("page")
@@ -16,30 +16,30 @@ public class TvSeriesList implements Parcelable
     private int page;
     @SerializedName("results")
     @Expose
-    private List<TvSeries> tvSeries = null;
+    private List<TVSeries> TVSeries = null;
     @SerializedName("total_results")
     @Expose
     private int totalResults;
     @SerializedName("total_pages")
     @Expose
     private int totalPages;
-    public final static Parcelable.Creator<TvSeriesList> CREATOR = new Creator<TvSeriesList>() {
+    public final static Parcelable.Creator<TVSeriesList> CREATOR = new Creator<TVSeriesList>() {
 
 
         @SuppressWarnings({
                 "unchecked"
         })
-        public TvSeriesList createFromParcel(Parcel in) {
-            TvSeriesList instance = new TvSeriesList();
+        public TVSeriesList createFromParcel(Parcel in) {
+            TVSeriesList instance = new TVSeriesList();
             instance.page = ((int) in.readValue((int.class.getClassLoader())));
-            in.readList(instance.tvSeries, (TvSeries.class.getClassLoader()));
+            in.readList(instance.TVSeries, (TVSeries.class.getClassLoader()));
             instance.totalResults = ((int) in.readValue((int.class.getClassLoader())));
             instance.totalPages = ((int) in.readValue((int.class.getClassLoader())));
             return instance;
         }
 
-        public TvSeriesList[] newArray(int size) {
-            return (new TvSeriesList[size]);
+        public TVSeriesList[] newArray(int size) {
+            return (new TVSeriesList[size]);
         }
 
     }
@@ -53,12 +53,12 @@ public class TvSeriesList implements Parcelable
         this.page = page;
     }
 
-    public List<TvSeries> getTvSeries() {
-        return tvSeries;
+    public List<TVSeries> getTVSeries() {
+        return TVSeries;
     }
 
-    public void setTvSeries(List<TvSeries> results) {
-        this.tvSeries = results;
+    public void setTVSeries(List<TVSeries> results) {
+        this.TVSeries = results;
     }
 
     public int getTotalResults() {
@@ -79,7 +79,7 @@ public class TvSeriesList implements Parcelable
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(page);
-        dest.writeList(tvSeries);
+        dest.writeList(TVSeries);
         dest.writeValue(totalResults);
         dest.writeValue(totalPages);
     }

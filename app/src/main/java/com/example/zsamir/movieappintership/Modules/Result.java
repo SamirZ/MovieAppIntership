@@ -1,7 +1,5 @@
 package com.example.zsamir.movieappintership.Modules;
 
-import java.util.Arrays;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -53,9 +51,9 @@ public class Result {
         return null;
     }
 
-    public TvSeries toTvSeries(){
+    public TVSeries toTvSeries(){
         if(mediaType.equalsIgnoreCase("tv"))
-            return new TvSeries(posterPath,backdropPath,voteAverage,overview,firstAirDate,genreIds,name,id);
+            return new TVSeries(posterPath,backdropPath,voteAverage,overview,firstAirDate,genreIds,name,id);
         return null;
     }
 
@@ -70,5 +68,21 @@ public class Result {
                 ", releaseDate='" + releaseDate + '\'' +
                 ", title='" + title + '\'' +
                 '}';
+    }
+
+    public Result(String posterPath, Integer id, String overview, String backdropPath, float voteAverage, String mediaType, String firstAirDate, int[] genreIds, Integer voteCount, String name, String releaseDate, String title, String profilePath) {
+        this.posterPath = posterPath;
+        this.id = id;
+        this.overview = overview;
+        this.backdropPath = backdropPath;
+        this.voteAverage = voteAverage;
+        this.mediaType = mediaType;
+        this.firstAirDate = firstAirDate;
+        this.genreIds = genreIds;
+        this.voteCount = voteCount;
+        this.name = name;
+        this.releaseDate = releaseDate;
+        this.title = title;
+        this.profilePath = profilePath;
     }
 }

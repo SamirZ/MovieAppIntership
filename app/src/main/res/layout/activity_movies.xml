@@ -73,7 +73,7 @@ tools:openDrawer="start">
             android:layout_gravity="bottom"
             android:layout_width="match_parent"
             android:layout_marginBottom="@dimen/bottom_navigation_height"
-            android:layout_height="5dp"
+            android:layout_height="8dp"
             android:background="@drawable/gradient_shadow_reverse" />
 
         <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
@@ -81,7 +81,6 @@ tools:openDrawer="start">
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_navigation_height"
             android:layout_gravity="bottom"/>
-
     </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView

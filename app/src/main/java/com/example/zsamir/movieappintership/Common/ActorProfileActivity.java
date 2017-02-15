@@ -1,8 +1,6 @@
 package com.example.zsamir.movieappintership.Common;
 
-import android.content.Intent;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,10 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.crashlytics.android.Crashlytics;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.ActorMovieAdapter;
-import com.example.zsamir.movieappintership.Adapters.MovieAdapter;
+import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Modules.Actor;
 import com.example.zsamir.movieappintership.Modules.Cast;
 import com.example.zsamir.movieappintership.Modules.EpisodeCast;
@@ -26,13 +23,10 @@ import com.example.zsamir.movieappintership.Modules.MovieList;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.Widgets.ExpandableTextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
-import io.fabric.sdk.android.Fabric;
 
-public class ActorProfileActivity extends AppCompatActivity {
+public class ActorProfileActivity extends BaseActivity {
 
     Actor mActor;
     Cast cast;
@@ -95,8 +89,8 @@ public class ActorProfileActivity extends AppCompatActivity {
         LinearLayout mDateOfBirth = (LinearLayout)findViewById(R.id.actor_details_date_of_birth);
         if(mActor.getBirthday()!=null && mActor.getPlaceOfBirth()!=null) {
             if(getDate(mActor.getBirthday()).length()>1)
-                mActorDateOfBirth.setText(getDate(mActor.getBirthday())+", ");
-            mActorDateOfBirth.append(mActor.getPlaceOfBirth());
+                mActorDateOfBirth.setText(getDate(mActor.getBirthday()));
+            mActorDateOfBirth.append(", "+mActor.getPlaceOfBirth());
         }else {
             mDateOfBirth.setVisibility(View.GONE);
         }

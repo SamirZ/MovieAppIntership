@@ -1,19 +1,16 @@
 package com.example.zsamir.movieappintership.Common;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.SearchResultAdapter;
+import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Modules.Result;
 import com.example.zsamir.movieappintership.Modules.SearchResult;
 import com.example.zsamir.movieappintership.R;
@@ -21,11 +18,12 @@ import com.example.zsamir.movieappintership.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends BaseActivity {
 
     List<Result> resultList = new ArrayList<>();
     SearchResultAdapter mResultAdapter = new SearchResultAdapter(resultList);
     RecyclerView recyclerView;
+    String query = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +35,14 @@ public class SearchActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mResultAdapter);
+        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(layoutManager ) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                //if(page+1<=numberOfPages)
+                searchForDataLoop(query,page);
+            }
+        };
+        recyclerView.addOnScrollListener(scrollListener);
 
     }
 
@@ -52,8 +58,13 @@ public class SearchActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(final String query) {
+                if(!query.equalsIgnoreCase(SearchActivity.this.query)){
+                    resultList.clear();
+                    mResultAdapter.notifyDataSetChanged();
+                    SearchActivity.this.query = query;
+                    searchForData(query,1);
+                }
 
-                searchForData(query,1);
                 //
                 return false;
             }
@@ -81,8 +92,24 @@ public class SearchActivity extends AppCompatActivity {
         ApiHandler.getInstance().requestSearch(query, page, new ApiHandler.SearchResultListener() {
             @Override
             public void success(SearchResult response) {
-                resultList.clear();
-                recyclerView.removeAllViews();
+                resultList.addAll(response.results);
+                for (int i=0;i<resultList.size();i++){
+                    if(resultList.get(i).mediaType.equalsIgnoreCase("person")){
+                        resultList.remove(i);
+                    }
+                }
+                mResultAdapter.notifyDataSetChanged();
+            }
+        });
+
+    }
+
+    private void searchForDataLoop(String query,int page) {
+
+        if(page>1)
+        ApiHandler.getInstance().requestSearch(query, page, new ApiHandler.SearchResultListener() {
+            @Override
+            public void success(SearchResult response) {
                 resultList.addAll(response.results);
                 for (int i=0;i<resultList.size();i++){
                     if(resultList.get(i).mediaType.equalsIgnoreCase("person")){

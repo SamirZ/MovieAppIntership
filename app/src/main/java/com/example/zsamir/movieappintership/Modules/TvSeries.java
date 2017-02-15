@@ -8,7 +8,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TvSeries implements Parcelable {
+public class TVSeries implements Parcelable {
 
     @SerializedName("poster_path")
     @Expose
@@ -49,6 +49,13 @@ public class TvSeries implements Parcelable {
     @SerializedName("original_name")
     @Expose
     private String originalName;
+    @SerializedName("rating")
+    @Expose
+    private int rating;
+
+    public int getRating() {
+        return rating;
+    }
 
 
     public String getBackdropPath() {
@@ -261,12 +268,13 @@ public class TvSeries implements Parcelable {
         dest.writeInt(this.numOfBackdrops);
         dest.writeInt(this.lastLoadedBackdrop);
         dest.writeTypedList(this.backdropList);
+        dest.writeInt(this.rating);
     }
 
-    public TvSeries() {
+    public TVSeries() {
     }
 
-    public TvSeries(String posterPath, String backdropPath, float voteAverage, String overview, String firstAirDate, int[] genreIds, String name, int id) {
+    public TVSeries(String posterPath, String backdropPath, float voteAverage, String overview, String firstAirDate, int[] genreIds, String name, int id) {
         this.posterPath = posterPath;
         this.backdropPath = backdropPath;
         this.voteAverage = voteAverage;
@@ -277,7 +285,7 @@ public class TvSeries implements Parcelable {
         this.id = id;
     }
 
-    protected TvSeries(Parcel in) {
+    protected TVSeries(Parcel in) {
         this.posterPath = in.readString();
         this.popularity = in.readFloat();
         this.id = in.readInt();
@@ -294,17 +302,18 @@ public class TvSeries implements Parcelable {
         this.numOfBackdrops = in.readInt();
         this.lastLoadedBackdrop = in.readInt();
         this.backdropList = in.createTypedArrayList(Backdrop.CREATOR);
+        this.rating = in.readInt();
     }
 
-    public static final Creator<TvSeries> CREATOR = new Creator<TvSeries>() {
+    public static final Creator<TVSeries> CREATOR = new Creator<TVSeries>() {
         @Override
-        public TvSeries createFromParcel(Parcel source) {
-            return new TvSeries(source);
+        public TVSeries createFromParcel(Parcel source) {
+            return new TVSeries(source);
         }
 
         @Override
-        public TvSeries[] newArray(int size) {
-            return new TvSeries[size];
+        public TVSeries[] newArray(int size) {
+            return new TVSeries[size];
         }
     };
 }

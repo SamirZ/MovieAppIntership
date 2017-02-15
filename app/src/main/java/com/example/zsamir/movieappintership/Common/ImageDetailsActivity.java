@@ -1,37 +1,26 @@
 package com.example.zsamir.movieappintership.Common;
 
-import android.content.Context;
-import android.os.Parcelable;
 import android.support.v4.view.GestureDetectorCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.crashlytics.android.Crashlytics;
-import com.example.zsamir.movieappintership.API.ApiHandler;
+import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
-import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.Modules.TvSeries;
+import com.example.zsamir.movieappintership.Modules.TVSeries;
 import com.example.zsamir.movieappintership.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import io.fabric.sdk.android.Fabric;
-
-public class ImageDetailsActivity extends AppCompatActivity {
+public class ImageDetailsActivity extends BaseActivity {
 
     Movie mMovie;
-    TvSeries mTVSeries;
+    TVSeries mTVSeries;
     ImageView movieImage;
     TextView movieImageNumber;
     TextView movieName;
@@ -93,11 +82,12 @@ public class ImageDetailsActivity extends AppCompatActivity {
                     }
                     if(imageNumber>=0){
                         movieImageNumber.setText((imageNumber+1)+" of "+imageCount);
-                        if(mMovie!=null)
+                        if(mMovie!=null) {
                             Glide.with(imageDetailsActivity).load(mMovie.backdropList.get(imageNumber).getBackdropSizeW780()).into(movieImage);
-                        if(mTVSeries!=null)
+                        }
+                        if(mTVSeries!=null) {
                             Glide.with(imageDetailsActivity).load(mTVSeries.backdropList.get(imageNumber).getBackdropSizeW780()).into(movieImage);
-
+                        }
                     }
                 }
 

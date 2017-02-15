@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.TextView;
 
 import com.example.zsamir.movieappintership.R;
@@ -42,21 +41,17 @@ public class ExpandableTextView extends TextView {
     @Override
     public void setText(CharSequence text, BufferType type) {
         originalText = text;
-        trimmedText = getTrimmedText(text);
+        trimmedText = getTrimmedText();
         bufferType = type;
         setText();
     }
 
-    private CharSequence getTrimmedText(CharSequence text) {
+    private CharSequence getTrimmedText() {
         if (originalText != null && originalText.length() > trimLength) {
             return new SpannableStringBuilder(originalText, 0, trimLength + 1).append(ELLIPSIS);
         } else {
             return originalText;
         }
-    }
-
-    public CharSequence getOriginalText() {
-        return originalText;
     }
 
     public int getOriginalTextSize(){
@@ -65,11 +60,8 @@ public class ExpandableTextView extends TextView {
 
     public void setTrimLength(int trimLength) {
         this.trimLength = trimLength;
-        trimmedText = getTrimmedText(originalText);
+        trimmedText = getTrimmedText();
         setText();
     }
 
-    public int getTrimLength() {
-        return trimLength;
-    }
 }

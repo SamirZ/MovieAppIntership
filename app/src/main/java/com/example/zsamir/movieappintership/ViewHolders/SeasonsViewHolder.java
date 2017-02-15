@@ -1,15 +1,9 @@
 package com.example.zsamir.movieappintership.ViewHolders;
 
-import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.zsamir.movieappintership.Adapters.SeasonsAdapter;
 import com.example.zsamir.movieappintership.R;
-import com.example.zsamir.movieappintership.TVSeries.SeasonActivity;
 
 public class SeasonsViewHolder extends RecyclerView.ViewHolder{
 
@@ -34,7 +28,7 @@ public class SeasonsViewHolder extends RecyclerView.ViewHolder{
         num = (TextView)itemView.findViewById(R.id.season_name);
     }
 
-    public void bindSeason(String seasons, String year, Context context) {
+    public void bindSeason(String seasons, String year) {
         seasonNum = seasons;
         this.year = year;
         num.setText(seasonNum);

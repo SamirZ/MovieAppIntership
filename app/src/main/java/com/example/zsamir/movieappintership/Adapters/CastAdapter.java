@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.Modules.Cast;
-import com.example.zsamir.movieappintership.Modules.Episode;
 import com.example.zsamir.movieappintership.Modules.EpisodeCast;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.ViewHolders.CastViewHolder;
@@ -15,8 +14,8 @@ import java.util.ArrayList;
 
 public class CastAdapter extends RecyclerView.Adapter<CastViewHolder> {
 
-    ArrayList<Cast> mCast;
-    ArrayList<EpisodeCast> mEpisodeCast;
+    private ArrayList<Cast> mCast;
+    private ArrayList<EpisodeCast> mEpisodeCast;
 
     public CastAdapter(ArrayList<Cast> mCast) {
         this.mCast = mCast;

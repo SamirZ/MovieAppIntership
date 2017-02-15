@@ -8,9 +8,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.example.zsamir.movieappintership.Common.ImageDetailsActivity;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
-import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.Modules.TvSeries;
+import com.example.zsamir.movieappintership.Modules.TVSeries;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public class DetailsImagesViewHolder extends RecyclerView.ViewHolder implements 
     private List<Backdrop> backdropList;
     private ImageView mMovieImage;
     private Movie movie;
-    private TvSeries tvSeries;
+    private TVSeries TVSeries;
     private Backdrop backdrop;
 
     public DetailsImagesViewHolder(View itemView) {
@@ -38,9 +37,9 @@ public class DetailsImagesViewHolder extends RecyclerView.ViewHolder implements 
         Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
     }
 
-    public void bindImage(Backdrop backdrop , TvSeries tvSeries, List<Backdrop> backdropList){
+    public void bindImage(Backdrop backdrop , TVSeries TVSeries, List<Backdrop> backdropList){
         this.backdrop = backdrop;
-        this.tvSeries = tvSeries;
+        this.TVSeries = TVSeries;
         this.backdropList = backdropList;
         if(backdrop.getBackdropSizeW300()!=null)
         Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
@@ -67,8 +66,8 @@ public class DetailsImagesViewHolder extends RecyclerView.ViewHolder implements 
 
             view.getContext().startActivity(i);
         }
-        if(tvSeries!=null) {
-            TvSeries sendTVSeries = tvSeries;
+        if(TVSeries !=null) {
+            TVSeries sendTVSeries = TVSeries;
 
             sendTVSeries.numOfBackdrops = backdropList.size();
             sendTVSeries.lastLoadedBackdrop = findBackdropInList();
@@ -83,7 +82,7 @@ public class DetailsImagesViewHolder extends RecyclerView.ViewHolder implements 
         }
     }
 
-    public int findBackdropInList(){
+    private int findBackdropInList(){
         return backdropList.indexOf(backdrop);
     }
 

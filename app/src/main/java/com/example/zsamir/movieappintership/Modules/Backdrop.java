@@ -8,9 +8,6 @@ import com.google.gson.annotations.SerializedName;
 public class Backdrop implements Parcelable
 {
 
-    @SerializedName("aspect_ratio")
-    @Expose
-    private float aspectRatio;
 
     public String getFilePath() {
         return filePath;
@@ -19,21 +16,7 @@ public class Backdrop implements Parcelable
     @SerializedName("file_path")
     @Expose
     private String filePath;
-    @SerializedName("height")
-    @Expose
-    private int height;
-    @SerializedName("iso_639_1")
-    @Expose
-    private String iso6391;
-    @SerializedName("vote_average")
-    @Expose
-    private float voteAverage;
-    @SerializedName("vote_count")
-    @Expose
-    private int voteCount;
-    @SerializedName("width")
-    @Expose
-    private int width;
+
 
     public static final Parcelable.Creator<Backdrop> CREATOR = new Parcelable.Creator<Backdrop>() {
         public Backdrop createFromParcel(Parcel source) {

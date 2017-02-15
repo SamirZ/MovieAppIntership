@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,7 @@ import com.example.zsamir.movieappintership.API.ApiHandler;
 
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
 import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
-import com.example.zsamir.movieappintership.Modules.TvSeries;
-import com.example.zsamir.movieappintership.Modules.TvSeriesList;
+import com.example.zsamir.movieappintership.Modules.TVSeries;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
@@ -22,9 +20,9 @@ import java.util.ArrayList;
 public class HighestRatedTVSeriesFragment extends Fragment {
 
     private static HighestRatedTVSeriesFragment instance = null;
-    ArrayList<TvSeries> tvSeriesList = new ArrayList<>();
+    ArrayList<TVSeries> TVSeriesList = new ArrayList<>();
     ApiHandler movieDbApi = ApiHandler.getInstance();
-    TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(tvSeriesList);
+    TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(TVSeriesList);
     int numberOfPages;
 
     public HighestRatedTVSeriesFragment() {
@@ -38,6 +36,12 @@ public class HighestRatedTVSeriesFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mTvSeriesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_highest_rated_tvseries, container, false);
@@ -48,10 +52,10 @@ public class HighestRatedTVSeriesFragment extends Fragment {
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        if(tvSeriesList.size()==0)
+        if(TVSeriesList.size()==0)
             loadTopRatedTvSeries(1);
         else{
-            tvSeriesList.clear();
+            TVSeriesList.clear();
             loadTopRatedTvSeries(1);
             mTvSeriesAdapter.notifyDataSetChanged();
         }
@@ -72,14 +76,14 @@ public class HighestRatedTVSeriesFragment extends Fragment {
     private void loadTopRatedTvSeries(int page) {
         movieDbApi.requestHighestRatedTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
-            public void success(TvSeriesList response) {
+            public void success(com.example.zsamir.movieappintership.Modules.TVSeriesList response) {
                 numberOfPages = response.getTotalPages();
                 // addition
-                for (TvSeries t: response.getTvSeries()) {
-                    if(!tvSeriesList.contains(t))
-                        tvSeriesList.add(t);
+                for (TVSeries t: response.getTVSeries()) {
+                    if(!TVSeriesList.contains(t))
+                        TVSeriesList.add(t);
                 }
-                //tvSeriesList.addAll(response.getTvSeries());
+                //TVSeriesList.addAll(response.getTVSeries());
                 mTvSeriesAdapter.notifyDataSetChanged();
             }
         });

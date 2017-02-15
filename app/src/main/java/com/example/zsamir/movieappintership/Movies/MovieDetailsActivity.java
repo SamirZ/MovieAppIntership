@@ -1,10 +1,11 @@
 package com.example.zsamir.movieappintership.Movies;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,12 +13,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.crashlytics.android.Crashlytics;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.CastAdapter;
 import com.example.zsamir.movieappintership.Adapters.ImageAdapter;
 import com.example.zsamir.movieappintership.Adapters.ReviewAdapter;
+import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Common.GalleryActivity;
+import com.example.zsamir.movieappintership.MovieAppApplication;
+import com.example.zsamir.movieappintership.LoginModules.Favorite;
+import com.example.zsamir.movieappintership.LoginModules.PostResponse;
+import com.example.zsamir.movieappintership.LoginModules.Watchlist;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
 import com.example.zsamir.movieappintership.Modules.Cast;
 import com.example.zsamir.movieappintership.Modules.Crew;
@@ -28,19 +33,20 @@ import com.example.zsamir.movieappintership.Modules.MovieDetails;
 import com.example.zsamir.movieappintership.Modules.MovieReview;
 import com.example.zsamir.movieappintership.Modules.MovieReviews;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.Common.RatingActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import io.fabric.sdk.android.Fabric;
-
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsActivity extends BaseActivity {
 
     Movie mMovie;
     Credits mCredits;
     Images mMovieImages = new Images();
     MovieReviews mMovieReviews = new MovieReviews();
+    private boolean liked = false;
+    private boolean watchlist = false;
 
     Crew director;
     ArrayList<Crew> writers = new ArrayList<>();
@@ -48,8 +54,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
     List<MovieReview> reviewList = new ArrayList<>();
     ArrayList<Backdrop> backdrops = new ArrayList<>();
     CastAdapter mCastAdapter = new CastAdapter(actors);
-    ReviewAdapter mReviewAdapter = new ReviewAdapter(reviewList);;
+    ReviewAdapter mReviewAdapter = new ReviewAdapter(reviewList);
     ImageAdapter mImageAdapter;
+
     // Genre ids sometimes empty take care of that
 
     @Override
@@ -94,27 +101,35 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
                 TextView mMovieDirectorLabel = (TextView) findViewById(R.id.movie_details_director_1);
                 TextView mMovieDirector = (TextView) findViewById(R.id.movie_details_director_2);
-                if(mCredits.crew!=null) {
-                    for (Crew c : mCredits.crew) {
-                        if (c.department.equals("Directing")) {
-                            director = c;
-                            mMovieDirector.setText(director.name);
-                        }
-                        if (c.department.equals("Writing")) {
-                            writers.add(c);
-                        }
-                    }
-                    TextView mMovieWritersLabel = (TextView) findViewById(R.id.movie_details_writers_1);
-                    TextView mMovieWriters = (TextView) findViewById(R.id.movie_details_writers_2);
-                    if (writers.size() > 2)
-                        mMovieWriters.setText(writers.get(0).name + ", " + writers.get(1).name + ", " + writers.get(2).name);
-                    else {
-                        if (!writers.isEmpty())
-                            mMovieWriters.setText(writers.get(0).name);
-                        else{
-                            mMovieWriters.setVisibility(View.GONE);
-                            mMovieWritersLabel.setVisibility(View.GONE);
+                TextView mMovieWritersLabel = (TextView) findViewById(R.id.movie_details_writers_1);
+                TextView mMovieWriters = (TextView) findViewById(R.id.movie_details_writers_2);
 
+                if(mCredits.crew!=null) {
+                    if(mCredits.crew.size()<1){
+                        mMovieDirector.setVisibility(View.GONE);
+                        mMovieDirectorLabel.setVisibility(View.GONE);
+                        mMovieWriters.setVisibility(View.GONE);
+                        mMovieWritersLabel.setVisibility(View.GONE);
+                    }else{
+                        for (Crew c : mCredits.crew) {
+                            if (c.department.equals("Directing")) {
+                                director = c;
+                                mMovieDirector.setText(director.name);
+                            }
+                            if (c.department.equals("Writing")) {
+                                writers.add(c);
+                            }
+                        }
+                        if (writers.size() > 2)
+                            mMovieWriters.setText(writers.get(0).name + ", " + writers.get(1).name + ", " + writers.get(2).name);
+                        else {
+                            if (!writers.isEmpty())
+                                mMovieWriters.setText(writers.get(0).name);
+                            else{
+                                mMovieWriters.setVisibility(View.GONE);
+                                mMovieWritersLabel.setVisibility(View.GONE);
+
+                            }
                         }
                     }
                 }else{
@@ -136,6 +151,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     }else{
                         movieDetailsCastLabel.setVisibility(View.GONE);
                         movieDetailsCastBreaklinne.setVisibility(View.GONE);
+                        mMovieStars.setVisibility(View.GONE);
+                        mMovieStarsLabel.setVisibility(View.GONE);
                     }
                 if(actors.size()>0) {
                     for(int i=0;i<actors.size() && i<3;i++){
@@ -168,8 +185,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         });
 
         final TextView reviews = (TextView) findViewById(R.id.movie_reviews);
-        final View breakline = (View) findViewById(R.id.review_breakline);
-;
+        final View breakline = findViewById(R.id.review_breakline);
         apiHandler.requestMovieReviews(mMovie.getId(), new ApiHandler.MovieReviewsListener() {
             @Override
             public void success(MovieReviews response) {
@@ -214,7 +230,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if(mMovie.getMovieGenres().size()>0)
             mMovieGenre.setText(mMovie.getMovieGenres().get(0));
         else
-            mMovieGenre.setText("Not Sorted");
+            mMovieGenre.setText(getString(R.string.not_sorted));
 
         TextView seeMovieGallery = (TextView) findViewById(R.id.see_all);
         seeMovieGallery.setOnClickListener(new View.OnClickListener() {
@@ -233,7 +249,27 @@ public class MovieDetailsActivity extends AppCompatActivity {
         TextView mRating = (TextView) findViewById(R.id.movie_details_rating_1);
         TextView mRating2 = (TextView) findViewById(R.id.movie_details_rating_2);
         mRating.setText(String.format(Locale.getDefault(),"%1$.1f",mMovie.getVoteAverage()));
-        mRating2.setText(" /10");
+        mRating2.setText(getString(R.string.max_rating));
+
+        ImageView rateImage = (ImageView) findViewById(R.id.movie_details_star_image);
+        TextView rateText = (TextView) findViewById(R.id.movie_details_rating_3);
+
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MovieAppApplication.isUserLoggedIn()){
+                    Intent i = new Intent(MovieDetailsActivity.this, RatingActivity.class);
+                    i.putExtra("MOVIE",mMovie);
+                    startActivityForResult(i,1);
+                }else{
+                    showLoginDialog();
+                }
+            }
+        };
+
+        rateImage.setOnClickListener(onClickListener);
+        rateText.setOnClickListener(onClickListener);
+
 
         RecyclerView mReviewRecyclerView = (RecyclerView) findViewById(R.id.reviews_recyclerView);
         LinearLayoutManager layoutManagerReview = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -254,9 +290,40 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    recreate();
+                    // TO DO
+                    // UPDATE RESULT
+                }
+            });
+        }
+    }
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_movie_details, menu);
+
+        if(MovieAppApplication.isUserLoggedIn()){
+            if(MovieAppApplication.getUser().getFavMovieList()!=null)
+                if(MovieAppApplication.getUser().getFavMovieList().contains(mMovie.getId())){
+                    MenuItem item = menu.findItem(R.id.action_like_movie);
+                    item.setIcon(ContextCompat.getDrawable(this,R.drawable.like_filled_menu));
+                    liked = true;
+                }
+            if(MovieAppApplication.getUser().getWatchlistMovieList()!=null)
+                if(MovieAppApplication.getUser().getWatchlistMovieList().contains(mMovie.getId())){
+                    MenuItem item = menu.findItem(R.id.action_watchlist_movie);
+                    item.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_filled_menu));
+                    watchlist = true;
+                }
+        }
         return true;
     }
 
@@ -265,6 +332,84 @@ public class MovieDetailsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.action_like_movie:
+                if(!liked && MovieAppApplication.isUserLoggedIn()){
+                    item.setIcon(ContextCompat.getDrawable(this,R.drawable.like_filled_menu));
+                    if(!MovieAppApplication.getUser().getFavMovieList().contains(mMovie.getId())){
+                        MovieAppApplication.getUser().addToFavoriteMoviesList(mMovie.getId());
+
+                        ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
+                                MovieAppApplication.getUser().getSessionId(),
+                                new Favorite("movie",mMovie.getId(),true),
+                                new ApiHandler.PostResponseListener() {
+                                    @Override
+                                    public void success(PostResponse response) {
+                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
+                                        Log.d("RESPONSE", response.statusMessage);
+                                    }
+                                });
+                    }
+                    liked = true;
+                }else if(liked && MovieAppApplication.isUserLoggedIn()){
+                    item.setIcon(ContextCompat.getDrawable(this,R.drawable.like_menu));
+                    if(MovieAppApplication.getUser().getFavMovieList().contains(mMovie.getId())){
+                        MovieAppApplication.getUser().removeFromFavoriteMovieList(mMovie.getId());
+
+                        ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
+                                MovieAppApplication.getUser().getSessionId(),
+                                new Favorite("movie",mMovie.getId(),false),
+                                new ApiHandler.PostResponseListener() {
+                                    @Override
+                                    public void success(PostResponse response) {
+                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
+                                        Log.d("RESPONSE", response.statusMessage);
+                                    }
+                                });
+                    }
+                    liked = false;
+                }else if(!MovieAppApplication.isUserLoggedIn()){
+                    showLoginDialog();
+                }
+                return true;
+            case R.id.action_watchlist_movie:
+                if(!watchlist && MovieAppApplication.isUserLoggedIn()){
+                    item.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_filled_menu));
+                    if(!MovieAppApplication.getUser().getWatchlistMovieList().contains(mMovie.getId())){
+                        MovieAppApplication.getUser().addToWatchlistMoviesList(mMovie.getId());
+
+                        ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
+                                MovieAppApplication.getUser().getSessionId(),
+                                new Watchlist("movie",mMovie.getId(),true),
+                                new ApiHandler.PostResponseListener() {
+                                    @Override
+                                    public void success(PostResponse response) {
+                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
+                                        Log.d("RESPONSE", response.statusMessage);
+                                    }
+                                });
+                    }
+                    watchlist = true;
+                }else if(watchlist && MovieAppApplication.isUserLoggedIn()){
+                    item.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_menu));
+                    if(MovieAppApplication.getUser().getWatchlistMovieList().contains(mMovie.getId())){
+                        MovieAppApplication.getUser().removeFromWatchlistMovieList(mMovie.getId());
+
+                        ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
+                                MovieAppApplication.getUser().getSessionId(),
+                                new Watchlist("movie",mMovie.getId(),false),
+                                new ApiHandler.PostResponseListener() {
+                                    @Override
+                                    public void success(PostResponse response) {
+                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
+                                        Log.d("RESPONSE", response.statusMessage);
+                                    }
+                                });
+                    }
+                    watchlist = false;
+                }else if(!MovieAppApplication.isUserLoggedIn()){
+                    showLoginDialog();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

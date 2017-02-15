@@ -1,14 +1,9 @@
 package com.example.zsamir.movieappintership.Login;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,17 +13,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
-import com.example.zsamir.movieappintership.Common.MovieAppApplication;
+import com.example.zsamir.movieappintership.BaseActivity;
+import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.LoginModules.Account;
 import com.example.zsamir.movieappintership.LoginModules.Session;
 import com.example.zsamir.movieappintership.LoginModules.Token;
+import com.example.zsamir.movieappintership.Modules.Movie;
+import com.example.zsamir.movieappintership.Modules.MovieList;
+import com.example.zsamir.movieappintership.Modules.TVSeries;
+import com.example.zsamir.movieappintership.Modules.TVSeriesList;
 import com.example.zsamir.movieappintership.R;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     private String username;
     private String password;
     private Account account;
+    private ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +65,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
-
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_movie_details, menu);
+        getMenuInflater().inflate(R.menu.menu_season_details, menu);
         return true;
     }
 
@@ -106,6 +105,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void sendRequest() {
 
+        progress = new ProgressDialog(this,ProgressDialog.THEME_HOLO_DARK);
+        progress.setMessage("Loading...");
+        progress.setCancelable(false);
+        progress.show();
+
         ApiHandler.getInstance().requestToken(new ApiHandler.TokenListener() {
             @Override
             public void success(Token response) {
@@ -117,26 +121,36 @@ public class LoginActivity extends AppCompatActivity {
 
                             if(response==null){
                                 Toast.makeText(LoginActivity.this, "Incorrect username or password!", Toast.LENGTH_SHORT).show();
+                                progress.dismiss();
                             }
 
                             if(response!=null){
 
                                 ApiHandler.getInstance().requestSession(response.getRequestToken(), new ApiHandler.SessionListener() {
                                     @Override
-                                    public void success(Session response) {
+                                    public void success(final Session response) {
                                         if(response!=null){
 
                                             ApiHandler.getInstance().requestAccount(response.getSessionId(), new ApiHandler.AccountListener() {
+                                                final String SessionId = response.getSessionId();
                                                 @Override
                                                 public void success(Account response) {
                                                     if(response!=null) {
                                                         account = response;
+                                                        account.setSessionId(SessionId);
                                                         // HAVE USER NOW STORE HIM/HER
-                                                        MovieAppApplication.getInstance().setUser(response);
+                                                        requestFavoriteMovies();
+                                                        requestFavoriteTVSeries();
+                                                        requestWatchlistMovies();
+                                                        requestWatchlistTVSeries();
+
+                                                        MovieAppApplication.setUser(account);
                                                         Intent returnIntent = new Intent();
                                                         returnIntent.putExtra("ACCOUNT",account);
                                                         setResult(RESULT_OK,returnIntent);
+                                                        progress.dismiss();
                                                         finish();
+
                                                     }
                                                 }
                                             });
@@ -150,5 +164,99 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+
+
+    private void requestFavoriteMovies(){
+        ApiHandler.getInstance().requestAccountFavoriteMovies(account.getId(), account.getSessionId(), 1, new ApiHandler.MovieListListener() {
+            @Override
+            public void success(MovieList response) {
+                for (Movie t: response.getMovies()) {
+                    MovieAppApplication.getUser().addToFavoriteMoviesList(t.getId());
+                }
+                if(response.getTotalPages()>1){
+                    for(int i = response.getTotalPages(); i>= 2; i--){
+                        ApiHandler.getInstance().requestAccountFavoriteMovies(account.getId(), account.getSessionId(), i, new ApiHandler.MovieListListener() {
+                            @Override
+                            public void success(MovieList response) {
+                                for (Movie t: response.getMovies()) {
+                                    MovieAppApplication.getUser().addToFavoriteMoviesList(t.getId());
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
+    private void requestFavoriteTVSeries(){
+        ApiHandler.getInstance().requestAccountFavoriteTVSeries(account.getId(), account.getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
+            @Override
+            public void success(TVSeriesList response) {
+                for (TVSeries t: response.getTVSeries()) {
+                    MovieAppApplication.getUser().addToFavoriteTVSeriesList(t.getId());
+                }
+                if(response.getTotalPages()>1){
+                    for(int i = response.getTotalPages(); i>= 2; i--){
+                        ApiHandler.getInstance().requestAccountFavoriteTVSeries(account.getId(), account.getSessionId(), i, new ApiHandler.TvSeriesListListener() {
+                            @Override
+                            public void success(TVSeriesList response) {
+                                for (TVSeries t: response.getTVSeries()) {
+                                    MovieAppApplication.getUser().addToFavoriteTVSeriesList(t.getId());
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
+    private void requestWatchlistMovies(){
+        ApiHandler.getInstance().requestAccountWatchlistMovies(account.getId(), account.getSessionId(), 1, new ApiHandler.MovieListListener() {
+            @Override
+            public void success(MovieList response) {
+                for (Movie t: response.getMovies()) {
+                    MovieAppApplication.getUser().addToWatchlistMoviesList(t.getId());
+                }
+                if(response.getTotalPages()>1){
+                    for(int i = response.getTotalPages(); i>= 2; i--){
+                        ApiHandler.getInstance().requestAccountWatchlistMovies(account.getId(), account.getSessionId(), i, new ApiHandler.MovieListListener() {
+                            @Override
+                            public void success(MovieList response) {
+                                for (Movie t: response.getMovies()) {
+                                    MovieAppApplication.getUser().addToWatchlistMoviesList(t.getId());
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
+    private void requestWatchlistTVSeries(){
+        ApiHandler.getInstance().requestAccountWatchlistTVSeries(account.getId(), account.getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
+            @Override
+            public void success(TVSeriesList response) {
+                for (TVSeries t: response.getTVSeries()) {
+                    MovieAppApplication.getUser().addToWatchlistTVSeriesList(t.getId());
+                }
+                if(response.getTotalPages()>1){
+                    for(int i = response.getTotalPages(); i>= 2; i--){
+                        ApiHandler.getInstance().requestAccountWatchlistTVSeries(account.getId(), account.getSessionId(), i, new ApiHandler.TvSeriesListListener() {
+                            @Override
+                            public void success(TVSeriesList response) {
+                                for (TVSeries t: response.getTVSeries()) {
+                                    MovieAppApplication.getUser().addToWatchlistTVSeriesList(t.getId());
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 }

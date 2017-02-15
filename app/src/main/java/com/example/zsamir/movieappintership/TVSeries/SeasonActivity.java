@@ -1,11 +1,8 @@
 package com.example.zsamir.movieappintership.TVSeries;
 
-import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -14,9 +11,10 @@ import com.crashlytics.android.Crashlytics;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.EpisodeAdapter;
 import com.example.zsamir.movieappintership.Adapters.SeasonsAdapter;
+import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Modules.Episode;
 import com.example.zsamir.movieappintership.Modules.SeasonDetails;
-import com.example.zsamir.movieappintership.Modules.TvSeriesDetails;
+import com.example.zsamir.movieappintership.Modules.TVSeriesDetails;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
@@ -24,15 +22,13 @@ import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 
-public class SeasonActivity extends AppCompatActivity {
+public class SeasonActivity extends BaseActivity {
 
-    public TvSeriesDetails tvSeriesDetails;
+    public TVSeriesDetails TVSeriesDetails;
 
     private TextView seasonYear;
     private ArrayList<Episode> episodes;
     private EpisodeAdapter episodeAdapter;
-    private SeasonsAdapter seasonsAdapter;
-    private String year;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,22 +40,22 @@ public class SeasonActivity extends AppCompatActivity {
 
         if(getIntent().hasExtra("TVSeriesDetails")){
 
-            tvSeriesDetails = getIntent().getParcelableExtra("TVSeriesDetails");
+            TVSeriesDetails = getIntent().getParcelableExtra("TVSeriesDetails");
             List<String> list = new ArrayList<>();
             List<String> years = new ArrayList<>();
 
-            this.setTitle(tvSeriesDetails.getName());
+            this.setTitle(TVSeriesDetails.getName());
 
             // Season 0 Specials not included
 
-            for(int i = 0; i<tvSeriesDetails.getSeasons().size();i++){
-                if(tvSeriesDetails.getSeasons().get(i).getSeasonNumber()!=0){
-                    list.add(Integer.toString(tvSeriesDetails.getSeasons().get(i).getSeasonNumber()));
-                    years.add(tvSeriesDetails.getSeasons().get(i).getAirYear());
+            for(int i = 0; i< TVSeriesDetails.getSeasons().size(); i++){
+                if(TVSeriesDetails.getSeasons().get(i).getSeasonNumber()!=0){
+                    list.add(Integer.toString(TVSeriesDetails.getSeasons().get(i).getSeasonNumber()));
+                    years.add(TVSeriesDetails.getSeasons().get(i).getAirYear());
                 }
             }
 
-            seasonsAdapter = new SeasonsAdapter(list,years,this);
+            SeasonsAdapter seasonsAdapter = new SeasonsAdapter(list, years, this);
 
             RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.season_recycler_view);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
@@ -68,14 +64,13 @@ public class SeasonActivity extends AppCompatActivity {
 
             episodes = new ArrayList<>();
 
-            episodeAdapter = new EpisodeAdapter(episodes,tvSeriesDetails);
+            episodeAdapter = new EpisodeAdapter(episodes, TVSeriesDetails);
             RecyclerView mEpisodeRecyclerView = (RecyclerView) findViewById(R.id.episode_recycler_view);
             LinearLayoutManager linearVerticalLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
             mEpisodeRecyclerView.setLayoutManager(linearVerticalLayoutManager);
             mEpisodeRecyclerView.setAdapter(episodeAdapter);
 
             setSeason(1);
-            if(year!=null)
             setYear(years.get(0));
             // need to retrieve from
 
@@ -84,7 +79,7 @@ public class SeasonActivity extends AppCompatActivity {
 
     public void setSeason(int i){
         ApiHandler apiHandler = ApiHandler.getInstance();
-        apiHandler.requestTVSeriesSeasons(tvSeriesDetails.getId(), i, new ApiHandler.TvSeriesSeasonListener() {
+        apiHandler.requestTVSeriesSeasons(TVSeriesDetails.getId(), i, new ApiHandler.TvSeriesSeasonListener() {
             @Override
             public void success(SeasonDetails response) {
                 episodes.clear();
@@ -98,6 +93,7 @@ public class SeasonActivity extends AppCompatActivity {
     }
 
     public void setYear(String year) {
+        if(year!=null)
         seasonYear.setText(year);
     }
 
