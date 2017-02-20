@@ -7,9 +7,9 @@
     android:background="@color/colorBlack">
 
     <ImageView
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="175dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:adjustViewBounds="true"
         android:id="@+id/movie_image"/>
 

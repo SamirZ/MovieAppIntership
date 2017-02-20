@@ -91,7 +91,7 @@ public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnC
             mMovieImageWatch.setVisibility(View.GONE);
         }
 
-        Glide.with(mMovieImage.getContext()).load(movie.getPosterUrl()).centerCrop().into(mMovieImage);
+        Glide.with(mMovieImage.getContext()).load(movie.getPosterUrl()).into(mMovieImage);
     }
 
 

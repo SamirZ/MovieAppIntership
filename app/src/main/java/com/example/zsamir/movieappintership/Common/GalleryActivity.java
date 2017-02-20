@@ -30,30 +30,43 @@ public class GalleryActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
-        if(getIntent().hasExtra("Movie")){
-            setTitle(getString(R.string.movies_label));
-            movie = getIntent().getParcelableExtra("Movie");
-            imageGalleryAdapter = new ImageGalleryAdapter(backdrops,movie);
-            TextView name = (TextView)findViewById(R.id.image_gallery_name);
-            if(movie.getTitle()!=null && movie.getReleaseYear()!=null)
-            name.setText(getString(R.string.images)+" : "+movie.getTitle()+" ("+movie.getReleaseYear()+")");
-            loadInitialMovieImages();
-        }
+        setMovieGallery();
+
+        setTVSeriesGallery();
+
+        setImages();
+
+    }
+
+    private void setImages() {
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.movie_gallery_recyclerView);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
+        mRecyclerView.setLayoutManager(gridLayoutManager );
+        mRecyclerView.setAdapter(imageGalleryAdapter);
+    }
+
+    private void setTVSeriesGallery() {
         if(getIntent().hasExtra("TVSeries")){
             setTitle(getString(R.string.tv_series_name));
             TVSeries = getIntent().getParcelableExtra("TVSeries");
             imageGalleryAdapter = new ImageGalleryAdapter(backdrops, TVSeries);
             TextView name = (TextView)findViewById(R.id.image_gallery_name);
             if(TVSeries.getName()!=null && TVSeries.getReleaseYear()!=null)
-            name.setText(getString(R.string.images)+" : "+ TVSeries.getName()+" ("+ TVSeries.getReleaseYear()+")");
+                name.setText(getString(R.string.images)+" : "+ TVSeries.getName()+" ("+ TVSeries.getReleaseYear()+")");
             loadInitialTVSeriesImages();
         }
+    }
 
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.movie_gallery_recyclerView);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
-        mRecyclerView.setLayoutManager(gridLayoutManager );
-        mRecyclerView.setAdapter(imageGalleryAdapter);
-
+    private void setMovieGallery() {
+        if(getIntent().hasExtra("Movie")){
+            setTitle(getString(R.string.movies_label));
+            movie = getIntent().getParcelableExtra("Movie");
+            imageGalleryAdapter = new ImageGalleryAdapter(backdrops,movie);
+            TextView name = (TextView)findViewById(R.id.image_gallery_name);
+            if(movie.getTitle()!=null && movie.getReleaseYear()!=null)
+                name.setText(getString(R.string.images)+" : "+movie.getTitle()+" ("+movie.getReleaseYear()+")");
+            loadInitialMovieImages();
+        }
     }
 
     private void loadInitialTVSeriesImages() {

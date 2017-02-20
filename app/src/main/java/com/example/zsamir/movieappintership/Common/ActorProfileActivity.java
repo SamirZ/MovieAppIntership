@@ -28,13 +28,12 @@ import java.util.ArrayList;
 
 public class ActorProfileActivity extends BaseActivity {
 
-    Actor mActor;
-    Cast cast;
-    EpisodeCast episodeCast;
+    private Actor mActor;
+    private Cast cast;
+    private EpisodeCast episodeCast;
     private boolean clicked = false;
-    ArrayList<Movie> mMovies = new ArrayList<>();
-    ActorMovieAdapter mMovieAdapter;
-    ApiHandler apiHandler = ApiHandler.getInstance();
+    private ArrayList<Movie> mMovies = new ArrayList<>();
+    private ActorMovieAdapter mMovieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +45,7 @@ public class ActorProfileActivity extends BaseActivity {
         if (getIntent().hasExtra("Actor")) {
             cast = getIntent().getParcelableExtra("Actor");
             mMovieAdapter = new ActorMovieAdapter(mMovies,cast);
-            apiHandler.requestActor(cast.id, new ApiHandler.ActorDetailsListener() {
+            ApiHandler.getInstance().requestActor(cast.id, new ApiHandler.ActorDetailsListener() {
                 @Override
                 public void success(Actor response) {
                     mActor = response;
@@ -58,7 +57,7 @@ public class ActorProfileActivity extends BaseActivity {
         if (getIntent().hasExtra("Actor1")) {
             episodeCast = getIntent().getParcelableExtra("Actor1");
             mMovieAdapter = new ActorMovieAdapter(mMovies,episodeCast.toCast());
-            apiHandler.requestActor(episodeCast.id, new ApiHandler.ActorDetailsListener() {
+            ApiHandler.getInstance().requestActor(episodeCast.id, new ApiHandler.ActorDetailsListener() {
                 @Override
                 public void success(Actor response) {
                     mActor = response;
@@ -141,7 +140,7 @@ public class ActorProfileActivity extends BaseActivity {
             mActorBio.setVisibility(View.GONE);
             more.setVisibility(View.GONE);
         }
-        apiHandler.requestMovieWithActor(mActor.getId(), new ApiHandler.MovieListListener() {
+        ApiHandler.getInstance().requestMovieWithActor(mActor.getId(), new ApiHandler.MovieListListener() {
             @Override
             public void success(MovieList response) {
                 mMovies.addAll(response.getMovies());

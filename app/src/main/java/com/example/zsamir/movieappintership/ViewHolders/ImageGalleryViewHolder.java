@@ -34,7 +34,7 @@ public class ImageGalleryViewHolder extends RecyclerView.ViewHolder implements V
         this.movie = movie;
         this.backdropList = backdropList;
         if(backdrop.getBackdropSizeW300()!=null)
-            Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).fitCenter().into(mMovieImage);
+            Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
     }
 
     public void bindImage(Backdrop backdrop , TVSeries TVSeries, List<Backdrop> backdropList){
@@ -42,7 +42,7 @@ public class ImageGalleryViewHolder extends RecyclerView.ViewHolder implements V
         this.TVSeries = TVSeries;
         this.backdropList = backdropList;
         if(backdrop.getBackdropSizeW300()!=null)
-            Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).fitCenter().into(mMovieImage);
+            Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
     }
 
     @Override

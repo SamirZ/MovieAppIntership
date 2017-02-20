@@ -19,6 +19,7 @@ import com.example.zsamir.movieappintership.Adapters.ImageAdapter;
 import com.example.zsamir.movieappintership.Adapters.ReviewAdapter;
 import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Common.GalleryActivity;
+import com.example.zsamir.movieappintership.Common.TrailerActivity;
 import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.LoginModules.Favorite;
 import com.example.zsamir.movieappintership.LoginModules.PostResponse;
@@ -41,23 +42,47 @@ import java.util.Locale;
 
 public class MovieDetailsActivity extends BaseActivity {
 
-    Movie mMovie;
-    Credits mCredits;
-    Images mMovieImages = new Images();
-    MovieReviews mMovieReviews = new MovieReviews();
+    private Movie mMovie;
+    private Credits mCredits;
+    private Images mMovieImages = new Images();
+    private MovieReviews mMovieReviews = new MovieReviews();
     private boolean liked = false;
     private boolean watchlist = false;
 
-    Crew director;
-    ArrayList<Crew> writers = new ArrayList<>();
-    ArrayList<Cast> actors = new ArrayList<>();
-    List<MovieReview> reviewList = new ArrayList<>();
-    ArrayList<Backdrop> backdrops = new ArrayList<>();
-    CastAdapter mCastAdapter = new CastAdapter(actors);
-    ReviewAdapter mReviewAdapter = new ReviewAdapter(reviewList);
-    ImageAdapter mImageAdapter;
+    private Crew director;
+    private ArrayList<Crew> writers = new ArrayList<>();
+    private ArrayList<Cast> actors = new ArrayList<>();
+    private List<MovieReview> reviewList = new ArrayList<>();
+    private ArrayList<Backdrop> backdrops = new ArrayList<>();
+    private CastAdapter mCastAdapter = new CastAdapter(actors);
+    private ReviewAdapter mReviewAdapter = new ReviewAdapter(reviewList);
+    private ImageAdapter mImageAdapter;
 
-    // Genre ids sometimes empty take care of that
+    private TextView mMovieOverview;
+    private TextView movieImagesLabel;
+    private TextView movieImagesSeeAll;
+    private TextView mMovieDirectorLabel;
+    private TextView mMovieDirector;
+    private TextView mMovieWritersLabel;
+    private TextView mMovieWriters;
+    private TextView mRating;
+    private TextView mRating2;
+    private TextView rateText;
+    private TextView movieDetailsCastLabel;
+    private TextView mMovieStarsLabel;
+    private TextView mMovieStars;
+    private TextView mMovieName;
+    private TextView mMovieGenre;
+
+    private RecyclerView mReviewRecyclerView;
+    private RecyclerView mImageRecyclerView;
+    private RecyclerView mCastRecyclerView;
+
+    private ImageView mMovieImage;
+    private ImageView rateImage;
+
+    private View movieDetailsCastBreaklinne;
+    private View movieImagesBreakline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,13 +95,77 @@ public class MovieDetailsActivity extends BaseActivity {
             mImageAdapter = new ImageAdapter(backdrops,mMovie);
         }
 
+        setUpViews();
 
-        final TextView movieImagesLabel = (TextView) findViewById(R.id.movie_details_images_label);
-        final TextView movieImagesSeeAll = (TextView) findViewById(R.id.see_all);
-        final View movieImagesBreakline = findViewById(R.id.movie_details_images_breakline);
-        ApiHandler apiHandler = ApiHandler.getInstance();
+        setKnowData();
 
-        apiHandler.requestMovieImages(mMovie.getId(), new ApiHandler.ImagesListener() {
+        setDetailedData();
+
+        setReviews();
+
+        setImages();
+
+        setCast();
+
+    }
+
+    private void setCast() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mCastRecyclerView.setLayoutManager(layoutManager);
+        mCastRecyclerView.setAdapter(mCastAdapter);
+    }
+
+    private void setImages() {
+        LinearLayoutManager layoutManagerImage = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mImageRecyclerView.setLayoutManager(layoutManagerImage);
+        mImageRecyclerView.setAdapter(mImageAdapter);
+    }
+
+    private void setReviews() {
+        LinearLayoutManager layoutManagerReview = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mReviewRecyclerView.setLayoutManager(layoutManagerReview);
+        mReviewRecyclerView.setAdapter(mReviewAdapter);
+    }
+
+    private void setUpViews() {
+        mMovieOverview = (TextView) findViewById(R.id.movie_details_overview);
+        mMovieImage = (ImageView) findViewById(R.id.movie_details_image);
+        movieImagesLabel = (TextView) findViewById(R.id.movie_details_images_label);
+        movieImagesSeeAll = (TextView) findViewById(R.id.see_all);
+        movieImagesBreakline = findViewById(R.id.movie_details_images_breakline);
+        mMovieDirectorLabel = (TextView) findViewById(R.id.movie_details_director_1);
+        mMovieDirector = (TextView) findViewById(R.id.movie_details_director_2);
+        mMovieWritersLabel = (TextView) findViewById(R.id.movie_details_writers_1);
+        mMovieWriters = (TextView) findViewById(R.id.movie_details_writers_2);
+        mRating = (TextView) findViewById(R.id.movie_details_rating_1);
+        mRating2 = (TextView) findViewById(R.id.movie_details_rating_2);
+        rateImage = (ImageView) findViewById(R.id.movie_details_star_image);
+        rateText = (TextView) findViewById(R.id.movie_details_rating_3);
+        mReviewRecyclerView = (RecyclerView) findViewById(R.id.reviews_recyclerView);
+        mImageRecyclerView = (RecyclerView) findViewById(R.id.images_recyclerView);
+        mCastRecyclerView = (RecyclerView) findViewById(R.id.cast_recyclerView);
+        movieDetailsCastLabel = (TextView) findViewById(R.id.movie_details_cast_label);
+        movieDetailsCastBreaklinne = findViewById(R.id.movie_details_cast_breakline);
+        mMovieStarsLabel = (TextView) findViewById(R.id.movie_details_stars_1);
+        mMovieStars = (TextView) findViewById(R.id.movie_details_stars_2);
+        mMovieName = (TextView) findViewById(R.id.movie_details_name);
+        mMovieGenre = (TextView) findViewById(R.id.movie_details_genre);
+    }
+
+    private void setDetailedData() {
+
+        ApiHandler.getInstance().requestMovie(mMovie.getId(), new ApiHandler.MovieDetailsListener() {
+            @Override
+            public void success(MovieDetails response) {
+                TextView mMovieReleaseDate = (TextView) findViewById(R.id.movie_details_release_date);
+                if(!response.productionCountries.isEmpty())
+                    mMovieReleaseDate.setText(response.getReleaseDate()+" "+ "("+response.productionCountries.get(0).name+")");
+                else
+                    mMovieReleaseDate.setText(response.getReleaseDate());
+            }
+        });
+
+        ApiHandler.getInstance().requestMovieImages(mMovie.getId(), new ApiHandler.ImagesListener() {
             @Override
             public void success(Images response) {
                 if(response!=null){
@@ -94,15 +183,10 @@ public class MovieDetailsActivity extends BaseActivity {
         });
 
 
-        apiHandler.requestMovieCredits(mMovie.getId(), new ApiHandler.CreditsListener() {
+        ApiHandler.getInstance().requestMovieCredits(mMovie.getId(), new ApiHandler.CreditsListener() {
             @Override
             public void success(Credits response) {
                 mCredits = response;
-
-                TextView mMovieDirectorLabel = (TextView) findViewById(R.id.movie_details_director_1);
-                TextView mMovieDirector = (TextView) findViewById(R.id.movie_details_director_2);
-                TextView mMovieWritersLabel = (TextView) findViewById(R.id.movie_details_writers_1);
-                TextView mMovieWriters = (TextView) findViewById(R.id.movie_details_writers_2);
 
                 if(mCredits.crew!=null) {
                     if(mCredits.crew.size()<1){
@@ -138,12 +222,7 @@ public class MovieDetailsActivity extends BaseActivity {
                 }
                 StringBuilder sb = new StringBuilder();
 
-                TextView movieDetailsCastLabel = (TextView) findViewById(R.id.movie_details_cast_label);
-                View movieDetailsCastBreaklinne = findViewById(R.id.movie_details_cast_breakline);
 
-
-                TextView mMovieStarsLabel = (TextView) findViewById(R.id.movie_details_stars_1);
-                TextView mMovieStars = (TextView) findViewById(R.id.movie_details_stars_2);
                 if(mCredits.cast!=null){
                     if(mCredits.cast.size()>0){
                         actors.addAll(mCredits.cast);
@@ -154,39 +233,25 @@ public class MovieDetailsActivity extends BaseActivity {
                         mMovieStars.setVisibility(View.GONE);
                         mMovieStarsLabel.setVisibility(View.GONE);
                     }
-                if(actors.size()>0) {
-                    for(int i=0;i<actors.size() && i<3;i++){
-                        sb.append(actors.get(i).name);
-                        if(i!=2)
-                        sb.append(", ");
+                    if(actors.size()>0) {
+                        for(int i=0;i<actors.size() && i<3;i++){
+                            sb.append(actors.get(i).name);
+                            if(i!=2)
+                                sb.append(", ");
+                        }
+                        mMovieStars.setText(sb.toString());
                     }
-                    mMovieStars.setText(sb.toString());
-                }
 
-            }else{
+                }else{
                     mMovieStars.setVisibility(View.GONE);
                     mMovieStarsLabel.setVisibility(View.GONE);
                 }
             }
         });
 
-        // department writing directing crew
-        // cast actors
-
-        apiHandler.requestMovie(mMovie.getId(), new ApiHandler.MovieDetailsListener() {
-            @Override
-            public void success(MovieDetails response) {
-                TextView mMovieReleaseDate = (TextView) findViewById(R.id.movie_details_release_date);
-                if(!response.productionCountries.isEmpty())
-                    mMovieReleaseDate.setText(response.getReleaseDate()+" "+ "("+response.productionCountries.get(0).name+")");
-                else
-                    mMovieReleaseDate.setText(response.getReleaseDate());
-            }
-        });
-
         final TextView reviews = (TextView) findViewById(R.id.movie_reviews);
         final View breakline = findViewById(R.id.review_breakline);
-        apiHandler.requestMovieReviews(mMovie.getId(), new ApiHandler.MovieReviewsListener() {
+        ApiHandler.getInstance().requestMovieReviews(mMovie.getId(), new ApiHandler.MovieReviewsListener() {
             @Override
             public void success(MovieReviews response) {
                 mMovieReviews = response;
@@ -205,35 +270,14 @@ public class MovieDetailsActivity extends BaseActivity {
             }
         });
 
+    }
 
-        ImageView mMovieImage = (ImageView) findViewById(R.id.movie_details_image);
-        if(mMovie.getBackdropUrl()!=null){
-            Glide.with(this).load(mMovie.getBackdropUrl()).into(mMovieImage);
-            mMovieImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //Intent i = new Intent(MovieDetailsActivity.this, TrailerActivity.class);
-                    //i.putExtra("MovieID",String.valueOf(mMovie.getId()));
-                    //startActivity(i);
-                }
-            });
-        }
+    private void setKnowData() {
 
-        TextView mMovieName = (TextView) findViewById(R.id.movie_details_name);
-        if(mMovie.getTitle()!=null && mMovie.getReleaseYear()!=null)
-        mMovieName.setText(mMovie.getTitle());
-        if(mMovie.getReleaseYear()!=null){
-            mMovieName.append(" ("+mMovie.getReleaseYear()+")");
-        }
+        mRating.setText(String.format(Locale.getDefault(),"%1$.1f",mMovie.getVoteAverage()));
+        mRating2.setText(getString(R.string.max_rating));
 
-        TextView mMovieGenre = (TextView) findViewById(R.id.movie_details_genre);
-        if(mMovie.getMovieGenres().size()>0)
-            mMovieGenre.setText(mMovie.getMovieGenres().get(0));
-        else
-            mMovieGenre.setText(getString(R.string.not_sorted));
-
-        TextView seeMovieGallery = (TextView) findViewById(R.id.see_all);
-        seeMovieGallery.setOnClickListener(new View.OnClickListener() {
+        movieImagesSeeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(view.getContext(), GalleryActivity.class);
@@ -241,18 +285,6 @@ public class MovieDetailsActivity extends BaseActivity {
                 view.getContext().startActivity(i);
             }
         });
-
-        TextView mMovieOverview = (TextView) findViewById(R.id.movie_details_overview);
-        if(mMovie.getOverview()!=null)
-        mMovieOverview.setText(mMovie.getOverview());
-
-        TextView mRating = (TextView) findViewById(R.id.movie_details_rating_1);
-        TextView mRating2 = (TextView) findViewById(R.id.movie_details_rating_2);
-        mRating.setText(String.format(Locale.getDefault(),"%1$.1f",mMovie.getVoteAverage()));
-        mRating2.setText(getString(R.string.max_rating));
-
-        ImageView rateImage = (ImageView) findViewById(R.id.movie_details_star_image);
-        TextView rateText = (TextView) findViewById(R.id.movie_details_rating_3);
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -271,39 +303,34 @@ public class MovieDetailsActivity extends BaseActivity {
         rateText.setOnClickListener(onClickListener);
 
 
-        RecyclerView mReviewRecyclerView = (RecyclerView) findViewById(R.id.reviews_recyclerView);
-        LinearLayoutManager layoutManagerReview = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mReviewRecyclerView.setLayoutManager(layoutManagerReview);
-        mReviewRecyclerView.setAdapter(mReviewAdapter);
+        if(mMovie.getOverview()!=null)
+            mMovieOverview.setText(mMovie.getOverview());
 
-        RecyclerView mImageRecyclerView = (RecyclerView) findViewById(R.id.images_recyclerView);
-        LinearLayoutManager layoutManagerImage = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        mImageRecyclerView.setLayoutManager(layoutManagerImage);
-        mImageRecyclerView.setAdapter(mImageAdapter);
-
-
-        RecyclerView mCastRecyclerView = (RecyclerView) findViewById(R.id.cast_recyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        mCastRecyclerView.setLayoutManager(layoutManager);
-        mCastRecyclerView.setAdapter(mCastAdapter);
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (resultCode == RESULT_OK) {
-            runOnUiThread(new Runnable() {
+        if(mMovie.getBackdropUrl()!=null){
+            Glide.with(this).load(mMovie.getBackdropUrl()).into(mMovieImage);
+            mMovieImage.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void run() {
-                    recreate();
-                    // TO DO
-                    // UPDATE RESULT
+                public void onClick(View v) {
+                    Intent i = new Intent(MovieDetailsActivity.this, TrailerActivity.class);
+                    i.putExtra("MovieID",mMovie);
+                    startActivity(i);
                 }
             });
         }
-    }
 
+
+        if(mMovie.getTitle()!=null && mMovie.getReleaseYear()!=null)
+            mMovieName.setText(mMovie.getTitle());
+        if(mMovie.getReleaseYear()!=null){
+            mMovieName.append(" ("+mMovie.getReleaseYear()+")");
+        }
+
+        if(mMovie.getMovieGenres().size()>0)
+            mMovieGenre.setText(mMovie.getMovieGenres().get(0));
+        else
+            mMovieGenre.setText(getString(R.string.not_sorted));
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -413,6 +440,19 @@ public class MovieDetailsActivity extends BaseActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if(resultCode == RESULT_OK){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    recreate();
+                }
+            });
         }
     }
 }

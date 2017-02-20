@@ -36,8 +36,8 @@ public class HighestRatedMoviesFragment extends Fragment{
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         mMovieAdapter.notifyDataSetChanged();
     }
 

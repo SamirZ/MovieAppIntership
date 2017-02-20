@@ -24,58 +24,65 @@ import io.fabric.sdk.android.Fabric;
 
 public class SeasonActivity extends BaseActivity {
 
-    public TVSeriesDetails TVSeriesDetails;
+    private TVSeriesDetails TVSeriesDetails;
 
     private TextView seasonYear;
     private ArrayList<Episode> episodes;
     private EpisodeAdapter episodeAdapter;
 
+    private List<String> list = new ArrayList<>();
+    private List<String> years = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_season);
-        Fabric.with(this, new Crashlytics());
 
         seasonYear = (TextView)findViewById(R.id.season_year);
 
         if(getIntent().hasExtra("TVSeriesDetails")){
 
             TVSeriesDetails = getIntent().getParcelableExtra("TVSeriesDetails");
-            List<String> list = new ArrayList<>();
-            List<String> years = new ArrayList<>();
 
             this.setTitle(TVSeriesDetails.getName());
 
-            // Season 0 Specials not included
+            setUpSeasons();
 
-            for(int i = 0; i< TVSeriesDetails.getSeasons().size(); i++){
-                if(TVSeriesDetails.getSeasons().get(i).getSeasonNumber()!=0){
-                    list.add(Integer.toString(TVSeriesDetails.getSeasons().get(i).getSeasonNumber()));
-                    years.add(TVSeriesDetails.getSeasons().get(i).getAirYear());
-                }
-            }
-
-            SeasonsAdapter seasonsAdapter = new SeasonsAdapter(list, years, this);
-
-            RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.season_recycler_view);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
-            mRecyclerView.setLayoutManager(linearLayoutManager);
-            mRecyclerView.setAdapter(seasonsAdapter);
-
-            episodes = new ArrayList<>();
-
-            episodeAdapter = new EpisodeAdapter(episodes, TVSeriesDetails);
-            RecyclerView mEpisodeRecyclerView = (RecyclerView) findViewById(R.id.episode_recycler_view);
-            LinearLayoutManager linearVerticalLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
-            mEpisodeRecyclerView.setLayoutManager(linearVerticalLayoutManager);
-            mEpisodeRecyclerView.setAdapter(episodeAdapter);
+            setUpEpisodes();
 
             setSeason(1);
             setYear(years.get(0));
-            // need to retrieve from
 
         }
     }
+
+    private void setUpSeasons() {
+
+        for(int i = 0; i< TVSeriesDetails.getSeasons().size(); i++){
+            if(TVSeriesDetails.getSeasons().get(i).getSeasonNumber()!=0){
+                list.add(Integer.toString(TVSeriesDetails.getSeasons().get(i).getSeasonNumber()));
+                years.add(TVSeriesDetails.getSeasons().get(i).getAirYear());
+            }
+        }
+
+        SeasonsAdapter seasonsAdapter = new SeasonsAdapter(list, years, this);
+
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.season_recycler_view);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setAdapter(seasonsAdapter);
+    }
+
+    private void setUpEpisodes() {
+        episodes = new ArrayList<>();
+
+        episodeAdapter = new EpisodeAdapter(episodes, TVSeriesDetails);
+        RecyclerView mEpisodeRecyclerView = (RecyclerView) findViewById(R.id.episode_recycler_view);
+        LinearLayoutManager linearVerticalLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        mEpisodeRecyclerView.setLayoutManager(linearVerticalLayoutManager);
+        mEpisodeRecyclerView.setAdapter(episodeAdapter);
+    }
+
 
     public void setSeason(int i){
         ApiHandler apiHandler = ApiHandler.getInstance();

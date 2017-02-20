@@ -31,10 +31,18 @@ public class SearchActivity extends BaseActivity {
         setContentView(R.layout.activity_search);
 
         setTitle("");
+
+        setUpSearchItems();
+
+    }
+
+    private void setUpSearchItems() {
+
         recyclerView = (RecyclerView) findViewById(R.id.search_recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mResultAdapter);
+
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(layoutManager ) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -43,7 +51,6 @@ public class SearchActivity extends BaseActivity {
             }
         };
         recyclerView.addOnScrollListener(scrollListener);
-
     }
 
     @Override

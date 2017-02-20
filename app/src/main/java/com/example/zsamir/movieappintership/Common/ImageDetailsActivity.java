@@ -19,57 +19,33 @@ import java.util.List;
 
 public class ImageDetailsActivity extends BaseActivity {
 
-    Movie mMovie;
-    TVSeries mTVSeries;
-    ImageView movieImage;
-    TextView movieImageNumber;
-    TextView movieName;
-    List<Backdrop> backdropList;
-    int imageNumber;
-    int imageCount;
-    GestureDetectorCompat gestureObject;
+    private Movie mMovie;
+    private TVSeries mTVSeries;
+    private ImageView movieImage;
+    private TextView movieImageNumber;
+    private TextView movieName;
+    private List<Backdrop> backdropList;
+    private int imageNumber;
+    private int imageCount;
+    private GestureDetectorCompat gestureObject;
+    private ImageDetailsActivity imageDetailsActivity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_details);
 
-        movieName = (TextView) findViewById(R.id.image_details_movie_name);
-        movieImageNumber = (TextView) findViewById(R.id.image_details_num_of_images);
-        movieImage = (ImageView) findViewById(R.id.image_details_image);
-        final ImageDetailsActivity imageDetailsActivity = this;
-        if (getIntent().hasExtra("Movie")) {
-            mMovie = getIntent().getParcelableExtra("Movie");
-            setTitle(getString(R.string.movies_label));
+        setUpViews();
 
-            if(mMovie.getTitle()!=null && mMovie.getReleaseYear()!=null)
-            movieName.setText(mMovie.getTitle()+" ("+mMovie.getReleaseYear()+")");
+        setUpMovieImage();
 
-            movieImageNumber.setText((mMovie.lastLoadedBackdrop+1)+" of "+mMovie.numOfBackdrops);
-            imageCount = mMovie.numOfBackdrops;
-            imageNumber = mMovie.lastLoadedBackdrop;
-            backdropList = mMovie.backdropList;
+        setUpTVShowImage();
 
-            if(mMovie.getBackdropUrl()!=null){
-                Glide.with(this).load(backdropList.get(imageNumber).getBackdropSizeW780()).into(movieImage);
-            }
-        }
+        setUpSwipe();
 
-        if (getIntent().hasExtra("TVSeries")) {
-            mTVSeries = getIntent().getParcelableExtra("TVSeries");
-            setTitle(getString(R.string.tv_series_name));
-            if(mTVSeries.getName()!=null && mTVSeries.getFirstAirDate()!=null)
-            movieName.setText(mTVSeries.getName()+" ("+mTVSeries.getFirstAirDate()+")");
+    }
 
-            movieImageNumber.setText((mTVSeries.lastLoadedBackdrop+1)+" of "+mTVSeries.numOfBackdrops);
-            imageCount = mTVSeries.numOfBackdrops;
-            imageNumber = mTVSeries.lastLoadedBackdrop;
-            backdropList = mTVSeries.backdropList;
-
-            if(mTVSeries.getBackdropUrl()!=null)
-            Glide.with(this).load(backdropList.get(imageNumber).getBackdropSizeW780()).into(movieImage);
-        }
-
+    private void setUpSwipe() {
         gestureObject = new GestureDetectorCompat(movieImage.getContext(), new GestureDetector.SimpleOnGestureListener(){
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -108,8 +84,48 @@ public class ImageDetailsActivity extends BaseActivity {
                 return true;
             }
         });
+    }
 
+    private void setUpTVShowImage() {
+        if (getIntent().hasExtra("TVSeries")) {
+            mTVSeries = getIntent().getParcelableExtra("TVSeries");
+            setTitle(getString(R.string.tv_series_name));
+            if(mTVSeries.getName()!=null && mTVSeries.getFirstAirDate()!=null)
+                movieName.setText(mTVSeries.getName()+" ("+mTVSeries.getFirstAirDate()+")");
 
+            movieImageNumber.setText((mTVSeries.lastLoadedBackdrop+1)+" of "+mTVSeries.numOfBackdrops);
+            imageCount = mTVSeries.numOfBackdrops;
+            imageNumber = mTVSeries.lastLoadedBackdrop;
+            backdropList = mTVSeries.backdropList;
+
+            if(mTVSeries.getBackdropUrl()!=null)
+                Glide.with(this).load(backdropList.get(imageNumber).getBackdropSizeW780()).into(movieImage);
+        }
+    }
+
+    private void setUpMovieImage() {
+        if (getIntent().hasExtra("Movie")) {
+            mMovie = getIntent().getParcelableExtra("Movie");
+            setTitle(getString(R.string.movies_label));
+
+            if(mMovie.getTitle()!=null && mMovie.getReleaseYear()!=null)
+                movieName.setText(mMovie.getTitle()+" ("+mMovie.getReleaseYear()+")");
+
+            movieImageNumber.setText((mMovie.lastLoadedBackdrop+1)+" of "+mMovie.numOfBackdrops);
+            imageCount = mMovie.numOfBackdrops;
+            imageNumber = mMovie.lastLoadedBackdrop;
+            backdropList = mMovie.backdropList;
+
+            if(mMovie.getBackdropUrl()!=null){
+                Glide.with(this).load(backdropList.get(imageNumber).getBackdropSizeW780()).into(movieImage);
+            }
+        }
+    }
+
+    private void setUpViews() {
+        movieName = (TextView) findViewById(R.id.image_details_movie_name);
+        movieImageNumber = (TextView) findViewById(R.id.image_details_num_of_images);
+        movieImage = (ImageView) findViewById(R.id.image_details_image);
     }
 
     @Override

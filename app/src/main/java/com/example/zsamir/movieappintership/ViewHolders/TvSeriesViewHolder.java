@@ -93,7 +93,7 @@ public class TvSeriesViewHolder extends RecyclerView.ViewHolder implements View.
             mTVSeriesImageWatch.setVisibility(View.GONE);
         }
 
-        Glide.with(mTvSeriesImage.getContext()).load(TVSeries.getPosterUrl()).centerCrop().into(mTvSeriesImage);
+        Glide.with(mTvSeriesImage.getContext()).load(TVSeries.getPosterUrl()).into(mTvSeriesImage);
     }
 
     @Override

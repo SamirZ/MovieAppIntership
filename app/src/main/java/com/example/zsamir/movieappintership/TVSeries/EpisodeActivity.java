@@ -25,33 +25,45 @@ import java.util.Locale;
 
 public class EpisodeActivity extends BaseActivity {
 
-    Episode episode;
-    TVSeriesDetails TVSeriesDetails;
-    ArrayList<EpisodeCast> actors = new ArrayList<>();
-    CastAdapter mCastAdapter = new CastAdapter(actors,0);
+    private Episode episode;
+    private TVSeriesDetails TVSeriesDetails;
+    private ArrayList<EpisodeCast> actors = new ArrayList<>();
+    private CastAdapter mCastAdapter = new CastAdapter(actors,0);
+
+    private TextView episodeName;
+    private TextView episodeCastLabel;
+    private TextView episodeDate;
+    private TextView episodeRating;
+    private TextView episodeRating2;
+    private TextView episodeOverview;
+    private View breakline;
+    private ImageView episodeImage;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_episode);
 
-        TextView episodeName = (TextView) findViewById(R.id.episode_details_name);
-        final TextView episodeCastLabel = (TextView) findViewById(R.id.episode_details_cast_label);
-        TextView episodeDate = (TextView) findViewById(R.id.episode_details_date);
-        TextView episodeRating = (TextView) findViewById(R.id.episode_details_rating);
-        TextView episodeRating2 = (TextView) findViewById(R.id.episode_details_rating_2);
-        final TextView episodeOverview = (TextView) findViewById(R.id.episode_details_overview);
-        final View breakline = findViewById(R.id.episode_break_line_details_2);
-        ImageView episodeImage = (ImageView) findViewById(R.id.episode_details_image);
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.episode_details_recyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(mCastAdapter);
+        setUpViews();
+
+        setUpCast();
 
         if(getIntent().hasExtra("EpisodeDetails")){
             episode = getIntent().getParcelableExtra("EpisodeDetails");
         }
 
+        setUpDetails();
+
+    }
+
+    private void setUpCast() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(mCastAdapter);
+    }
+
+    private void setUpDetails() {
         if(getIntent().hasExtra("TVSeriesDetails")){
             TVSeriesDetails = getIntent().getParcelableExtra("TVSeriesDetails");
             this.setTitle(TVSeriesDetails.getName());
@@ -61,7 +73,7 @@ public class EpisodeActivity extends BaseActivity {
                 public void success(EpisodeDetails response) {
                     if(response.getOverview()!=null){
                         if(response.getOverview().length()>1)
-                        episodeOverview.setText(response.getOverview());
+                            episodeOverview.setText(response.getOverview());
                         else{
                             episodeOverview.setVisibility(View.GONE);
                             breakline.setVisibility(View.GONE);
@@ -117,7 +129,18 @@ public class EpisodeActivity extends BaseActivity {
                 }
             }
         });
+    }
 
+    private void setUpViews() {
+        episodeName = (TextView) findViewById(R.id.episode_details_name);
+        episodeCastLabel = (TextView) findViewById(R.id.episode_details_cast_label);
+        episodeDate = (TextView) findViewById(R.id.episode_details_date);
+        episodeRating = (TextView) findViewById(R.id.episode_details_rating);
+        episodeRating2 = (TextView) findViewById(R.id.episode_details_rating_2);
+        episodeOverview = (TextView) findViewById(R.id.episode_details_overview);
+        breakline = findViewById(R.id.episode_break_line_details_2);
+        episodeImage = (ImageView) findViewById(R.id.episode_details_image);
+        recyclerView = (RecyclerView) findViewById(R.id.episode_details_recyclerView);
     }
 
     @Override

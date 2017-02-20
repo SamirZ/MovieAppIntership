@@ -7,7 +7,7 @@ import com.example.zsamir.movieappintership.LoginModules.Account;
 
 public class MovieAppApplication extends Application {
 
-    private static Account user;
+    private static Account user = null;
     private static String type;
 
     public static String getType() {

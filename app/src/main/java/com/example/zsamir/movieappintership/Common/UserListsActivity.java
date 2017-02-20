@@ -23,12 +23,17 @@ public class UserListsActivity extends BaseActivity {
 
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        final NonSwipeableViewPager mViewPager = (NonSwipeableViewPager) findViewById(R.id.container);
+        NonSwipeableViewPager mViewPager = (NonSwipeableViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        setType();
+
+    }
+
+    private void setType() {
         if(MovieAppApplication.isUserLoggedIn()){
 
             if(getIntent().hasExtra("TYPE")){
@@ -49,7 +54,6 @@ public class UserListsActivity extends BaseActivity {
             }
 
         }
-
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

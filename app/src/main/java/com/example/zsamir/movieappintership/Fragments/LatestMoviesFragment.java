@@ -37,8 +37,8 @@ public class LatestMoviesFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         mMovieAdapter.notifyDataSetChanged();
     }
 
@@ -76,14 +76,16 @@ public class LatestMoviesFragment extends Fragment {
         apiHandler.requestLatestMovies(page, new ApiHandler.MovieListListener() {
             @Override
             public void success(MovieList response) {
-                numberOfPages = response.getTotalPages();
-                // addition
-                for (Movie m: response.getMovies()) {
-                    if(!moviesList.contains(m))
-                        moviesList.add(m);
+                if(response!=null){
+                    numberOfPages = response.getTotalPages();
+                    // addition
+                    for (Movie m: response.getMovies()) {
+                        if(!moviesList.contains(m))
+                            moviesList.add(m);
+                    }
+                    //moviesList.addAll(response.getMovies());
+                    mMovieAdapter.notifyDataSetChanged();
                 }
-                //moviesList.addAll(response.getMovies());
-                mMovieAdapter.notifyDataSetChanged();
             }
         });
     }

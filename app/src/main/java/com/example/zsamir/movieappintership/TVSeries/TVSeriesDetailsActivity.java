@@ -18,6 +18,7 @@ import com.example.zsamir.movieappintership.Adapters.CastAdapter;
 import com.example.zsamir.movieappintership.Adapters.ImageAdapter;
 import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Common.GalleryActivity;
+import com.example.zsamir.movieappintership.Common.TrailerActivity;
 import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.LoginModules.Favorite;
 import com.example.zsamir.movieappintership.LoginModules.PostResponse;
@@ -39,23 +40,48 @@ import java.util.Locale;
 
 public class TVSeriesDetailsActivity extends BaseActivity {
 
-    TVSeries mTVSeries;
-    TVSeriesDetails mTVSeriesDetails;
-    Credits mCredits;
-    Images mTVSeriesImages = new Images();
+    private TVSeries mTVSeries;
+    private TVSeriesDetails mTVSeriesDetails;
+    private Credits mCredits;
+    private Images mTVSeriesImages = new Images();
     private boolean liked = false;
     private boolean watchlist = false;
 
-    List<Season> seasons = new ArrayList<>();
-    ArrayList<Cast> actors = new ArrayList<>();
-    ArrayList<Backdrop> backdrops = new ArrayList<>();
-    CastAdapter mCastAdapter = new CastAdapter(actors);
-    ImageAdapter mImageAdapter;
+    private List<Season> seasons = new ArrayList<>();
+    private ArrayList<Cast> actors = new ArrayList<>();
+    private ArrayList<Backdrop> backdrops = new ArrayList<>();
+    private CastAdapter mCastAdapter = new CastAdapter(actors);
+    private ImageAdapter mImageAdapter;
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-    }
+    private TextView mTvSeriesName;
+    private TextView mTvSeriesGenre;
+    private TextView mMovieOverview;
+    private TextView seeSeasons;
+    private TextView mTVSeriesDirectorLabel;
+    private TextView mTVSeriesDirector;
+    private TextView rateText;
+    private TextView mTVSeriesFirstAiringDate;
+    private TextView mRating;
+    private TextView mRating2;
+    private TextView mTVSeriesWritersLablel;
+    private TextView mTVSeriesWriters;
+    private TextView mTVSeriesSeasonsLabel;
+    private TextView mTVSeriesSeasonsYearsLabel;
+    private TextView mTVSeriesSeasons;
+    private TextView mTVSeriesSeasonsYears;
+    private TextView tvSeriesImagesLabel;
+    private TextView tvSeriesImagesSeeAll;
+    private TextView castLabel;
+    private TextView mTVSeriesStars;
+    private TextView mTVSeriesStarsLabel;
+
+    private View tvSeriesImagesBreakline;
+
+    private ImageView mTvSeriesImage;
+    private ImageView rateImage;
+
+    private RecyclerView mImageRecyclerView;
+    private RecyclerView mCastRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,45 +90,68 @@ public class TVSeriesDetailsActivity extends BaseActivity {
 
         if (getIntent().hasExtra("TVSeries")) {
             mTVSeries = getIntent().getParcelableExtra("TVSeries");
-            mImageAdapter = new ImageAdapter(backdrops, mTVSeries);
         }
 
+        setUpViews();
 
         setDetailedData();
+
         setKnowData();
 
-        RecyclerView mImageRecyclerView = (RecyclerView) findViewById(R.id.tv_series_images_recyclerView);
-        LinearLayoutManager layoutManagerImage = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        mImageRecyclerView.setLayoutManager(layoutManagerImage);
-        mImageRecyclerView.setAdapter(mImageAdapter);
+        setUpImages();
 
-        RecyclerView mCastRecyclerView = (RecyclerView) findViewById(R.id.tv_series_cast_recyclerView);
+        setUpCast();
+    }
+
+    private void setUpViews() {
+        mTvSeriesName = (TextView) findViewById(R.id.tv_series_details_name);
+        mTvSeriesGenre = (TextView) findViewById(R.id.tv_series_details_genre);
+        mMovieOverview = (TextView) findViewById(R.id.tv_series_details_overview);
+        seeSeasons = (TextView) findViewById(R.id.tv_series_seasons_see_all);
+        mTVSeriesDirectorLabel = (TextView) findViewById(R.id.tv_series_details_director_1);
+        mTVSeriesDirector = (TextView) findViewById(R.id.tv_series_details_director_2);
+        rateText = (TextView) findViewById(R.id.tv_series_details_rating_3);
+        mTVSeriesFirstAiringDate = (TextView) findViewById(R.id.tv_series_details_release_date);
+        mRating = (TextView) findViewById(R.id.tv_series_details_rating_1);
+        mRating2 = (TextView) findViewById(R.id.tv_series_details_rating_2);
+        mTVSeriesWritersLablel = (TextView) findViewById(R.id.tv_series_details_writers_1);
+        mTVSeriesWriters = (TextView) findViewById(R.id.tv_series_details_writers_2);
+        mTVSeriesSeasonsLabel = (TextView) findViewById(R.id.tv_series_details_seasons_1);
+        mTVSeriesSeasonsYearsLabel = (TextView) findViewById(R.id.tv_series_details_years_1);
+        mTVSeriesSeasons = (TextView) findViewById(R.id.tv_series_details_seasons_2);
+        mTVSeriesSeasonsYears = (TextView) findViewById(R.id.tv_series_details_years_2);
+        tvSeriesImagesLabel = (TextView) findViewById(R.id.tv_series_details_images_label);
+        tvSeriesImagesSeeAll = (TextView) findViewById(R.id.tv_series_see_all);
+        castLabel = (TextView) findViewById(R.id.tv_series_cast_label);
+        mTVSeriesStars = (TextView) findViewById(R.id.tv_series_details_stars_2);
+        mTVSeriesStarsLabel = (TextView) findViewById(R.id.tv_series_details_stars_1);
+
+        tvSeriesImagesBreakline = findViewById(R.id.tv_series_details_images_breakline);
+
+        mTvSeriesImage = (ImageView) findViewById(R.id.tv_series_details_image);
+        rateImage = (ImageView) findViewById(R.id.tv_series_details_star_image);
+
+        mImageRecyclerView = (RecyclerView) findViewById(R.id.tv_series_images_recyclerView);
+        mCastRecyclerView = (RecyclerView) findViewById(R.id.tv_series_cast_recyclerView);
+    }
+
+    private void setUpCast() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mCastRecyclerView.setLayoutManager(layoutManager);
         mCastRecyclerView.setAdapter(mCastAdapter);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (resultCode == RESULT_OK) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    recreate();
-                    // TO DO
-                    // UPDATE RESULT
-                }
-            });
-        }
+    private void setUpImages() {
+        mImageAdapter = new ImageAdapter(backdrops, mTVSeries);
+        LinearLayoutManager layoutManagerImage = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mImageRecyclerView.setLayoutManager(layoutManagerImage);
+        mImageRecyclerView.setAdapter(mImageAdapter);
     }
 
     private void setKnowData() {
-        TextView mTvSeriesName = (TextView) findViewById(R.id.tv_series_details_name);
         if(mTVSeries.getName()!=null && mTVSeries.getReleaseYear()!=null)
         mTvSeriesName.setText(mTVSeries.getName()+" ("+mTVSeries.getReleaseYear()+")");
 
-        TextView mTvSeriesGenre = (TextView) findViewById(R.id.tv_series_details_genre);
         if(mTVSeries.getTvSeriesGenres().size()>0){
             String s = "";
             for (int i =0;i<mTVSeries.getTvSeriesGenres().size();i++) {
@@ -116,21 +165,19 @@ public class TVSeriesDetailsActivity extends BaseActivity {
         else
             mTvSeriesGenre.setText(" ");
 
-        ImageView mTvSeriesImage = (ImageView) findViewById(R.id.tv_series_details_image);
         if(mTVSeries.getBackdropUrl()!=null){
             Glide.with(this).load(mTVSeries.getBackdropUrl()).into(mTvSeriesImage);
             mTvSeriesImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Intent i = new Intent(TVSeriesDetailsActivity.this, TrailerActivity.class);
-                    //i.putExtra("TVID",String.valueOf(mTVSeries.getId()));
-                    //startActivity(i);
+                    Intent i = new Intent(TVSeriesDetailsActivity.this, TrailerActivity.class);
+                    i.putExtra("TVID",mTVSeries);
+                    startActivity(i);
                 }
             });
         }
 
-        TextView seeGallery = (TextView) findViewById(R.id.tv_series_see_all);
-        seeGallery.setOnClickListener(new View.OnClickListener() {
+        tvSeriesImagesSeeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(view.getContext(), GalleryActivity.class);
@@ -141,7 +188,6 @@ public class TVSeriesDetailsActivity extends BaseActivity {
         });
 
 
-        TextView mMovieOverview = (TextView) findViewById(R.id.tv_series_details_overview);
         mMovieOverview.setText(mTVSeries.getOverview());
     }
 
@@ -154,46 +200,58 @@ public class TVSeriesDetailsActivity extends BaseActivity {
                 mTVSeriesDetails = response;
 
 
-                TextView seeSeasons = (TextView) findViewById(R.id.tv_series_seasons_see_all);
-                if(mTVSeriesDetails.getNumberOfSeasons()>0){
-                    seeSeasons.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent i = new Intent(view.getContext(), SeasonActivity.class);
-                            if(mTVSeriesDetails!=null)
-                                i.putExtra("TVSeriesDetails",mTVSeriesDetails);
-                            view.getContext().startActivity(i);
+
+                if(mTVSeriesDetails!=null){
+                    if(mTVSeriesDetails.getSeasons()!=null){
+                        if(mTVSeriesDetails.getNumberOfSeasons()>0){
+                            seeSeasons.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent i = new Intent(view.getContext(), SeasonActivity.class);
+                                    if(mTVSeriesDetails!=null)
+                                        i.putExtra("TVSeriesDetails",mTVSeriesDetails);
+                                    view.getContext().startActivity(i);
+                                }
+                            });
                         }
-                    });
-                }
-                else{
+                        else{
+                            seeSeasons.setVisibility(View.GONE);
+                        }
+                    }else{
+                        seeSeasons.setVisibility(View.GONE);
+                    }
+                }else{
                     seeSeasons.setVisibility(View.GONE);
                 }
 
-                TextView mTVSeriesDirectorLabel = (TextView) findViewById(R.id.tv_series_details_director_1);
-                TextView mTVSeriesDirector = (TextView) findViewById(R.id.tv_series_details_director_2);
-                if(response.getCreatedBy()!=null && response.getCreatedBy().size()>0)
-                    mTVSeriesDirector.setText(response.getCreatedBy().get(0).getName());
-                else{
+                if(response!=null){
+                    if(response.getCreatedBy()!=null && response.getCreatedBy().size()>0)
+                        mTVSeriesDirector.setText(response.getCreatedBy().get(0).getName());
+                    else{
+                        mTVSeriesDirector.setVisibility(View.GONE);
+                        mTVSeriesDirectorLabel.setVisibility(View.GONE);
+                    }
+                }else{
                     mTVSeriesDirector.setVisibility(View.GONE);
                     mTVSeriesDirectorLabel.setVisibility(View.GONE);
                 }
 
-                TextView mTVSeriesFirstAiringDate = (TextView) findViewById(R.id.tv_series_details_release_date);
-                if(response.getReleaseYear()!=null && response.getFinishYear()!=null)
-                    mTVSeriesFirstAiringDate.setText("TV Series ("+response.getReleaseYear()+"-"+response.getFinishYear()+")");
-                else
-                mTVSeriesFirstAiringDate.setVisibility(View.GONE);
+                if(response!=null) {
+                    if (response.getReleaseYear() != null && response.getFinishYear() != null)
+                        mTVSeriesFirstAiringDate.setText("TV Series (" + response.getReleaseYear() + "-" + response.getFinishYear() + ")");
+                    else
+                        mTVSeriesFirstAiringDate.setVisibility(View.GONE);
+                }else
+                    mTVSeriesFirstAiringDate.setVisibility(View.GONE);
 
-                TextView mRating = (TextView) findViewById(R.id.tv_series_details_rating_1);
-                TextView mRating2 = (TextView) findViewById(R.id.tv_series_details_rating_2);
-                if(response.getVoteAverage()!=null){
-                    mRating.setText(String.format(Locale.getDefault(),"%1$.1f",response.getVoteAverage()));
-                    mRating2.setText(getString(R.string.max_rating));
+
+                if(response!=null) {
+                    if (response.getVoteAverage() != null) {
+                        mRating.setText(String.format(Locale.getDefault(), "%1$.1f", response.getVoteAverage()));
+                        mRating2.setText(getString(R.string.max_rating));
+                    }
                 }
 
-                ImageView rateImage = (ImageView) findViewById(R.id.tv_series_details_star_image);
-                TextView rateText = (TextView) findViewById(R.id.tv_series_details_rating_3);
 
                 View.OnClickListener onClickListener = new View.OnClickListener() {
                     @Override
@@ -212,49 +270,52 @@ public class TVSeriesDetailsActivity extends BaseActivity {
                 rateText.setOnClickListener(onClickListener);
 
 
-                TextView mTVSeriesWritersLablel = (TextView) findViewById(R.id.tv_series_details_writers_1);
-                TextView mTVSeriesWriters = (TextView) findViewById(R.id.tv_series_details_writers_2);
                 String writers = "";
-                if(response.getCreatedBy().size() > 1) {
-                    for (int i = 0; i < response.getCreatedBy().size(); i++) {
-                        if (i != response.getCreatedBy().size() - 1)
-                            writers = writers + response.getCreatedBy().get(i).getName() + " ,";
-                        else
-                            writers = writers + response.getCreatedBy().get(i).getName();
+                if(response!=null) {
+                    if (response.getCreatedBy().size() > 1) {
+                        for (int i = 0; i < response.getCreatedBy().size(); i++) {
+                            if (i != response.getCreatedBy().size() - 1)
+                                writers = writers + response.getCreatedBy().get(i).getName() + " ,";
+                            else
+                                writers = writers + response.getCreatedBy().get(i).getName();
+                        }
+                        mTVSeriesWriters.setText(writers);
+                    } else {
+                        mTVSeriesWriters.setVisibility(View.GONE);
+                        mTVSeriesWritersLablel.setVisibility(View.GONE);
                     }
-                    mTVSeriesWriters.setText(writers);
-                }
-                else {
+                }else {
                     mTVSeriesWriters.setVisibility(View.GONE);
                     mTVSeriesWritersLablel.setVisibility(View.GONE);
                 }
 
-
-                TextView mTVSeriesSeasonsLabel = (TextView) findViewById(R.id.tv_series_details_seasons_1);
-                TextView mTVSeriesSeasonsYearsLabel = (TextView) findViewById(R.id.tv_series_details_years_1);
-                TextView mTVSeriesSeasons = (TextView) findViewById(R.id.tv_series_details_seasons_2);
-                TextView mTVSeriesSeasonsYears = (TextView) findViewById(R.id.tv_series_details_years_2);
-
-                if(response.getSeasons()!=null) {
-                    String seasonsText = "";
-                    String yearsText = "";
-                    seasons = response.getSeasons();
-                    for (int i = seasons.size() - 1; i >= 0; i--) {
-                        if(seasons.get(i).getSeasonNumber()!=0){
-                            seasonsText = seasonsText + seasons.get(i).getSeasonNumber() + " ";
-                            yearsText = yearsText + seasons.get(i).getAirYear() + " ";
+                if(response!=null) {
+                    if (response.getSeasons() != null) {
+                        String seasonsText = "";
+                        String yearsText = "";
+                        seasons = response.getSeasons();
+                        for (int i = seasons.size() - 1; i >= 0; i--) {
+                            if (seasons.get(i).getSeasonNumber() != 0) {
+                                seasonsText = seasonsText + seasons.get(i).getSeasonNumber() + " ";
+                                yearsText = yearsText + seasons.get(i).getAirYear() + " ";
+                            }
                         }
-                    }
-                    if(seasonsText.length()>1 && yearsText.length()>1){
-                        mTVSeriesSeasons.setText(seasonsText);
-                        mTVSeriesSeasonsYears.setText(yearsText);
-                    }else{
+                        if (seasonsText.length() > 1 && yearsText.length() > 1) {
+                            mTVSeriesSeasons.setText(seasonsText);
+                            mTVSeriesSeasonsYears.setText(yearsText);
+                        } else {
+                            mTVSeriesSeasons.setVisibility(View.GONE);
+                            mTVSeriesSeasonsLabel.setVisibility(View.GONE);
+                            mTVSeriesSeasonsYears.setVisibility(View.GONE);
+                            mTVSeriesSeasonsYearsLabel.setVisibility(View.GONE);
+                        }
+                    } else {
                         mTVSeriesSeasons.setVisibility(View.GONE);
                         mTVSeriesSeasonsLabel.setVisibility(View.GONE);
                         mTVSeriesSeasonsYears.setVisibility(View.GONE);
                         mTVSeriesSeasonsYearsLabel.setVisibility(View.GONE);
                     }
-                }else{
+                }else {
                     mTVSeriesSeasons.setVisibility(View.GONE);
                     mTVSeriesSeasonsLabel.setVisibility(View.GONE);
                     mTVSeriesSeasonsYears.setVisibility(View.GONE);
@@ -263,12 +324,6 @@ public class TVSeriesDetailsActivity extends BaseActivity {
             }
         });
 
-        final TextView tvSeriesImagesLabel = (TextView) findViewById(R.id.tv_series_details_images_label);
-        final TextView tvSeriesImagesSeeAll = (TextView) findViewById(R.id.tv_series_see_all);
-        final View tvSeriesImagesBreakline = findViewById(R.id.tv_series_details_images_breakline);
-        final TextView castLabel = (TextView) findViewById(R.id.tv_series_cast_label);
-        final TextView mTVSeriesStars = (TextView) findViewById(R.id.tv_series_details_stars_2);
-        final TextView mTVSeriesStarsLabel = (TextView) findViewById(R.id.tv_series_details_stars_1);
 
         apiHandler.requestTVSeriesImages(mTVSeries.getId(), new ApiHandler.ImagesListener() {
             @Override
@@ -432,6 +487,20 @@ public class TVSeriesDetailsActivity extends BaseActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(menuItem);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+
+        if(resultCode == RESULT_OK){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    recreate();
+                }
+            });
         }
     }
 }

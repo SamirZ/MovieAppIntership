@@ -1,5 +1,6 @@
 package com.example.zsamir.movieappintership.ViewHolders;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -15,12 +16,14 @@ import com.example.zsamir.movieappintership.LoginModules.PostResponse;
 import com.example.zsamir.movieappintership.LoginModules.Watchlist;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.TVSeries;
+import com.example.zsamir.movieappintership.Movies.MovieDetailsActivity;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.TVSeries.TVSeriesDetailsActivity;
 import com.example.zsamir.movieappintership.Widgets.OnSwipeTouchListener;
 
 import java.util.Locale;
 
-public class UserListViewHolder extends RecyclerView.ViewHolder{
+public class UserListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
     private TextView name;
     private TextView date;
@@ -30,13 +33,10 @@ public class UserListViewHolder extends RecyclerView.ViewHolder{
     private Movie movie;
     private TVSeries tvSeries;
     private Boolean clicked = false;
-    private UserListAdapter adapter;
 
 
     public UserListViewHolder(View itemView, final UserListAdapter adapter) {
         super(itemView);
-
-        this.adapter = adapter;
 
         name = (TextView) itemView.findViewById(R.id.result_name);
         date = (TextView) itemView.findViewById(R.id.result_date);
@@ -44,6 +44,8 @@ public class UserListViewHolder extends RecyclerView.ViewHolder{
         image = (ImageView) itemView.findViewById(R.id.result_image);
         delete = (TextView) itemView.findViewById(R.id.delete_item);
         delete.setVisibility(View.GONE);
+
+        image.setOnClickListener(this);
         itemView.setOnTouchListener(new OnSwipeTouchListener(itemView.getContext()) {
 
             public void onSwipeLeft() {
@@ -242,4 +244,18 @@ public class UserListViewHolder extends RecyclerView.ViewHolder{
         }
     }
 
+    @Override
+    public void onClick(View view) {
+        if(movie!=null){
+            Intent i = new Intent(view.getContext(), MovieDetailsActivity.class);
+            i.putExtra("Movie", movie);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            view.getContext().startActivity(i);
+        }else if(tvSeries!=null){
+            Intent i = new Intent(view.getContext(), TVSeriesDetailsActivity.class);
+            i.putExtra("TVSeries", tvSeries);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            view.getContext().startActivity(i);
+        }
+    }
 }
