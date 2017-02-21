@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,7 @@ import android.view.ViewGroup;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
 import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
-import com.example.zsamir.movieappintership.Modules.TvSeries;
-import com.example.zsamir.movieappintership.Modules.TvSeriesList;
+import com.example.zsamir.movieappintership.Modules.TVSeries;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
@@ -21,9 +19,9 @@ import java.util.ArrayList;
 public class LatestTVSeriesFragment extends Fragment {
 
     private static LatestTVSeriesFragment instance = null;
-    private ArrayList<TvSeries> tvSeriesList = new ArrayList<>();
+    private ArrayList<TVSeries> TVSeriesList = new ArrayList<>();
     private ApiHandler movieDbApi = ApiHandler.getInstance();
-    private TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(tvSeriesList);
+    private TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(TVSeriesList);
     int numberOfPages;
 
     public LatestTVSeriesFragment() {
@@ -37,6 +35,12 @@ public class LatestTVSeriesFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mTvSeriesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_latest_tvseries, container, false);
@@ -45,10 +49,10 @@ public class LatestTVSeriesFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        if(tvSeriesList.size()==0)
+        if(TVSeriesList.size()==0)
             loadLatestTvSeries(1);
         else{
-            tvSeriesList.clear();
+            TVSeriesList.clear();
             loadLatestTvSeries(1);
             mTvSeriesAdapter.notifyDataSetChanged();
         }
@@ -68,14 +72,14 @@ public class LatestTVSeriesFragment extends Fragment {
     private void loadLatestTvSeries(int page) {
         movieDbApi.requestLatestTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
-            public void success(TvSeriesList response) {
+            public void success(com.example.zsamir.movieappintership.Modules.TVSeriesList response) {
                 numberOfPages = response.getTotalPages();
                 //
-                for (TvSeries t: response.getTvSeries()) {
-                    if(!tvSeriesList.contains(t))
-                        tvSeriesList.add(t);
+                for (TVSeries t: response.getTVSeries()) {
+                    if(!TVSeriesList.contains(t))
+                        TVSeriesList.add(t);
                 }
-                //tvSeriesList.addAll(response.getTvSeries());
+                //TVSeriesList.addAll(response.getTVSeries());
                 mTvSeriesAdapter.notifyDataSetChanged();
             }
         });

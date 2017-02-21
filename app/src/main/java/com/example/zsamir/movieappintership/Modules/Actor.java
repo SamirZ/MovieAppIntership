@@ -3,7 +3,6 @@ package com.example.zsamir.movieappintership.Modules;
 import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -50,60 +49,16 @@ public class Actor implements Parcelable
     @Expose
     private String profilePath;
 
-    public boolean isAdult() {
-        return adult;
-    }
-
-    public void setAdult(boolean adult) {
-        this.adult = adult;
-    }
-
-    public List<String> getAlsoKnownAs() {
-        return alsoKnownAs;
-    }
-
-    public void setAlsoKnownAs(List<String> alsoKnownAs) {
-        this.alsoKnownAs = alsoKnownAs;
-    }
-
     public String getBiography() {
         return biography;
-    }
-
-    public void setBiography(String biography) {
-        this.biography = biography;
     }
 
     public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getDeathday() {
-        return deathday;
-    }
-
-    public void setDeathday(String deathday) {
-        this.deathday = deathday;
-    }
-
-    public int getGender() {
-        return gender;
-    }
-
-    public void setGender(int gender) {
-        this.gender = gender;
-    }
-
     public String getHomepage() {
         return homepage;
-    }
-
-    public void setHomepage(String homepage) {
-        this.homepage = homepage;
     }
 
     public int getId() {
@@ -112,14 +67,6 @@ public class Actor implements Parcelable
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getImdbId() {
-        return imdbId;
-    }
-
-    public void setImdbId(String imdbId) {
-        this.imdbId = imdbId;
     }
 
     public String getName() {
@@ -132,26 +79,6 @@ public class Actor implements Parcelable
 
     public String getPlaceOfBirth() {
         return placeOfBirth;
-    }
-
-    public void setPlaceOfBirth(String placeOfBirth) {
-        this.placeOfBirth = placeOfBirth;
-    }
-
-    public float getPopularity() {
-        return popularity;
-    }
-
-    public void setPopularity(float popularity) {
-        this.popularity = popularity;
-    }
-
-    public String getProfilePath() {
-        return profilePath;
-    }
-
-    public void setProfilePath(String profilePath) {
-        this.profilePath = profilePath;
     }
 
     public final static Parcelable.Creator<Actor> CREATOR = new Creator<Actor>() {

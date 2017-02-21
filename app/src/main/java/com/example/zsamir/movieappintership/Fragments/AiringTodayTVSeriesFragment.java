@@ -13,8 +13,7 @@ import com.example.zsamir.movieappintership.API.ApiHandler;
 
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
 import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
-import com.example.zsamir.movieappintership.Modules.TvSeries;
-import com.example.zsamir.movieappintership.Modules.TvSeriesList;
+import com.example.zsamir.movieappintership.Modules.TVSeries;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
@@ -22,9 +21,9 @@ import java.util.ArrayList;
 public class AiringTodayTVSeriesFragment extends Fragment {
 
     private static AiringTodayTVSeriesFragment instance = null;
-    ArrayList<TvSeries> tvSeriesList = new ArrayList<>();
+    ArrayList<TVSeries> TVSeriesList = new ArrayList<>();
     ApiHandler movieDbApi = ApiHandler.getInstance();
-    TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(tvSeriesList);
+    TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(TVSeriesList);
     int numberOfPages;
 
     public AiringTodayTVSeriesFragment() {
@@ -38,6 +37,12 @@ public class AiringTodayTVSeriesFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mTvSeriesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_airing_today_tvseries, container, false);
@@ -48,10 +53,10 @@ public class AiringTodayTVSeriesFragment extends Fragment {
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        if(tvSeriesList.size()==0)
+        if(TVSeriesList.size()==0)
             loadAiringTodayTvSeries(1);
         else{
-            tvSeriesList.clear();
+            TVSeriesList.clear();
             loadAiringTodayTvSeries(1);
             mTvSeriesAdapter.notifyDataSetChanged();
         }
@@ -71,10 +76,10 @@ public class AiringTodayTVSeriesFragment extends Fragment {
     private void loadAiringTodayTvSeries(int page) {
         movieDbApi.requestAiringTodayTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
-            public void success(TvSeriesList response) {
+            public void success(com.example.zsamir.movieappintership.Modules.TVSeriesList response) {
                 numberOfPages = response.getTotalPages();
                 Log.d("Total pages", String.valueOf(numberOfPages));
-                tvSeriesList.addAll(response.getTvSeries());
+                TVSeriesList.addAll(response.getTVSeries());
                 mTvSeriesAdapter.notifyDataSetChanged();
             }
         });

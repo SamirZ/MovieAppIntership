@@ -21,4 +21,5 @@
     <color name="colorBottomNav">#80212121</color>
     <color name="colorNavHeaderBreakLine2">#33d8d8d8</color>
     <color name="colorItemSelected">#4a4b4c</color>
+    <color name="colorCentralBreakLine">#403f41</color>
 </resources>

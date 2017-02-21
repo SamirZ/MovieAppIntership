@@ -7,10 +7,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.zsamir.movieappintership.Modules.Episode;
-import com.example.zsamir.movieappintership.Modules.TvSeries;
-import com.example.zsamir.movieappintership.Modules.TvSeriesDetails;
+import com.example.zsamir.movieappintership.Modules.TVSeriesDetails;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.TVSeries.EpisodeActivity;
+
+import java.util.Locale;
 
 public class EpisodeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
@@ -18,7 +19,7 @@ public class EpisodeViewHolder extends RecyclerView.ViewHolder implements View.O
     private TextView rating;
     private TextView airdate;
     private Episode episode;
-    private TvSeriesDetails tvSeriesDetails;
+    private TVSeriesDetails TVSeriesDetails;
 
     public EpisodeViewHolder(View itemView) {
         super(itemView);
@@ -30,30 +31,32 @@ public class EpisodeViewHolder extends RecyclerView.ViewHolder implements View.O
         itemView.setOnClickListener(this);
     }
 
-    public void bindEpisode(Episode episode, TvSeriesDetails tvSeriesDetails) {
+    public void bindEpisode(Episode episode, TVSeriesDetails TVSeriesDetails) {
 
-        if(tvSeriesDetails!=null){
-            this.tvSeriesDetails = tvSeriesDetails;
+        if(TVSeriesDetails !=null){
+            this.TVSeriesDetails = TVSeriesDetails;
         }
 
         if(episode!=null){
             this.episode = episode;
-        }
 
-        if(episode.getEpisodeNumber()>=0 && episode.getName()!=null)
-            name.setText(episode.getEpisodeNumber()+". "+episode.getName());
-        if(episode.getVoteAverage()>=0)
-            rating.setText(String.format("%.1f", episode.getVoteAverage())+" |");
-        if(episode.getAirDate()!=null)
-            if(episode.getAirDate().length()>1)
-            airdate.setText(episode.getAirDate());
+            if(episode.getEpisodeNumber()>=0 && episode.getName()!=null)
+                name.setText(episode.getEpisodeNumber()+". "+episode.getName());
+            if(episode.getVoteAverage()>=0) {
+                rating.setText(String.format(Locale.getDefault(), "%.1f", episode.getVoteAverage()));
+                rating.append(" |");
+            }
+            if(episode.getAirDate()!=null)
+                if(episode.getAirDate().length()>1)
+                    airdate.setText(episode.getAirDate());
+        }
     }
 
     @Override
     public void onClick(View v) {
         Intent i = new Intent(v.getContext(), EpisodeActivity.class);
         i.putExtra("EpisodeDetails",episode);
-        i.putExtra("TVSeriesDetails",tvSeriesDetails);
+        i.putExtra("TVSeriesDetails", TVSeriesDetails);
         if(!episode.getAirDate().equalsIgnoreCase("TBD")){
             v.getContext().startActivity(i);
         }else{

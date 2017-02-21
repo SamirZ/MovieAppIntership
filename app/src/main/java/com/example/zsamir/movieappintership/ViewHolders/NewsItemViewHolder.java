@@ -9,7 +9,6 @@ import com.example.zsamir.movieappintership.R;
 
 public class NewsItemViewHolder extends RecyclerView.ViewHolder {
 
-    private FeedItem feedItem;
     private TextView title;
     private TextView description;
     private TextView link;
@@ -22,7 +21,6 @@ public class NewsItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindFeedItem(FeedItem feedItem) {
-        this.feedItem = feedItem;
         if(feedItem.getTitle()!=null)
             title.setText(feedItem.getTitle());
         else

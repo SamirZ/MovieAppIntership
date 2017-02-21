@@ -1,30 +1,27 @@
 package com.example.zsamir.movieappintership.Common;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.ImageGalleryAdapter;
+import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
 import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.Modules.TvSeries;
+import com.example.zsamir.movieappintership.Modules.TVSeries;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
 
-import io.fabric.sdk.android.Fabric;
-
-public class GalleryActivity extends AppCompatActivity {
+public class GalleryActivity extends BaseActivity {
 
     ArrayList<Backdrop> backdrops = new ArrayList<>();
     Movie movie;
-    TvSeries tvSeries;
+    TVSeries TVSeries;
     ApiHandler apiHandler = ApiHandler.getInstance();
     ImageGalleryAdapter imageGalleryAdapter;
 
@@ -33,34 +30,47 @@ public class GalleryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
+        setMovieGallery();
+
+        setTVSeriesGallery();
+
+        setImages();
+
+    }
+
+    private void setImages() {
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.movie_gallery_recyclerView);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
+        mRecyclerView.setLayoutManager(gridLayoutManager );
+        mRecyclerView.setAdapter(imageGalleryAdapter);
+    }
+
+    private void setTVSeriesGallery() {
+        if(getIntent().hasExtra("TVSeries")){
+            setTitle(getString(R.string.tv_series_name));
+            TVSeries = getIntent().getParcelableExtra("TVSeries");
+            imageGalleryAdapter = new ImageGalleryAdapter(backdrops, TVSeries);
+            TextView name = (TextView)findViewById(R.id.image_gallery_name);
+            if(TVSeries.getName()!=null && TVSeries.getReleaseYear()!=null)
+                name.setText(getString(R.string.images)+" : "+ TVSeries.getName()+" ("+ TVSeries.getReleaseYear()+")");
+            loadInitialTVSeriesImages();
+        }
+    }
+
+    private void setMovieGallery() {
         if(getIntent().hasExtra("Movie")){
             setTitle(getString(R.string.movies_label));
             movie = getIntent().getParcelableExtra("Movie");
             imageGalleryAdapter = new ImageGalleryAdapter(backdrops,movie);
             TextView name = (TextView)findViewById(R.id.image_gallery_name);
             if(movie.getTitle()!=null && movie.getReleaseYear()!=null)
-            name.setText(getString(R.string.images)+" : "+movie.getTitle()+" ("+movie.getReleaseYear()+")");
+                name.setText(getString(R.string.images)+" : "+movie.getTitle()+" ("+movie.getReleaseYear()+")");
             loadInitialMovieImages();
         }
-        if(getIntent().hasExtra("TVSeries")){
-            setTitle(getString(R.string.tv_series_name));
-            tvSeries = getIntent().getParcelableExtra("TVSeries");
-            imageGalleryAdapter = new ImageGalleryAdapter(backdrops,tvSeries);
-            TextView name = (TextView)findViewById(R.id.image_gallery_name);
-            if(tvSeries.getName()!=null && tvSeries.getReleaseYear()!=null)
-            name.setText(getString(R.string.images)+" : "+tvSeries.getName()+" ("+tvSeries.getReleaseYear()+")");
-            loadInitialTVSeriesImages();
-        }
-
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.movie_gallery_recyclerView);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
-        mRecyclerView.setLayoutManager(gridLayoutManager );
-        mRecyclerView.setAdapter(imageGalleryAdapter);
-
     }
 
     private void loadInitialTVSeriesImages() {
-        apiHandler.requestTVSeriesImages(tvSeries.getId(), new ApiHandler.ImagesListener() {
+        apiHandler.requestTVSeriesImages(TVSeries.getId(), new ApiHandler.ImagesListener() {
             @Override
             public void success(Images response) {
                 backdrops.addAll(response.backdrops);

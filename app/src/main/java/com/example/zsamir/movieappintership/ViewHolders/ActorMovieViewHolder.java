@@ -21,7 +21,6 @@ public class ActorMovieViewHolder extends RecyclerView.ViewHolder implements Vie
 
     private Movie mMovie;
     private Cast mActor;
-    private Credits mCredits;
     private ImageView mMovieImage;
     private TextView mMovieName;
     private TextView mMovieRoleName;
@@ -31,14 +30,13 @@ public class ActorMovieViewHolder extends RecyclerView.ViewHolder implements Vie
         mMovieImage = (ImageView) itemView.findViewById(R.id.actor_movie_image);
         mMovieName = (TextView) itemView.findViewById(R.id.actor_movie_name);
         mMovieRoleName = (TextView) itemView.findViewById(R.id.actor_movie_role_name);
-
         itemView.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         Intent i = new Intent(view.getContext(), MovieDetailsActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.putExtra("Movie", mMovie);
         view.getContext().startActivity(i);
     }

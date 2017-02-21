@@ -7,24 +7,25 @@ import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.Modules.Backdrop;
 import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.Modules.TvSeries;
+import com.example.zsamir.movieappintership.Modules.TVSeries;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.ViewHolders.DetailsImagesViewHolder;
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<DetailsImagesViewHolder> {
+
     private List<Backdrop> backdrops;
     private Movie movie;
-    private TvSeries tvSeries;
+    private TVSeries TVSeries;
 
     public ImageAdapter(List<Backdrop> backdrops,Movie movie) {
         this.movie = movie;
         this.backdrops = backdrops;
     }
 
-    public ImageAdapter(List<Backdrop> backdrops, TvSeries tvSeries){
+    public ImageAdapter(List<Backdrop> backdrops, TVSeries TVSeries){
         this.backdrops = backdrops;
-        this.tvSeries = tvSeries;
+        this.TVSeries = TVSeries;
     }
 
     @Override
@@ -38,8 +39,8 @@ public class ImageAdapter extends RecyclerView.Adapter<DetailsImagesViewHolder> 
         Backdrop backdrop = backdrops.get(position);
         if(movie!=null)
             holder.bindImage(backdrop, movie, backdrops);
-        if(tvSeries!=null)
-            holder.bindImage(backdrop, tvSeries, backdrops);
+        if(TVSeries !=null)
+            holder.bindImage(backdrop, TVSeries, backdrops);
     }
 
     @Override

@@ -6,23 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.Modules.Episode;
-import com.example.zsamir.movieappintership.Modules.TvSeriesDetails;
+import com.example.zsamir.movieappintership.Modules.TVSeriesDetails;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.ViewHolders.EpisodeViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zsami on 19-Jan-17.
- */
 public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeViewHolder> {
 
     private List<Episode> episodeList;
-    private TvSeriesDetails tvSeriesDetails;
+    private TVSeriesDetails TVSeriesDetails;
 
-    public EpisodeAdapter(List<Episode> episodeList , TvSeriesDetails tvSeriesDetails){
+    public EpisodeAdapter(List<Episode> episodeList , TVSeriesDetails TVSeriesDetails){
         this.episodeList = episodeList;
-        this.tvSeriesDetails = tvSeriesDetails;
+        this.TVSeriesDetails = TVSeriesDetails;
     }
 
     @Override
@@ -34,7 +31,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeViewHolder> {
     @Override
     public void onBindViewHolder(EpisodeViewHolder holder, int position) {
         Episode episode = episodeList.get(position);
-        holder.bindEpisode(episode , tvSeriesDetails);
+        holder.bindEpisode(episode , TVSeriesDetails);
     }
 
     @Override

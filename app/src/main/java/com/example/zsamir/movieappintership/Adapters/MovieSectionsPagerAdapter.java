@@ -8,10 +8,6 @@ import com.example.zsamir.movieappintership.Fragments.HighestRatedMoviesFragment
 import com.example.zsamir.movieappintership.Fragments.LatestMoviesFragment;
 import com.example.zsamir.movieappintership.Fragments.PopularMoviesFragment;
 
-/**
- * Created by zsami on 06-Jan-17.
- */
-
 public class MovieSectionsPagerAdapter extends FragmentPagerAdapter {
 
     public MovieSectionsPagerAdapter(FragmentManager fm) {

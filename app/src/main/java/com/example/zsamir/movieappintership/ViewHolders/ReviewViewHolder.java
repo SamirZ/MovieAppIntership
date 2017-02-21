@@ -1,6 +1,5 @@
 package com.example.zsamir.movieappintership.ViewHolders;
 
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,12 +9,8 @@ import com.example.zsamir.movieappintership.Widgets.ExpandableTextView;
 import com.example.zsamir.movieappintership.Modules.MovieReview;
 import com.example.zsamir.movieappintership.R;
 
-/**
- * Created by zsami on 19-Jan-17.
- */
 public class ReviewViewHolder extends RecyclerView.ViewHolder {
 
-    private MovieReview review;
     private TextView name;
     private ExpandableTextView text;
     private TextView more;
@@ -28,7 +23,6 @@ public class ReviewViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindReview(MovieReview review) {
-        this.review = review;
 
         if(review.getAuthor()!=null)
             name.setText(review.getAuthor());

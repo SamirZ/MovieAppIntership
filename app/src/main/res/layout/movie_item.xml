@@ -7,16 +7,16 @@
     android:background="@color/colorBlack">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:scaleType="centerCrop"
+        android:layout_width="fill_parent"
+        android:layout_height="175dp"
+        android:scaleType="fitXY"
         android:adjustViewBounds="true"
         android:id="@+id/movie_image"/>
 
     <View
         android:layout_above="@+id/breakline"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="175dp"
         android:background="@drawable/gradient_3" />
 
 
@@ -88,6 +88,29 @@
             android:textColor="@color/colorMovieItemText"
             android:textSize="11sp"
             />
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/movie_favorites_image"
+            android:background="@drawable/like_2"/>
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_toLeftOf="@id/movie_favorites_image"
+            android:layout_toStartOf="@id/movie_favorites_image"
+            android:layout_centerVertical="true"
+            android:id="@+id/movie_bookmark_image"
+            android:background="@drawable/bookmark"/>
+
     </RelativeLayout>
 
 </RelativeLayout>

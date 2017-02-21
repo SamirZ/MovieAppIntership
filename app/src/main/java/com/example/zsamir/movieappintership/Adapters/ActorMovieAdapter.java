@@ -12,13 +12,9 @@ import com.example.zsamir.movieappintership.ViewHolders.ActorMovieViewHolder;
 
 import java.util.ArrayList;
 
-/**
- * Created by zsami on 31-Dec-16.
- */
-
 public class ActorMovieAdapter extends RecyclerView.Adapter<ActorMovieViewHolder>{
-    ArrayList<Movie> mMovies;
-    Cast mActor;
+    private ArrayList<Movie> mMovies;
+    private Cast mActor;
 
     public ActorMovieAdapter(ArrayList<Movie> mMovies, Cast mActor) {
         this.mMovies = mMovies;

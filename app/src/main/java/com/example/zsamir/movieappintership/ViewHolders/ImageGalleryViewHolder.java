@@ -9,9 +9,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.example.zsamir.movieappintership.Common.ImageDetailsActivity;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
-import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.Modules.TvSeries;
+import com.example.zsamir.movieappintership.Modules.TVSeries;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public class ImageGalleryViewHolder extends RecyclerView.ViewHolder implements V
     private List<Backdrop> backdropList;
     private Backdrop backdrop;
     private Movie movie;
-    private TvSeries tvSeries;
+    private TVSeries TVSeries;
     private ImageView mMovieImage;
 
     public ImageGalleryViewHolder(View itemView) {
@@ -35,15 +34,15 @@ public class ImageGalleryViewHolder extends RecyclerView.ViewHolder implements V
         this.movie = movie;
         this.backdropList = backdropList;
         if(backdrop.getBackdropSizeW300()!=null)
-            Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).fitCenter().into(mMovieImage);
+            Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
     }
 
-    public void bindImage(Backdrop backdrop , TvSeries tvSeries, List<Backdrop> backdropList){
+    public void bindImage(Backdrop backdrop , TVSeries TVSeries, List<Backdrop> backdropList){
         this.backdrop = backdrop;
-        this.tvSeries = tvSeries;
+        this.TVSeries = TVSeries;
         this.backdropList = backdropList;
         if(backdrop.getBackdropSizeW300()!=null)
-            Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).fitCenter().into(mMovieImage);
+            Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
     }
 
     @Override
@@ -63,8 +62,8 @@ public class ImageGalleryViewHolder extends RecyclerView.ViewHolder implements V
 
             view.getContext().startActivity(i);
         }
-        if(tvSeries!=null) {
-            TvSeries sendTVSeries = tvSeries;
+        if(TVSeries !=null) {
+            TVSeries sendTVSeries = TVSeries;
 
             sendTVSeries.numOfBackdrops = backdropList.size();
             sendTVSeries.lastLoadedBackdrop = findBackdropInList();

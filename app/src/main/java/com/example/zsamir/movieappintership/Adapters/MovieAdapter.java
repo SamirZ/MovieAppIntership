@@ -11,12 +11,9 @@ import com.example.zsamir.movieappintership.ViewHolders.MovieViewHolder;
 
 import java.util.ArrayList;
 
-/**
- * Created by zsami on 31-Dec-16.
- */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder>{
-    ArrayList<Movie> mMovies;
+    private ArrayList<Movie> mMovies;
 
     public MovieAdapter(ArrayList<Movie> mMovies) {
         this.mMovies = mMovies;
@@ -37,11 +34,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder>{
     @Override
     public int getItemCount() {
         return mMovies.size();
-    }
-
-    public void addItem(Movie movie) {
-        mMovies.add(0, movie);
-        notifyItemInserted(0);
     }
 
 }

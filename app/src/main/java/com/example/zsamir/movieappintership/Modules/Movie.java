@@ -72,7 +72,13 @@ public class Movie implements Parcelable {
     @SerializedName("vote_average")
     @Expose
     private float voteAverage;
+    @SerializedName("rating")
+    @Expose
+    private int rating;
 
+    public int getRating() {
+        return rating;
+    }
 
     public String getPosterPath() {
         return posterPath;
@@ -287,6 +293,7 @@ public class Movie implements Parcelable {
         dest.writeInt(this.voteCount);
         dest.writeByte(this.video ? (byte) 1 : (byte) 0);
         dest.writeFloat(this.voteAverage);
+        dest.writeInt(this.rating);
     }
 
     public Movie() {
@@ -310,6 +317,7 @@ public class Movie implements Parcelable {
         this.voteCount = in.readInt();
         this.video = in.readByte() != 0;
         this.voteAverage = in.readFloat();
+        this.rating = in.readInt();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {

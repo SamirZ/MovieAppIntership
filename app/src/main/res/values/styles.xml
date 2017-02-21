@@ -29,4 +29,9 @@
         <attr name="trimLength" format="integer" />
     </declare-styleable>
 
+    <style name="MyRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/ratingstars</item>
+        <item name="android:defaultWidth">10dp</item>
+    </style>
+
 </resources>

@@ -21,7 +21,7 @@ public class FeedItem {
         return link;
     }
 
-    public void setLink(String link) {
+    void setLink(String link) {
         this.link = link;
     }
 
@@ -29,7 +29,7 @@ public class FeedItem {
         return description;
     }
 
-    public void setDescription(String description) {
+    void setDescription(String description) {
         this.description = description;
     }
 
@@ -37,7 +37,7 @@ public class FeedItem {
         return author;
     }
 
-    public void setAuthor(String author) {
+    void setAuthor(String author) {
         this.author = author;
     }
 
@@ -45,7 +45,7 @@ public class FeedItem {
         return pubDate;
     }
 
-    public void setPubDate(String pubDate) {
+    void setPubDate(String pubDate) {
         this.pubDate = pubDate;
     }
 }

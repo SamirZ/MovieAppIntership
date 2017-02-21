@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="@string/rate_this"
+        android:icon="@android:drawable/stat_sys_upload_done"
+        android:id="@+id/action_rate"
+        app:showAsAction="always">
+    </item>
+
+</menu>

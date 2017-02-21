@@ -7,18 +7,11 @@
     android:background="@color/colorPrimaryDark"
     tools:context="com.example.zsamir.movieappintership.Common.SearchActivity">
 
-    <View
-        android:layout_above="@+id/search_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_marginTop="1dp"
-        android:layout_height="10dp"
-        android:background="@drawable/gradient_2" />
-
     <android.support.v7.widget.RecyclerView
-        android:paddingTop="5dp"
-        android:layout_marginBottom="5dp"
+        android:paddingBottom="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorImageGalleryTwo"
         android:id="@+id/search_recyclerView">
     </android.support.v7.widget.RecyclerView>
 

@@ -8,9 +8,16 @@ public class Videos {
 
     @SerializedName("id")
     @Expose
-    public Integer id;
+    private Integer id;
     @SerializedName("results")
     @Expose
-    public List<Video> videos = null;
+    private List<Video> videos = null;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public List<Video> getVideos() {
+        return videos;
+    }
 }

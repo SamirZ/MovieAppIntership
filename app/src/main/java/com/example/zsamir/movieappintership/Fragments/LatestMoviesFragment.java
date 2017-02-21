@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +34,12 @@ public class LatestMoviesFragment extends Fragment {
             instance = new LatestMoviesFragment();
         }
         return instance;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMovieAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -71,14 +76,16 @@ public class LatestMoviesFragment extends Fragment {
         apiHandler.requestLatestMovies(page, new ApiHandler.MovieListListener() {
             @Override
             public void success(MovieList response) {
-                numberOfPages = response.getTotalPages();
-                // addition
-                for (Movie m: response.getMovies()) {
-                    if(!moviesList.contains(m))
-                        moviesList.add(m);
+                if(response!=null){
+                    numberOfPages = response.getTotalPages();
+                    // addition
+                    for (Movie m: response.getMovies()) {
+                        if(!moviesList.contains(m))
+                            moviesList.add(m);
+                    }
+                    //moviesList.addAll(response.getMovies());
+                    mMovieAdapter.notifyDataSetChanged();
                 }
-                //moviesList.addAll(response.getMovies());
-                mMovieAdapter.notifyDataSetChanged();
             }
         });
     }

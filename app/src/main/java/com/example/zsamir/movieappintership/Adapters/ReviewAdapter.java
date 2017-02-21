@@ -9,17 +9,11 @@ import com.example.zsamir.movieappintership.Modules.MovieReview;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.ViewHolders.ReviewViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by zsami on 19-Jan-17.
- */
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewViewHolder>  {
 
-    List<MovieReview> movieReviews;
-
+    private List<MovieReview> movieReviews;
 
     public ReviewAdapter(List<MovieReview> movieReviews) {
         this.movieReviews = movieReviews;

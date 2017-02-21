@@ -1,7 +1,5 @@
 package com.example.zsamir.movieappintership.Adapters;
 
-
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +13,10 @@ import java.util.ArrayList;
 
 public class NewsFeedAdapter extends RecyclerView.Adapter<NewsItemViewHolder> {
 
-    ArrayList<FeedItem> feedItems;
-    Context context;
+    private ArrayList<FeedItem> feedItems;
 
-    public NewsFeedAdapter(ArrayList<FeedItem> feedItems, Context context) {
+    public NewsFeedAdapter(ArrayList<FeedItem> feedItems) {
         this.feedItems = feedItems;
-        this.context = context;
     }
 
     @Override
