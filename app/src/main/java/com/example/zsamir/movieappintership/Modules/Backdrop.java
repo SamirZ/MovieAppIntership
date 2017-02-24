@@ -44,8 +44,8 @@ public class Backdrop implements Parcelable
     // Backdrop image sizes
     private static final String BACKDROP_SIZE_W300 = "w300";
     private static final String BACKDROP_SIZE_W780 = "w780";
-    private static final String BACKDROP_SIZE_W1280 = "w1280";
-    private static final String BACKDROP_SIZE_ORIGINAL = "original";
+    //private static final String BACKDROP_SIZE_W1280 = "w1280";
+    //private static final String BACKDROP_SIZE_ORIGINAL = "original";
 
     public String getBackdropSizeW300(){
         return BASE_IMG_URL + BACKDROP_SIZE_W300 + filePath;
@@ -55,6 +55,7 @@ public class Backdrop implements Parcelable
         return BASE_IMG_URL + BACKDROP_SIZE_W780 + filePath;
     }
 
+    /*
     public String getBackdropSizeW1280(){
         return BASE_IMG_URL + BACKDROP_SIZE_W1280 + filePath;
     }
@@ -62,5 +63,6 @@ public class Backdrop implements Parcelable
     public String getBackdropSizeOriginal(){
         return BASE_IMG_URL + BACKDROP_SIZE_ORIGINAL + filePath;
     }
+    */
 
 }

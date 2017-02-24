@@ -45,7 +45,7 @@ public class ActorProfileActivity extends BaseActivity {
         if (getIntent().hasExtra("Actor")) {
             cast = getIntent().getParcelableExtra("Actor");
             mMovieAdapter = new ActorMovieAdapter(mMovies,cast);
-            ApiHandler.getInstance().requestActor(cast.id, new ApiHandler.ActorDetailsListener() {
+            ApiHandler.getInstance().requestActor(cast.getId(), new ApiHandler.ActorDetailsListener() {
                 @Override
                 public void success(Actor response) {
                     mActor = response;
@@ -57,7 +57,7 @@ public class ActorProfileActivity extends BaseActivity {
         if (getIntent().hasExtra("Actor1")) {
             episodeCast = getIntent().getParcelableExtra("Actor1");
             mMovieAdapter = new ActorMovieAdapter(mMovies,episodeCast.toCast());
-            ApiHandler.getInstance().requestActor(episodeCast.id, new ApiHandler.ActorDetailsListener() {
+            ApiHandler.getInstance().requestActor(episodeCast.getId(), new ApiHandler.ActorDetailsListener() {
                 @Override
                 public void success(Actor response) {
                     mActor = response;

@@ -1,12 +1,10 @@
 package com.example.zsamir.movieappintership.NewsFeed;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,13 +12,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Common.SearchActivity;
 import com.example.zsamir.movieappintership.Login.LoginActivity;
-import com.example.zsamir.movieappintership.Movies.MoviesActivity;
 import com.example.zsamir.movieappintership.R;
-import com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity;
 
 public class NewsFeedActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -42,6 +37,8 @@ public class NewsFeedActivity extends BaseActivity implements NavigationView.OnN
         setUpDrawer((DrawerLayout) findViewById(R.id.drawer_layout_news_feed), toolbar);
 
         setBottomNavigationBar((AHBottomNavigation) findViewById(R.id.bottom_navigation_news_feed),0);
+
+        checkFirstRun();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view_news_feed);
         navigationView.setNavigationItemSelectedListener(this);

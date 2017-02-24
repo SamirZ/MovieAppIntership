@@ -6,17 +6,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class SearchResult {
 
-    @SerializedName("page")
-    @Expose
-    public Integer page;
     @SerializedName("results")
     @Expose
-    public List<Result> results = null;
-    @SerializedName("total_results")
-    @Expose
-    public Integer totalResults;
-    @SerializedName("total_pages")
-    @Expose
-    public Integer totalPages;
+    private List<Result> results = null;
 
+    public List<Result> getResults() {
+        return results;
+    }
 }

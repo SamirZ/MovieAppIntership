@@ -4,8 +4,6 @@ package com.example.zsamir.movieappintership.LoginModules;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

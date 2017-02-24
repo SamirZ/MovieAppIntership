@@ -19,6 +19,8 @@ import com.example.zsamir.movieappintership.Adapters.ImageAdapter;
 import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Common.GalleryActivity;
 import com.example.zsamir.movieappintership.Common.TrailerActivity;
+import com.example.zsamir.movieappintership.Modules.TVShowDetails;
+import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.LoginModules.Favorite;
 import com.example.zsamir.movieappintership.LoginModules.PostResponse;
@@ -28,8 +30,6 @@ import com.example.zsamir.movieappintership.Modules.Cast;
 import com.example.zsamir.movieappintership.Modules.Credits;
 import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.Season;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
-import com.example.zsamir.movieappintership.Modules.TVSeriesDetails;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.Common.RatingActivity;
 
@@ -40,8 +40,8 @@ import java.util.Locale;
 
 public class TVSeriesDetailsActivity extends BaseActivity {
 
-    private TVSeries mTVSeries;
-    private TVSeriesDetails mTVSeriesDetails;
+    private TVShow mTVShow;
+    private TVShowDetails mTVShowDetails;
     private Credits mCredits;
     private Images mTVSeriesImages = new Images();
     private boolean liked = false;
@@ -89,7 +89,7 @@ public class TVSeriesDetailsActivity extends BaseActivity {
         setContentView(R.layout.activity_tvseries_details);
 
         if (getIntent().hasExtra("TVSeries")) {
-            mTVSeries = getIntent().getParcelableExtra("TVSeries");
+            mTVShow = getIntent().getParcelableExtra("TVSeries");
         }
 
         setUpViews();
@@ -142,36 +142,36 @@ public class TVSeriesDetailsActivity extends BaseActivity {
     }
 
     private void setUpImages() {
-        mImageAdapter = new ImageAdapter(backdrops, mTVSeries);
+        mImageAdapter = new ImageAdapter(backdrops, mTVShow);
         LinearLayoutManager layoutManagerImage = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mImageRecyclerView.setLayoutManager(layoutManagerImage);
         mImageRecyclerView.setAdapter(mImageAdapter);
     }
 
     private void setKnowData() {
-        if(mTVSeries.getName()!=null && mTVSeries.getReleaseYear()!=null)
-        mTvSeriesName.setText(mTVSeries.getName()+" ("+mTVSeries.getReleaseYear()+")");
+        if(mTVShow.getName()!=null && mTVShow.getReleaseYear()!=null)
+        mTvSeriesName.setText(mTVShow.getName()+" ("+ mTVShow.getReleaseYear()+")");
 
-        if(mTVSeries.getTvSeriesGenres().size()>0){
+        if(mTVShow.getTvSeriesGenres().size()>0){
             String s = "";
-            for (int i =0;i<mTVSeries.getTvSeriesGenres().size();i++) {
-                if(i!=mTVSeries.getTvSeriesGenres().size()-1)
-                    s = s + mTVSeries.getTvSeriesGenres().get(i) +", ";
+            for (int i = 0; i< mTVShow.getTvSeriesGenres().size(); i++) {
+                if(i!= mTVShow.getTvSeriesGenres().size()-1)
+                    s = s + mTVShow.getTvSeriesGenres().get(i) +", ";
                 else
-                    s = s + mTVSeries.getTvSeriesGenres().get(i);
+                    s = s + mTVShow.getTvSeriesGenres().get(i);
             }
             mTvSeriesGenre.setText(s);
         }
         else
             mTvSeriesGenre.setText(" ");
 
-        if(mTVSeries.getBackdropUrl()!=null){
-            Glide.with(this).load(mTVSeries.getBackdropUrl()).into(mTvSeriesImage);
+        if(mTVShow.getBackdropUrl()!=null){
+            Glide.with(this).load(mTVShow.getBackdropUrl()).into(mTvSeriesImage);
             mTvSeriesImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(TVSeriesDetailsActivity.this, TrailerActivity.class);
-                    i.putExtra("TVID",mTVSeries);
+                    i.putExtra("TVID", mTVShow);
                     startActivity(i);
                 }
             });
@@ -181,35 +181,35 @@ public class TVSeriesDetailsActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(view.getContext(), GalleryActivity.class);
-                if(mTVSeries!=null)
-                i.putExtra("TVSeries",mTVSeries);
+                if(mTVShow !=null)
+                i.putExtra("TVSeries", mTVShow);
                 view.getContext().startActivity(i);
             }
         });
 
 
-        mMovieOverview.setText(mTVSeries.getOverview());
+        mMovieOverview.setText(mTVShow.getOverview());
     }
 
     private void setDetailedData() {
         ApiHandler apiHandler = ApiHandler.getInstance();
-        apiHandler.requestTVSeriesDetails(mTVSeries.getId(), new ApiHandler.TvSeriesDetailsListener() {
+        apiHandler.requestTVSeriesDetails(mTVShow.getId(), new ApiHandler.TvSeriesDetailsListener() {
             @Override
-            public void success(TVSeriesDetails response) {
+            public void success(TVShowDetails response) {
 
-                mTVSeriesDetails = response;
+                mTVShowDetails = response;
 
 
 
-                if(mTVSeriesDetails!=null){
-                    if(mTVSeriesDetails.getSeasons()!=null){
-                        if(mTVSeriesDetails.getNumberOfSeasons()>0){
+                if(mTVShowDetails !=null){
+                    if(mTVShowDetails.getSeasons()!=null){
+                        if(mTVShowDetails.getNumberOfSeasons()>0){
                             seeSeasons.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     Intent i = new Intent(view.getContext(), SeasonActivity.class);
-                                    if(mTVSeriesDetails!=null)
-                                        i.putExtra("TVSeriesDetails",mTVSeriesDetails);
+                                    if(mTVShowDetails !=null)
+                                        i.putExtra("TVSeriesDetails", mTVShowDetails);
                                     view.getContext().startActivity(i);
                                 }
                             });
@@ -258,7 +258,7 @@ public class TVSeriesDetailsActivity extends BaseActivity {
                     public void onClick(View v) {
                         if(MovieAppApplication.isUserLoggedIn()){
                             Intent i = new Intent(TVSeriesDetailsActivity.this, RatingActivity.class);
-                            i.putExtra("TV",mTVSeries);
+                            i.putExtra("TV", mTVShow);
                             startActivityForResult(i,1);
                         }else{
                             showLoginDialog();
@@ -325,13 +325,13 @@ public class TVSeriesDetailsActivity extends BaseActivity {
         });
 
 
-        apiHandler.requestTVSeriesImages(mTVSeries.getId(), new ApiHandler.ImagesListener() {
+        apiHandler.requestTVSeriesImages(mTVShow.getId(), new ApiHandler.ImagesListener() {
             @Override
             public void success(Images response) {
                 mTVSeriesImages = response;
                 if(response!=null){
-                    if(mTVSeriesImages.backdrops.size()>0){
-                        backdrops.addAll(mTVSeriesImages.backdrops);
+                    if(mTVSeriesImages.getBackdrops().size()>0){
+                        backdrops.addAll(mTVSeriesImages.getBackdrops());
                         mImageAdapter.notifyDataSetChanged();
                     }else{
                         tvSeriesImagesLabel.setVisibility(View.GONE);
@@ -347,7 +347,7 @@ public class TVSeriesDetailsActivity extends BaseActivity {
         });
 
 
-        apiHandler.requestTVSeriesCredits(mTVSeries.getId(), new ApiHandler.CreditsListener() {
+        apiHandler.requestTVSeriesCredits(mTVShow.getId(), new ApiHandler.CreditsListener() {
             @Override
             public void success(Credits response) {
                 if(response!=null){
@@ -358,7 +358,7 @@ public class TVSeriesDetailsActivity extends BaseActivity {
                         mCastAdapter.notifyDataSetChanged();
                         if(actors.size()>0) {
                             for(int i=0;i<actors.size() && i<3;i++){
-                                sb.append(actors.get(i).name);
+                                sb.append(actors.get(i).getName());
                                 if(i!=2)
                                     sb.append(", ");
                             }
@@ -384,14 +384,14 @@ public class TVSeriesDetailsActivity extends BaseActivity {
 
         if(MovieAppApplication.isUserLoggedIn()){
             if(MovieAppApplication.getUser().getFavTVSeriesList()!=null)
-                if(MovieAppApplication.getUser().getFavTVSeriesList().contains(mTVSeries.getId())){
+                if(MovieAppApplication.getUser().getFavTVSeriesList().contains(mTVShow.getId())){
                     MenuItem item = menu.findItem(R.id.action_like_tv);
                     item.setIcon(ContextCompat.getDrawable(this,R.drawable.like_filled_menu));
                     liked = true;
                 }
 
             if(MovieAppApplication.getUser().getWatchlistTVSeriesList()!=null)
-                if(MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(mTVSeries.getId())){
+                if(MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(mTVShow.getId())){
                     MenuItem item = menu.findItem(R.id.action_watchlist_tv);
                     item.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_filled_menu));
                     watchlist = true;
@@ -410,12 +410,12 @@ public class TVSeriesDetailsActivity extends BaseActivity {
             case R.id.action_like_tv:
                 if(!liked && MovieAppApplication.isUserLoggedIn()){
                     menuItem.setIcon(ContextCompat.getDrawable(this,R.drawable.like_filled_menu));
-                    if(!MovieAppApplication.getUser().getFavTVSeriesList().contains(mTVSeries.getId())){
-                        MovieAppApplication.getUser().addToFavoriteTVSeriesList(mTVSeries.getId());
+                    if(!MovieAppApplication.getUser().getFavTVSeriesList().contains(mTVShow.getId())){
+                        MovieAppApplication.getUser().addToFavoriteTVSeriesList(mTVShow.getId());
 
                         ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
                                 MovieAppApplication.getUser().getSessionId(),
-                                new Favorite("tv",mTVSeries.getId(),true),
+                                new Favorite("tv", mTVShow.getId(),true),
                                 new ApiHandler.PostResponseListener() {
                                     @Override
                                     public void success(PostResponse response) {
@@ -427,12 +427,12 @@ public class TVSeriesDetailsActivity extends BaseActivity {
                     liked = true;
                 }else if(liked && MovieAppApplication.isUserLoggedIn()){
                     menuItem.setIcon(ContextCompat.getDrawable(this,R.drawable.like_menu));
-                    if(MovieAppApplication.getUser().getFavTVSeriesList().contains(mTVSeries.getId())){
-                        MovieAppApplication.getUser().removeFromFavoriteTVSeriesList(mTVSeries.getId());
+                    if(MovieAppApplication.getUser().getFavTVSeriesList().contains(mTVShow.getId())){
+                        MovieAppApplication.getUser().removeFromFavoriteTVSeriesList(mTVShow.getId());
 
                         ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
                                 MovieAppApplication.getUser().getSessionId(),
-                                new Favorite("tv",mTVSeries.getId(),false),
+                                new Favorite("tv", mTVShow.getId(),false),
                                 new ApiHandler.PostResponseListener() {
                                     @Override
                                     public void success(PostResponse response) {
@@ -449,12 +449,12 @@ public class TVSeriesDetailsActivity extends BaseActivity {
             case R.id.action_watchlist_tv:
                 if(!watchlist && MovieAppApplication.isUserLoggedIn()){
                     menuItem.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_filled_menu));
-                    if(!MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(mTVSeries.getId())){
-                        MovieAppApplication.getUser().addToWatchlistTVSeriesList(mTVSeries.getId());
+                    if(!MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(mTVShow.getId())){
+                        MovieAppApplication.getUser().addToWatchlistTVSeriesList(mTVShow.getId());
 
                         ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
                                 MovieAppApplication.getUser().getSessionId(),
-                                new Watchlist("tv",mTVSeries.getId(),true),
+                                new Watchlist("tv", mTVShow.getId(),true),
                                 new ApiHandler.PostResponseListener() {
                                     @Override
                                     public void success(PostResponse response) {
@@ -466,12 +466,12 @@ public class TVSeriesDetailsActivity extends BaseActivity {
                     watchlist = true;
                 }else if(watchlist && MovieAppApplication.isUserLoggedIn()){
                     menuItem.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_menu));
-                    if(MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(mTVSeries.getId())){
-                        MovieAppApplication.getUser().removeFromWatchlistTVSeriesList(mTVSeries.getId());
+                    if(MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(mTVShow.getId())){
+                        MovieAppApplication.getUser().removeFromWatchlistTVSeriesList(mTVShow.getId());
 
                         ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
                                 MovieAppApplication.getUser().getSessionId(),
-                                new Watchlist("tv",mTVSeries.getId(),false),
+                                new Watchlist("tv", mTVShow.getId(),false),
                                 new ApiHandler.PostResponseListener() {
                                     @Override
                                     public void success(PostResponse response) {

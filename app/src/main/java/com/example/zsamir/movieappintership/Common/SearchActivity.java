@@ -99,9 +99,9 @@ public class SearchActivity extends BaseActivity {
         ApiHandler.getInstance().requestSearch(query, page, new ApiHandler.SearchResultListener() {
             @Override
             public void success(SearchResult response) {
-                resultList.addAll(response.results);
+                resultList.addAll(response.getResults());
                 for (int i=0;i<resultList.size();i++){
-                    if(resultList.get(i).mediaType.equalsIgnoreCase("person")){
+                    if(resultList.get(i).getMediaType().equalsIgnoreCase("person")){
                         resultList.remove(i);
                     }
                 }
@@ -117,9 +117,9 @@ public class SearchActivity extends BaseActivity {
         ApiHandler.getInstance().requestSearch(query, page, new ApiHandler.SearchResultListener() {
             @Override
             public void success(SearchResult response) {
-                resultList.addAll(response.results);
+                resultList.addAll(response.getResults());
                 for (int i=0;i<resultList.size();i++){
-                    if(resultList.get(i).mediaType.equalsIgnoreCase("person")){
+                    if(resultList.get(i).getMediaType().equalsIgnoreCase("person")){
                         resultList.remove(i);
                     }
                 }

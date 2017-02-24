@@ -5,21 +5,11 @@ import java.util.List;
 
 public class MovieList {
 
-    @SerializedName("page")
-    int page;
-
     @SerializedName("results")
-    List<Movie> movies;
+    private List<Movie> movies = null;
 
     @SerializedName("total_pages")
-    int totalPages;
-
-    @SerializedName("total_results")
-    int totalResults;
-
-    public int getPage() {
-        return page;
-    }
+    private int totalPages;
 
     public List<Movie> getMovies() {
         return movies;
@@ -27,9 +17,5 @@ public class MovieList {
 
     public int getTotalPages() {
         return totalPages;
-    }
-
-    public int getTotalResults() {
-        return totalResults;
     }
 }

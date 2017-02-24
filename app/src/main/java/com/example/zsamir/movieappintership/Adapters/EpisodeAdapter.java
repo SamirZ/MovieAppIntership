@@ -6,20 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.Modules.Episode;
-import com.example.zsamir.movieappintership.Modules.TVSeriesDetails;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.ViewHolders.EpisodeViewHolder;
+import com.example.zsamir.movieappintership.Modules.TVShowDetails;
 
 import java.util.List;
 
 public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeViewHolder> {
 
     private List<Episode> episodeList;
-    private TVSeriesDetails TVSeriesDetails;
+    private TVShowDetails TVShowDetails;
 
-    public EpisodeAdapter(List<Episode> episodeList , TVSeriesDetails TVSeriesDetails){
+    public EpisodeAdapter(List<Episode> episodeList , TVShowDetails TVShowDetails){
         this.episodeList = episodeList;
-        this.TVSeriesDetails = TVSeriesDetails;
+        this.TVShowDetails = TVShowDetails;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeViewHolder> {
     @Override
     public void onBindViewHolder(EpisodeViewHolder holder, int position) {
         Episode episode = episodeList.get(position);
-        holder.bindEpisode(episode , TVSeriesDetails);
+        holder.bindEpisode(episode , TVShowDetails);
     }
 
     @Override

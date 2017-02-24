@@ -184,6 +184,12 @@ public class BaseActivity extends AppCompatActivity{
                                         sharedPreferences.edit().remove("USER").apply();
                                         sharedPreferences.edit().remove("PASSWORD").apply();
 
+                                        if(sharedPreferences.contains("movieNotif"))
+                                            sharedPreferences.edit().remove("movieNotif").apply();
+
+                                        if(sharedPreferences.contains("tvNotif"))
+                                            sharedPreferences.edit().remove("tvNotif").apply();
+
                                         //Restart activity
                                         runOnUiThread(new Runnable() {
                                             @Override
@@ -245,16 +251,19 @@ public class BaseActivity extends AppCompatActivity{
     public void startNewsFeedActivity() {
         Intent intent = new Intent(this,NewsFeedActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void startMoviesActivity() {
         Intent intent = new Intent(this,MoviesActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void startTVSeriesActivity() {
         Intent intent = new Intent(this,TVSeriesActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void setBottomNavigationBar(AHBottomNavigation bottomNavigation,final int p) {

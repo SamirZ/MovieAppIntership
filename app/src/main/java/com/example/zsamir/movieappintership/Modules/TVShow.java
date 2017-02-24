@@ -8,58 +8,54 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TVSeries implements Parcelable {
+public class TVShow extends ImageFormat implements Parcelable {
 
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
+
     @SerializedName("popularity")
     @Expose
     private float popularity;
+
     @SerializedName("id")
     @Expose
     private int id;
+
     @SerializedName("backdrop_path")
     @Expose
     private String backdropPath;
+
     @SerializedName("vote_average")
     @Expose
     private float voteAverage;
+
     @SerializedName("overview")
     @Expose
     private String overview;
+
     @SerializedName("first_air_date")
     @Expose
     private String firstAirDate;
+
     @SerializedName("origin_country")
     @Expose
     private List<String> originCountry = null;
+
     @SerializedName("genre_ids")
     @Expose
     private int[] genreIds  = new int[0];
-    @SerializedName("original_language")
-    @Expose
-    private String originalLanguage;
-    @SerializedName("vote_count")
-    @Expose
-    private int voteCount;
+
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("original_name")
-    @Expose
-    private String originalName;
+
     @SerializedName("rating")
     @Expose
     private int rating;
 
     public int getRating() {
         return rating;
-    }
-
-
-    public String getBackdropPath() {
-        return backdropPath;
     }
 
     public void setBackdropPath(String backdropPath) {
@@ -116,11 +112,7 @@ public class TVSeries implements Parcelable {
         return s[0];
     }
 
-    public void setFirstAirDate(String firstAirDate) {
-        this.firstAirDate = firstAirDate;
-    }
-
-    public int[] getGenres() {
+    private int[] getGenres() {
         return genreIds;
     }
 
@@ -128,16 +120,12 @@ public class TVSeries implements Parcelable {
         List<String> genres = new ArrayList<>();
         int[] ids = getGenres();
         for (int i=0; i<getGenres().length; i++) {
-            TVSeriesGenres genre = TVSeriesGenres.getById(ids[i]);
+            TVShowGenres genre = TVShowGenres.getById(ids[i]);
             if (genre != null) {
                 genres.add(genre.getTitle());
             }
         }
         return genres;
-    }
-
-    public void setGenres(int[] genres) {
-        this.genreIds = genres;
     }
 
     public int getId() {
@@ -156,60 +144,16 @@ public class TVSeries implements Parcelable {
         this.name = name;
     }
 
-    public String getOriginalLanguage() {
-        return originalLanguage;
-    }
-
-    public void setOriginalLanguage(String originalLanguage) {
-        this.originalLanguage = originalLanguage;
-    }
-
-    public String getOriginalName() {
-        return originalName;
-    }
-
-    public void setOriginalName(String originalName) {
-        this.originalName = originalName;
-    }
-
     public String getOverview() {
         return overview;
-    }
-
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
-    public float getPopularity() {
-        return popularity;
-    }
-
-    public void setPopularity(float popularity) {
-        this.popularity = popularity;
     }
 
     public String getPosterPath() {
         return posterPath;
     }
 
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
-    }
-
     public float getVoteAverage() {
         return voteAverage;
-    }
-
-    public void setVoteAverage(float voteAverage) {
-        this.voteAverage = voteAverage;
-    }
-
-    public int getVoteCount() {
-        return voteCount;
-    }
-
-    public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
     }
 
     public int numOfBackdrops;
@@ -217,31 +161,12 @@ public class TVSeries implements Parcelable {
 
     public List<Backdrop> backdropList;
 
-    private static final String BASE_IMG_URL = "http://image.tmdb.org/t/p/";
-    // Poster image sizes
-    private static final String POSTER_SIZE_W92 = "w92";
-    private static final String POSTER_SIZE_W154 = "w154";
-    private static final String POSTER_SIZE_W185 = "w185";
-    private static final String POSTER_SIZE_W342 = "w342";
-    private static final String POSTER_SIZE_W500 = "w500";
-    private static final String POSTER_W780 = "w780";
-    private static final String POSTER_SIZE_ORIGINAL = "original";
-
-    // Backdrop image sizes
-    private static final String BACKDROP_SIZE_W300 = "w300";
-    private static final String BACKDROP_SIZE_W780 = "w780";
-    private static final String BACKDROP_SIZE_W1280 = "w1280";
-    private static final String BACKDROP_SIZE_ORIGINAL = "original";
     public String getPosterUrl() {
         return BASE_IMG_URL + POSTER_SIZE_W185 + posterPath;
     }
 
     public String getBackdropUrl() {
         return BASE_IMG_URL + BACKDROP_SIZE_W1280+ backdropPath;
-    }
-
-    public String getBackdropSizeOriginalUrl() {
-        return BASE_IMG_URL + BACKDROP_SIZE_ORIGINAL+ backdropPath;
     }
 
 
@@ -261,20 +186,17 @@ public class TVSeries implements Parcelable {
         dest.writeString(this.firstAirDate);
         dest.writeStringList(this.originCountry);
         dest.writeIntArray(this.genreIds);
-        dest.writeString(this.originalLanguage);
-        dest.writeInt(this.voteCount);
         dest.writeString(this.name);
-        dest.writeString(this.originalName);
         dest.writeInt(this.numOfBackdrops);
         dest.writeInt(this.lastLoadedBackdrop);
         dest.writeTypedList(this.backdropList);
         dest.writeInt(this.rating);
     }
 
-    public TVSeries() {
+    public TVShow() {
     }
 
-    public TVSeries(String posterPath, String backdropPath, float voteAverage, String overview, String firstAirDate, int[] genreIds, String name, int id) {
+    public TVShow(String posterPath, String backdropPath, float voteAverage, String overview, String firstAirDate, int[] genreIds, String name, int id) {
         this.posterPath = posterPath;
         this.backdropPath = backdropPath;
         this.voteAverage = voteAverage;
@@ -285,7 +207,7 @@ public class TVSeries implements Parcelable {
         this.id = id;
     }
 
-    protected TVSeries(Parcel in) {
+    protected TVShow(Parcel in) {
         this.posterPath = in.readString();
         this.popularity = in.readFloat();
         this.id = in.readInt();
@@ -295,25 +217,22 @@ public class TVSeries implements Parcelable {
         this.firstAirDate = in.readString();
         this.originCountry = in.createStringArrayList();
         this.genreIds = in.createIntArray();
-        this.originalLanguage = in.readString();
-        this.voteCount = in.readInt();
         this.name = in.readString();
-        this.originalName = in.readString();
         this.numOfBackdrops = in.readInt();
         this.lastLoadedBackdrop = in.readInt();
         this.backdropList = in.createTypedArrayList(Backdrop.CREATOR);
         this.rating = in.readInt();
     }
 
-    public static final Creator<TVSeries> CREATOR = new Creator<TVSeries>() {
+    public static final Creator<TVShow> CREATOR = new Creator<TVShow>() {
         @Override
-        public TVSeries createFromParcel(Parcel source) {
-            return new TVSeries(source);
+        public TVShow createFromParcel(Parcel source) {
+            return new TVShow(source);
         }
 
         @Override
-        public TVSeries[] newArray(int size) {
-            return new TVSeries[size];
+        public TVShow[] newArray(int size) {
+            return new TVShow[size];
         }
     };
 }

@@ -16,7 +16,7 @@
         android:background="@color/colorPrimaryDark"
         android:fitsSystemWindows="true"
         android:label="@string/tv_series_name"
-        tools:context="com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity">
+        tools:context="com.example.zsamir.movieappintership.TVShow.TVSeriesActivity">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"

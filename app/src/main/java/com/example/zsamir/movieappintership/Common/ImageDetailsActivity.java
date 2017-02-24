@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
 import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
+import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.List;
 public class ImageDetailsActivity extends BaseActivity {
 
     private Movie mMovie;
-    private TVSeries mTVSeries;
+    private TVShow mTVShow;
     private ImageView movieImage;
     private TextView movieImageNumber;
     private TextView movieName;
@@ -61,8 +61,8 @@ public class ImageDetailsActivity extends BaseActivity {
                         if(mMovie!=null) {
                             Glide.with(imageDetailsActivity).load(mMovie.backdropList.get(imageNumber).getBackdropSizeW780()).into(movieImage);
                         }
-                        if(mTVSeries!=null) {
-                            Glide.with(imageDetailsActivity).load(mTVSeries.backdropList.get(imageNumber).getBackdropSizeW780()).into(movieImage);
+                        if(mTVShow !=null) {
+                            Glide.with(imageDetailsActivity).load(mTVShow.backdropList.get(imageNumber).getBackdropSizeW780()).into(movieImage);
                         }
                     }
                 }
@@ -77,8 +77,8 @@ public class ImageDetailsActivity extends BaseActivity {
                         movieImageNumber.setText((imageNumber+1)+" of "+imageCount);
                         if(mMovie!=null)
                             Glide.with(movieImage.getContext()).load(mMovie.backdropList.get(imageNumber).getBackdropSizeW780()).into(movieImage);
-                        if(mTVSeries!=null)
-                            Glide.with(movieImage.getContext()).load(mTVSeries.backdropList.get(imageNumber).getBackdropSizeW780()).into(movieImage);
+                        if(mTVShow !=null)
+                            Glide.with(movieImage.getContext()).load(mTVShow.backdropList.get(imageNumber).getBackdropSizeW780()).into(movieImage);
                     }
                 }
                 return true;
@@ -88,17 +88,17 @@ public class ImageDetailsActivity extends BaseActivity {
 
     private void setUpTVShowImage() {
         if (getIntent().hasExtra("TVSeries")) {
-            mTVSeries = getIntent().getParcelableExtra("TVSeries");
+            mTVShow = getIntent().getParcelableExtra("TVSeries");
             setTitle(getString(R.string.tv_series_name));
-            if(mTVSeries.getName()!=null && mTVSeries.getFirstAirDate()!=null)
-                movieName.setText(mTVSeries.getName()+" ("+mTVSeries.getFirstAirDate()+")");
+            if(mTVShow.getName()!=null && mTVShow.getFirstAirDate()!=null)
+                movieName.setText(mTVShow.getName()+" ("+ mTVShow.getFirstAirDate()+")");
 
-            movieImageNumber.setText((mTVSeries.lastLoadedBackdrop+1)+" of "+mTVSeries.numOfBackdrops);
-            imageCount = mTVSeries.numOfBackdrops;
-            imageNumber = mTVSeries.lastLoadedBackdrop;
-            backdropList = mTVSeries.backdropList;
+            movieImageNumber.setText((mTVShow.lastLoadedBackdrop+1)+" of "+ mTVShow.numOfBackdrops);
+            imageCount = mTVShow.numOfBackdrops;
+            imageNumber = mTVShow.lastLoadedBackdrop;
+            backdropList = mTVShow.backdropList;
 
-            if(mTVSeries.getBackdropUrl()!=null)
+            if(mTVShow.getBackdropUrl()!=null)
                 Glide.with(this).load(backdropList.get(imageNumber).getBackdropSizeW780()).into(movieImage);
         }
     }

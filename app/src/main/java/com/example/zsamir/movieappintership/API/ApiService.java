@@ -17,8 +17,8 @@ import com.example.zsamir.movieappintership.Modules.MovieList;
 import com.example.zsamir.movieappintership.Modules.MovieReviews;
 import com.example.zsamir.movieappintership.Modules.SearchResult;
 import com.example.zsamir.movieappintership.Modules.SeasonDetails;
-import com.example.zsamir.movieappintership.Modules.TVSeriesDetails;
-import com.example.zsamir.movieappintership.Modules.TVSeriesList;
+import com.example.zsamir.movieappintership.Modules.TVShowList;
+import com.example.zsamir.movieappintership.Modules.TVShowDetails;
 import com.example.zsamir.movieappintership.Modules.Videos;
 
 import retrofit2.Call;
@@ -36,6 +36,9 @@ interface ApiService {
 
     @GET("movie/top_rated")
     Call<MovieList> fetchHighestRatedMovies(@Query("api_key") String apiKey, @Query("page") int page);
+
+    @GET("movie/upcoming")
+    Call<MovieList> fetchUpcomingMovies(@Query("api_key") String apiKey, @Query("page") int page);
 
     @GET("movie/{id}")
     Call<MovieDetails> fetchMovie(@Path("id") int movieId, @Query("api_key") String apiKey);
@@ -66,19 +69,19 @@ interface ApiService {
     Call<MovieList> fetchLatestMovies(@Query("api_key") String apiKey, @Query("language") String language, @Query("sort_by") String sortBy, @Query("page") int page, @Query("release_date.lte") String releaseDate, @Query("vote_average.gte") int voteAverage);
 
     @GET("tv/popular")
-    Call<TVSeriesList> fetchPopularTvSeries(@Query("api_key") String apiKey, @Query("page") int page);
+    Call<TVShowList> fetchPopularTvSeries(@Query("api_key") String apiKey, @Query("page") int page);
 
     @GET("tv/top_rated")
-    Call<TVSeriesList> fetchHighestRatedTvSeries(@Query("api_key") String apiKey, @Query("page") int page);
+    Call<TVShowList> fetchHighestRatedTvSeries(@Query("api_key") String apiKey, @Query("page") int page);
 
     @GET("tv/airing_today")
-    Call<TVSeriesList> fetchAiringTodayTvSeries(@Query("api_key") String apiKey, @Query("page") int page);
+    Call<TVShowList> fetchAiringTodayTvSeries(@Query("api_key") String apiKey, @Query("page") int page);
 
     @GET("discover/tv")
-    Call<TVSeriesList> fetchLatestTvSeries(@Query("api_key") String apiKey, @Query("language") String language, @Query("sort_by") String sortBy, @Query("page") int page, @Query("first_air_date.lte") String firstAirDate, @Query("include_null_first_air_dates") boolean include_null_first_air_dates);
+    Call<TVShowList> fetchLatestTvSeries(@Query("api_key") String apiKey, @Query("language") String language, @Query("sort_by") String sortBy, @Query("page") int page, @Query("first_air_date.lte") String firstAirDate, @Query("include_null_first_air_dates") boolean include_null_first_air_dates);
 
     @GET("tv/{id}")
-    Call<TVSeriesDetails> fetchTvSeriesProducers(@Path("id") int id, @Query("api_key") String apiKey);
+    Call<TVShowDetails> fetchTvSeriesProducers(@Path("id") int id, @Query("api_key") String apiKey);
 
     @GET("movie/{id}/reviews")
     Call<MovieReviews> fetchMovieReviews(@Path("id") int id, @Query("api_key") String apiKey);
@@ -99,9 +102,9 @@ interface ApiService {
 
     @GET("tv/{id}/season/{season_number}/episode/{episode_number}")
     Call<EpisodeDetails> fetchEpisodeDetails(@Path("id") int tv_id,
-                                          @Path("season_number") Integer season_number,
-                                          @Path("episode_number") Integer episode_number,
-                                          @Query("api_key") String apiKey);
+                                             @Path("season_number") Integer season_number,
+                                             @Path("episode_number") Integer episode_number,
+                                             @Query("api_key") String apiKey);
 
     @GET("search/multi")
     Call<SearchResult> fetchSearch(@Query("query") String query, @Query("page") int page, @Query("api_key") String apiKey);
@@ -131,19 +134,19 @@ interface ApiService {
     Call<MovieList> fetchUserFavoriteMovies(@Path("account_id") Integer id,@Query("api_key") String apiKey,@Query("session_id") String session_id, @Query("sort_by") String sortBy, @Query("page") int page);
 
     @GET("account/{account_id}/favorite/tv")
-    Call<TVSeriesList> fetchUserFavoriteTVSeries(@Path("account_id") Integer id,@Query("api_key") String apiKey,@Query("session_id") String session_id, @Query("sort_by") String sortBy, @Query("page") int page);
+    Call<TVShowList> fetchUserFavoriteTVSeries(@Path("account_id") Integer id, @Query("api_key") String apiKey, @Query("session_id") String session_id, @Query("sort_by") String sortBy, @Query("page") int page);
 
     @GET("account/{account_id}/watchlist/movies")
     Call<MovieList> fetchUserWatchlistMovies(@Path("account_id") Integer id,@Query("api_key") String apiKey,@Query("session_id") String session_id, @Query("sort_by") String sortBy, @Query("page") int page);
 
     @GET("account/{account_id}/watchlist/tv")
-    Call<TVSeriesList> fetchUserWatchlistTVSeries(@Path("account_id") Integer id,@Query("api_key") String apiKey,@Query("session_id") String session_id, @Query("sort_by") String sortBy, @Query("page") int page);
+    Call<TVShowList> fetchUserWatchlistTVSeries(@Path("account_id") Integer id, @Query("api_key") String apiKey, @Query("session_id") String session_id, @Query("sort_by") String sortBy, @Query("page") int page);
 
     @GET("account/{account_id}/rated/movies")
     Call<MovieList> fetchUserRatedMovies(@Path("account_id") Integer id,@Query("api_key") String apiKey,@Query("session_id") String session_id, @Query("sort_by") String sortBy, @Query("page") int page);
 
     @GET("account/{account_id}/rated/tv")
-    Call<TVSeriesList> fetchUserRatedTVSeries(@Path("account_id") Integer id,@Query("api_key") String apiKey,@Query("session_id") String session_id, @Query("sort_by") String sortBy, @Query("page") int page);
+    Call<TVShowList> fetchUserRatedTVSeries(@Path("account_id") Integer id, @Query("api_key") String apiKey, @Query("session_id") String session_id, @Query("sort_by") String sortBy, @Query("page") int page);
 
     //// USER ACCOUNT POST
 

@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide;
 import com.example.zsamir.movieappintership.Common.ImageDetailsActivity;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
 import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
+import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class DetailsImagesViewHolder extends RecyclerView.ViewHolder implements 
     private List<Backdrop> backdropList;
     private ImageView mMovieImage;
     private Movie movie;
-    private TVSeries TVSeries;
+    private TVShow TVShow;
     private Backdrop backdrop;
 
     public DetailsImagesViewHolder(View itemView) {
@@ -37,9 +37,9 @@ public class DetailsImagesViewHolder extends RecyclerView.ViewHolder implements 
         Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
     }
 
-    public void bindImage(Backdrop backdrop , TVSeries TVSeries, List<Backdrop> backdropList){
+    public void bindImage(Backdrop backdrop , TVShow TVShow, List<Backdrop> backdropList){
         this.backdrop = backdrop;
-        this.TVSeries = TVSeries;
+        this.TVShow = TVShow;
         this.backdropList = backdropList;
         if(backdrop.getBackdropSizeW300()!=null)
         Glide.with(mMovieImage.getContext()).load(backdrop.getBackdropSizeW300()).into(mMovieImage);
@@ -66,18 +66,18 @@ public class DetailsImagesViewHolder extends RecyclerView.ViewHolder implements 
 
             view.getContext().startActivity(i);
         }
-        if(TVSeries !=null) {
-            TVSeries sendTVSeries = TVSeries;
+        if(TVShow !=null) {
+            TVShow sendTVShow = TVShow;
 
-            sendTVSeries.numOfBackdrops = backdropList.size();
-            sendTVSeries.lastLoadedBackdrop = findBackdropInList();
-            sendTVSeries.backdropList = backdropList;
+            sendTVShow.numOfBackdrops = backdropList.size();
+            sendTVShow.lastLoadedBackdrop = findBackdropInList();
+            sendTVShow.backdropList = backdropList;
 
             if(backdrop.getFilePath()!=null)
-                sendTVSeries.setBackdropPath(backdrop.getFilePath());
+                sendTVShow.setBackdropPath(backdrop.getFilePath());
 
             Intent i = new Intent(view.getContext(), ImageDetailsActivity.class);
-            i.putExtra("TVSeries", sendTVSeries);
+            i.putExtra("TVSeries", sendTVShow);
             view.getContext().startActivity(i);
         }
     }

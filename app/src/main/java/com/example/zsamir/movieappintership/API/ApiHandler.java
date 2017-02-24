@@ -17,12 +17,12 @@ import com.example.zsamir.movieappintership.Modules.EpisodeCredits;
 import com.example.zsamir.movieappintership.Modules.EpisodeDetails;
 import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.MovieDetails;
+import com.example.zsamir.movieappintership.Modules.TVShowDetails;
 import com.example.zsamir.movieappintership.Modules.MovieList;
 import com.example.zsamir.movieappintership.Modules.MovieReviews;
 import com.example.zsamir.movieappintership.Modules.SearchResult;
 import com.example.zsamir.movieappintership.Modules.SeasonDetails;
-import com.example.zsamir.movieappintership.Modules.TVSeriesDetails;
-import com.example.zsamir.movieappintership.Modules.TVSeriesList;
+import com.example.zsamir.movieappintership.Modules.TVShowList;
 import com.example.zsamir.movieappintership.Modules.Videos;
 
 import java.util.Calendar;
@@ -103,11 +103,11 @@ public class ApiHandler {
     }
 
     public interface TvSeriesDetailsListener {
-        void success(TVSeriesDetails response);
+        void success(TVShowDetails response);
     }
 
     public interface TvSeriesListListener {
-        void success(TVSeriesList response);
+        void success(TVShowList response);
     }
 
     public interface TvSeriesSeasonListener {
@@ -162,6 +162,22 @@ public class ApiHandler {
     public void requestMostPopularMovies(int page, @Nullable final MovieListListener listener) {
 
         getApiService().fetchPopularMovies(sApiKey, page).enqueue(new Callback<MovieList>() {
+            @Override
+            public void onResponse(Call<MovieList> call, Response<MovieList> response) {
+                if (listener != null) {
+                    listener.success(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieList> call, Throwable t) {
+            }
+        });
+    }
+
+    public void requestUpcomingMovies(int page, @Nullable final MovieListListener listener) {
+
+        getApiService().fetchUpcomingMovies(sApiKey, page).enqueue(new Callback<MovieList>() {
             @Override
             public void onResponse(Call<MovieList> call, Response<MovieList> response) {
                 if (listener != null) {
@@ -341,9 +357,9 @@ public class ApiHandler {
 
     public void requestMostPopularTvSeries(int page, @Nullable final TvSeriesListListener listener) {
 
-        getApiService().fetchPopularTvSeries(sApiKey , page).enqueue(new Callback<TVSeriesList>() {
+        getApiService().fetchPopularTvSeries(sApiKey , page).enqueue(new Callback<TVShowList>() {
             @Override
-            public void onResponse(Call<TVSeriesList> call, Response<TVSeriesList> response) {
+            public void onResponse(Call<TVShowList> call, Response<TVShowList> response) {
                 Log.d("CALL",call.request().toString());
                 if (listener != null) {
                     listener.success(response.body());
@@ -351,39 +367,39 @@ public class ApiHandler {
             }
 
             @Override
-            public void onFailure(Call<TVSeriesList> call, Throwable t) {
+            public void onFailure(Call<TVShowList> call, Throwable t) {
             }
         });
     }
 
     public void requestHighestRatedTvSeries(int page, @Nullable final TvSeriesListListener listener) {
 
-        getApiService().fetchHighestRatedTvSeries(sApiKey , page).enqueue(new Callback<TVSeriesList>() {
+        getApiService().fetchHighestRatedTvSeries(sApiKey , page).enqueue(new Callback<TVShowList>() {
             @Override
-            public void onResponse(Call<TVSeriesList> call, Response<TVSeriesList> response) {
+            public void onResponse(Call<TVShowList> call, Response<TVShowList> response) {
                 if (listener != null) {
                     listener.success(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<TVSeriesList> call, Throwable t) {
+            public void onFailure(Call<TVShowList> call, Throwable t) {
             }
         });
     }
 
     public void requestAiringTodayTvSeries(int page, @Nullable final TvSeriesListListener listener) {
 
-        getApiService().fetchAiringTodayTvSeries(sApiKey , page).enqueue(new Callback<TVSeriesList>() {
+        getApiService().fetchAiringTodayTvSeries(sApiKey , page).enqueue(new Callback<TVShowList>() {
             @Override
-            public void onResponse(Call<TVSeriesList> call, Response<TVSeriesList> response) {
+            public void onResponse(Call<TVShowList> call, Response<TVShowList> response) {
                 if (listener != null) {
                     listener.success(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<TVSeriesList> call, Throwable t) {
+            public void onFailure(Call<TVShowList> call, Throwable t) {
             }
         });
     }
@@ -396,16 +412,16 @@ public class ApiHandler {
         int day = cal.get(Calendar.DAY_OF_MONTH);
         String s = year + "-" + month + "-" + day;
 
-        getApiService().fetchLatestTvSeries(sApiKey,"en-US", "first_air_date.desc", p, s, false).enqueue(new Callback<TVSeriesList>() {
+        getApiService().fetchLatestTvSeries(sApiKey,"en-US", "first_air_date.desc", p, s, false).enqueue(new Callback<TVShowList>() {
             @Override
-            public void onResponse(Call<TVSeriesList> call, Response<TVSeriesList> response) {
+            public void onResponse(Call<TVShowList> call, Response<TVShowList> response) {
                 if (listener != null) {
                     listener.success(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<TVSeriesList> call, Throwable t) {
+            public void onFailure(Call<TVShowList> call, Throwable t) {
             }
         });
     }
@@ -413,16 +429,16 @@ public class ApiHandler {
     public void requestTVSeriesDetails(int id, @Nullable final TvSeriesDetailsListener listener){
 
 
-        getApiService().fetchTvSeriesProducers(id,sApiKey).enqueue(new Callback<TVSeriesDetails>() {
+        getApiService().fetchTvSeriesProducers(id,sApiKey).enqueue(new Callback<TVShowDetails>() {
             @Override
-            public void onResponse(Call<TVSeriesDetails> call, Response<TVSeriesDetails> response) {
+            public void onResponse(Call<TVShowDetails> call, Response<TVShowDetails> response) {
                 if (listener != null) {
                     listener.success(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<TVSeriesDetails> call, Throwable t) {
+            public void onFailure(Call<TVShowDetails> call, Throwable t) {
             }
         });
     }
@@ -520,8 +536,8 @@ public class ApiHandler {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
                 if (listener != null) {
-                    //Log.d("CALL",call.request().toString());
-                    //Log.d("CODE", String.valueOf(response.code()));
+                    Log.d("CALL",call.request().toString());
+                    Log.d("CODE", String.valueOf(response.code()));
                     listener.success(response.body());
                 }
             }
@@ -592,9 +608,9 @@ public class ApiHandler {
     }
 
     public void requestAccountFavoriteTVSeries(Integer accId, String sessionId,Integer page, @Nullable final TvSeriesListListener listener){
-        getApiService().fetchUserFavoriteTVSeries(accId,sApiKey,sessionId,"created_at.asc",page).enqueue(new Callback<TVSeriesList>() {
+        getApiService().fetchUserFavoriteTVSeries(accId,sApiKey,sessionId,"created_at.asc",page).enqueue(new Callback<TVShowList>() {
             @Override
-            public void onResponse(Call<TVSeriesList> call, Response<TVSeriesList> response) {
+            public void onResponse(Call<TVShowList> call, Response<TVShowList> response) {
                 if (listener != null) {
                     Log.d("CALL",call.request().toString());
                     Log.d("CODE", String.valueOf(response.code()));
@@ -603,7 +619,7 @@ public class ApiHandler {
             }
 
             @Override
-            public void onFailure(Call<TVSeriesList> call, Throwable t) {
+            public void onFailure(Call<TVShowList> call, Throwable t) {
 
             }
         });
@@ -628,9 +644,9 @@ public class ApiHandler {
     }
 
     public void requestAccountWatchlistTVSeries(Integer accId, String sessionId,Integer page, @Nullable final TvSeriesListListener listener){
-        getApiService().fetchUserWatchlistTVSeries(accId,sApiKey,sessionId,"created_at.asc",page).enqueue(new Callback<TVSeriesList>() {
+        getApiService().fetchUserWatchlistTVSeries(accId,sApiKey,sessionId,"created_at.asc",page).enqueue(new Callback<TVShowList>() {
             @Override
-            public void onResponse(Call<TVSeriesList> call, Response<TVSeriesList> response) {
+            public void onResponse(Call<TVShowList> call, Response<TVShowList> response) {
                 if (listener != null) {
                     Log.d("CALL",call.request().toString());
                     Log.d("CODE", String.valueOf(response.code()));
@@ -639,7 +655,7 @@ public class ApiHandler {
             }
 
             @Override
-            public void onFailure(Call<TVSeriesList> call, Throwable t) {
+            public void onFailure(Call<TVShowList> call, Throwable t) {
 
             }
         });
@@ -664,9 +680,9 @@ public class ApiHandler {
     }
 
     public void requestAccountRatedTVSeries(Integer accId, String sessionId,Integer page, @Nullable final TvSeriesListListener listener){
-        getApiService().fetchUserRatedTVSeries(accId,sApiKey,sessionId,"created_at.asc",page).enqueue(new Callback<TVSeriesList>() {
+        getApiService().fetchUserRatedTVSeries(accId,sApiKey,sessionId,"created_at.asc",page).enqueue(new Callback<TVShowList>() {
             @Override
-            public void onResponse(Call<TVSeriesList> call, Response<TVSeriesList> response) {
+            public void onResponse(Call<TVShowList> call, Response<TVShowList> response) {
                 if (listener != null) {
                     Log.d("CALL",call.request().toString());
                     Log.d("CODE", String.valueOf(response.code()));
@@ -675,7 +691,7 @@ public class ApiHandler {
             }
 
             @Override
-            public void onFailure(Call<TVSeriesList> call, Throwable t) {
+            public void onFailure(Call<TVShowList> call, Throwable t) {
 
             }
         });

@@ -163,7 +163,8 @@
                 android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesDetailsActivity" />
         </activity>
 
-        <receiver  android:process=":remote" android:name=".AlertReceiver"/>
+        <receiver  android:process=":remote" android:name=".AlertReceivers.MovieAlertReceiver"/>
+        <receiver  android:process=":remote" android:name=".AlertReceivers.TVAlertReceiver"/>
     </application>
 
 </manifest>

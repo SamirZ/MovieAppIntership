@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.UserListAdapter;
+import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.LoginModules.Account;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
@@ -22,12 +22,12 @@ import java.util.List;
 
 public class ListTVSeriesFragment extends Fragment {
 
-    private List<TVSeries> TVSeriesList = new ArrayList<>();
+    private List<TVShow> TVShowList = new ArrayList<>();
     private UserListAdapter mTvSeriesAdapter;
     private Account user = MovieAppApplication.getUser();
 
     public ListTVSeriesFragment() {
-        mTvSeriesAdapter = new UserListAdapter(TVSeriesList);
+        mTvSeriesAdapter = new UserListAdapter(TVShowList);
     }
 
     public static ListTVSeriesFragment newInstance() {
@@ -45,10 +45,10 @@ public class ListTVSeriesFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        if(TVSeriesList.size()==0){
+        if(TVShowList.size()==0){
             loadTVSeries();
         }else{
-            TVSeriesList.clear();
+            TVShowList.clear();
             loadTVSeries();
             mTvSeriesAdapter.notifyDataSetChanged();
         }
@@ -74,9 +74,9 @@ public class ListTVSeriesFragment extends Fragment {
     private void searchForFavoriteTVSeries() {
         ApiHandler.getInstance().requestAccountFavoriteTVSeries(user.getId(), user.getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
             @Override
-            public void success(com.example.zsamir.movieappintership.Modules.TVSeriesList response) {
-                for (TVSeries t: response.getTVSeries()) {
-                    TVSeriesList.add(t);
+            public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
+                for (TVShow t: response.getTVShow()) {
+                    TVShowList.add(t);
                 }
                 //TVSeriesList.addAll(response.getTVSeries());
                 mTvSeriesAdapter.notifyDataSetChanged();
@@ -84,9 +84,9 @@ public class ListTVSeriesFragment extends Fragment {
                     for(int i = response.getTotalPages(); i>= 2; i--){
                         ApiHandler.getInstance().requestAccountFavoriteTVSeries(user.getId(), user.getSessionId(), i, new ApiHandler.TvSeriesListListener() {
                             @Override
-                            public void success(com.example.zsamir.movieappintership.Modules.TVSeriesList response) {
-                                for (TVSeries t: response.getTVSeries()) {
-                                    TVSeriesList.add(t);
+                            public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
+                                for (TVShow t: response.getTVShow()) {
+                                    TVShowList.add(t);
                                 }
                                 //TVSeriesList.addAll(response.getTVSeries());
                                 mTvSeriesAdapter.notifyDataSetChanged();
@@ -101,9 +101,9 @@ public class ListTVSeriesFragment extends Fragment {
     private void searchForWatchlistTVSeries() {
         ApiHandler.getInstance().requestAccountWatchlistTVSeries(user.getId(), user.getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
             @Override
-            public void success(com.example.zsamir.movieappintership.Modules.TVSeriesList response) {
-                for (TVSeries t: response.getTVSeries()) {
-                    TVSeriesList.add(t);
+            public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
+                for (TVShow t: response.getTVShow()) {
+                    TVShowList.add(t);
                 }
                 //TVSeriesList.addAll(response.getTVSeries());
                 mTvSeriesAdapter.notifyDataSetChanged();
@@ -111,9 +111,9 @@ public class ListTVSeriesFragment extends Fragment {
                     for(int i = response.getTotalPages(); i>= 2; i--){
                         ApiHandler.getInstance().requestAccountWatchlistTVSeries(user.getId(), user.getSessionId(), i, new ApiHandler.TvSeriesListListener() {
                             @Override
-                            public void success(com.example.zsamir.movieappintership.Modules.TVSeriesList response) {
-                                for (TVSeries t: response.getTVSeries()) {
-                                    TVSeriesList.add(t);
+                            public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
+                                for (TVShow t: response.getTVShow()) {
+                                    TVShowList.add(t);
                                 }
                                 //TVSeriesList.addAll(response.getTVSeries());
                                 mTvSeriesAdapter.notifyDataSetChanged();
@@ -128,9 +128,9 @@ public class ListTVSeriesFragment extends Fragment {
     private void searchForRatedTVSeries(){
         ApiHandler.getInstance().requestAccountRatedTVSeries(user.getId(), user.getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
             @Override
-            public void success(com.example.zsamir.movieappintership.Modules.TVSeriesList response) {
-                for (TVSeries t: response.getTVSeries()) {
-                    TVSeriesList.add(t);
+            public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
+                for (TVShow t: response.getTVShow()) {
+                    TVShowList.add(t);
                 }
                 //TVSeriesList.addAll(response.getTVSeries());
                 mTvSeriesAdapter.notifyDataSetChanged();
@@ -138,9 +138,9 @@ public class ListTVSeriesFragment extends Fragment {
                     for(int i = response.getTotalPages(); i>= 2; i--){
                         ApiHandler.getInstance().requestAccountRatedTVSeries(user.getId(), user.getSessionId(), i, new ApiHandler.TvSeriesListListener() {
                             @Override
-                            public void success(com.example.zsamir.movieappintership.Modules.TVSeriesList response) {
-                                for (TVSeries t: response.getTVSeries()) {
-                                    TVSeriesList.add(t);
+                            public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
+                                for (TVShow t: response.getTVShow()) {
+                                    TVShowList.add(t);
                                 }
                                 //TVSeriesList.addAll(response.getTVSeries());
                                 mTvSeriesAdapter.notifyDataSetChanged();

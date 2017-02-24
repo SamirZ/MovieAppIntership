@@ -2,11 +2,10 @@ package com.example.zsamir.movieappintership.Modules;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Genre implements Parcelable
+class Genre implements Parcelable
 {
 
     @SerializedName("id")
@@ -18,9 +17,6 @@ public class Genre implements Parcelable
     public final static Parcelable.Creator<Genre> CREATOR = new Creator<Genre>() {
 
 
-        @SuppressWarnings({
-                "unchecked"
-        })
         public Genre createFromParcel(Parcel in) {
             Genre instance = new Genre();
             instance.id = ((int) in.readValue((int.class.getClassLoader())));

@@ -1,6 +1,6 @@
 package com.example.zsamir.movieappintership.Modules;
 
-public enum TVSeriesGenres {
+enum TVShowGenres {
 
     ACTION(10759,"Action & Adventure"),
     ANIMATION(16,"Animation"),
@@ -22,13 +22,13 @@ public enum TVSeriesGenres {
     int id;
     String title;
 
-    TVSeriesGenres(int id, String title) {
+    TVShowGenres(int id, String title) {
         this.id = id;
         this.title = title;
     }
 
-    public static TVSeriesGenres getById(int id) {
-        for (TVSeriesGenres movieGenre : values()) {
+    public static TVShowGenres getById(int id) {
+        for (TVShowGenres movieGenre : values()) {
             if (movieGenre.id == id) {
                 return movieGenre;
             }

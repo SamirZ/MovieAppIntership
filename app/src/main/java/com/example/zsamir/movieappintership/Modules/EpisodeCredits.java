@@ -8,6 +8,9 @@ public class EpisodeCredits {
 
     @SerializedName("cast")
     @Expose
-    public List<EpisodeCast> cast = null;
+    private List<EpisodeCast> cast = null;
 
+    public List<EpisodeCast> getCast() {
+        return cast;
+    }
 }

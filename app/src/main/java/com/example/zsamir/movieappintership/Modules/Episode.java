@@ -2,10 +2,6 @@ package com.example.zsamir.movieappintership.Modules;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -30,19 +26,9 @@ public class Episode implements Parcelable {
     @SerializedName("vote_average")
     @Expose
     private double voteAverage;
-    private int seasaonNumber;
-
-
-    public void setAirDate(String airDate) {
-        this.airDate = airDate;
-    }
 
     public int getEpisodeNumber() {
         return episodeNumber;
-    }
-
-    public void setEpisodeNumber(int episodeNumber) {
-        this.episodeNumber = episodeNumber;
     }
 
     public String getName() {
@@ -57,16 +43,8 @@ public class Episode implements Parcelable {
         return seasonNumber;
     }
 
-    public void setSeasonNumber(int seasonNumber) {
-        this.seasonNumber = seasonNumber;
-    }
-
     public double getVoteAverage() {
         return voteAverage;
-    }
-
-    public void setVoteAverage(double voteAverage) {
-        this.voteAverage = voteAverage;
     }
 
     @Override
@@ -83,10 +61,7 @@ public class Episode implements Parcelable {
         dest.writeDouble(this.voteAverage);
     }
 
-    public Episode() {
-    }
-
-    protected Episode(Parcel in) {
+    private Episode(Parcel in) {
         this.airDate = in.readString();
         this.episodeNumber = in.readInt();
         this.name = in.readString();

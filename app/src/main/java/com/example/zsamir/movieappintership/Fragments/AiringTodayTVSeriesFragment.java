@@ -13,7 +13,7 @@ import com.example.zsamir.movieappintership.API.ApiHandler;
 
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
 import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
+import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
@@ -21,9 +21,9 @@ import java.util.ArrayList;
 public class AiringTodayTVSeriesFragment extends Fragment {
 
     private static AiringTodayTVSeriesFragment instance = null;
-    ArrayList<TVSeries> TVSeriesList = new ArrayList<>();
+    ArrayList<TVShow> TVShowList = new ArrayList<>();
     ApiHandler movieDbApi = ApiHandler.getInstance();
-    TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(TVSeriesList);
+    TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(TVShowList);
     int numberOfPages;
 
     public AiringTodayTVSeriesFragment() {
@@ -53,10 +53,10 @@ public class AiringTodayTVSeriesFragment extends Fragment {
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        if(TVSeriesList.size()==0)
+        if(TVShowList.size()==0)
             loadAiringTodayTvSeries(1);
         else{
-            TVSeriesList.clear();
+            TVShowList.clear();
             loadAiringTodayTvSeries(1);
             mTvSeriesAdapter.notifyDataSetChanged();
         }
@@ -76,10 +76,10 @@ public class AiringTodayTVSeriesFragment extends Fragment {
     private void loadAiringTodayTvSeries(int page) {
         movieDbApi.requestAiringTodayTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
-            public void success(com.example.zsamir.movieappintership.Modules.TVSeriesList response) {
+            public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
                 numberOfPages = response.getTotalPages();
                 Log.d("Total pages", String.valueOf(numberOfPages));
-                TVSeriesList.addAll(response.getTVSeries());
+                TVShowList.addAll(response.getTVShow());
                 mTvSeriesAdapter.notifyDataSetChanged();
             }
         });
