@@ -8,7 +8,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TVSeriesList implements Parcelable
+public class TVShowList implements Parcelable
 {
 
     @SerializedName("page")
@@ -16,30 +16,30 @@ public class TVSeriesList implements Parcelable
     private int page;
     @SerializedName("results")
     @Expose
-    private List<TVSeries> TVSeries = null;
+    private List<TVShow> TVShow = null;
     @SerializedName("total_results")
     @Expose
     private int totalResults;
     @SerializedName("total_pages")
     @Expose
     private int totalPages;
-    public final static Parcelable.Creator<TVSeriesList> CREATOR = new Creator<TVSeriesList>() {
+    public final static Parcelable.Creator<TVShowList> CREATOR = new Creator<TVShowList>() {
 
 
         @SuppressWarnings({
                 "unchecked"
         })
-        public TVSeriesList createFromParcel(Parcel in) {
-            TVSeriesList instance = new TVSeriesList();
+        public TVShowList createFromParcel(Parcel in) {
+            TVShowList instance = new TVShowList();
             instance.page = ((int) in.readValue((int.class.getClassLoader())));
-            in.readList(instance.TVSeries, (TVSeries.class.getClassLoader()));
+            in.readList(instance.TVShow, (TVShow.class.getClassLoader()));
             instance.totalResults = ((int) in.readValue((int.class.getClassLoader())));
             instance.totalPages = ((int) in.readValue((int.class.getClassLoader())));
             return instance;
         }
 
-        public TVSeriesList[] newArray(int size) {
-            return (new TVSeriesList[size]);
+        public TVShowList[] newArray(int size) {
+            return (new TVShowList[size]);
         }
 
     }
@@ -53,33 +53,21 @@ public class TVSeriesList implements Parcelable
         this.page = page;
     }
 
-    public List<TVSeries> getTVSeries() {
-        return TVSeries;
+    public List<TVShow> getTVShow() {
+        return TVShow;
     }
 
-    public void setTVSeries(List<TVSeries> results) {
-        this.TVSeries = results;
-    }
-
-    public int getTotalResults() {
-        return totalResults;
-    }
-
-    public void setTotalResults(int totalResults) {
-        this.totalResults = totalResults;
+    public void setTVShow(List<TVShow> results) {
+        this.TVShow = results;
     }
 
     public int getTotalPages() {
         return totalPages;
     }
 
-    public void setTotalPages(int totalPages) {
-        this.totalPages = totalPages;
-    }
-
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(page);
-        dest.writeList(TVSeries);
+        dest.writeList(TVShow);
         dest.writeValue(totalResults);
         dest.writeValue(totalPages);
     }

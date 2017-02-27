@@ -1,60 +1,22 @@
 package com.example.zsamir.movieappintership.Modules;
 
-import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class EpisodeDetails {
 
-    @SerializedName("air_date")
-    @Expose
-    private String airDate;
-
-    @SerializedName("episode_number")
-    @Expose
-    private Integer episodeNumber;
-
     @SerializedName("name")
     @Expose
     private String name;
+
     @SerializedName("overview")
     @Expose
-    private String overview;
-    @SerializedName("id")
-    @Expose
-    private Integer id;
-    @SerializedName("production_code")
-    @Expose
-    private String productionCode;
-    @SerializedName("season_number")
-    @Expose
-    private Integer seasonNumber;
-    @SerializedName("still_path")
-    @Expose
-    private String stillPath;
+    private String overview = null;
+
     @SerializedName("vote_average")
     @Expose
-    private Float voteAverage;
-    @SerializedName("vote_count")
-    @Expose
-    private Integer voteCount;
-
-    public String getAirDate() {
-        return airDate;
-    }
-
-    public void setAirDate(String airDate) {
-        this.airDate = airDate;
-    }
-
-    public Integer getEpisodeNumber() {
-        return episodeNumber;
-    }
-
-    public void setEpisodeNumber(Integer episodeNumber) {
-        this.episodeNumber = episodeNumber;
-    }
+    private Float voteAverage = null;
 
     public String getName() {
         return name;
@@ -68,55 +30,7 @@ public class EpisodeDetails {
         return overview;
     }
 
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getProductionCode() {
-        return productionCode;
-    }
-
-    public void setProductionCode(String productionCode) {
-        this.productionCode = productionCode;
-    }
-
-    public Integer getSeasonNumber() {
-        return seasonNumber;
-    }
-
-    public void setSeasonNumber(Integer seasonNumber) {
-        this.seasonNumber = seasonNumber;
-    }
-
-    public String getStillPath() {
-        return stillPath;
-    }
-
-    public void setStillPath(String stillPath) {
-        this.stillPath = stillPath;
-    }
-
     public Float getVoteAverage() {
         return voteAverage;
-    }
-
-    public void setVoteAverage(Float voteAverage) {
-        this.voteAverage = voteAverage;
-    }
-
-    public Integer getVoteCount() {
-        return voteCount;
-    }
-
-    public void setVoteCount(Integer voteCount) {
-        this.voteCount = voteCount;
     }
 }

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.Modules.Backdrop;
 import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
+import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.ViewHolders.ImageGalleryViewHolder;
 
@@ -17,15 +17,15 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryViewHo
 
     private List<Backdrop> backdrops;
     private Movie movie;
-    private TVSeries TVSeries;
+    private TVShow TVShow;
 
     public ImageGalleryAdapter(List<Backdrop> backdrops, Movie movie) {
         this.backdrops = backdrops;
         this.movie = movie;
     }
-    public ImageGalleryAdapter(List<Backdrop> backdrops, TVSeries TVSeries) {
+    public ImageGalleryAdapter(List<Backdrop> backdrops, TVShow TVShow) {
         this.backdrops = backdrops;
-        this.TVSeries = TVSeries;
+        this.TVShow = TVShow;
     }
 
     @Override
@@ -39,8 +39,8 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryViewHo
         Backdrop backdrop = backdrops.get(position);
         if(movie!=null)
             holder.bindImage(backdrop, movie,backdrops);
-        if(TVSeries !=null)
-            holder.bindImage(backdrop, TVSeries,backdrops);
+        if(TVShow !=null)
+            holder.bindImage(backdrop, TVShow,backdrops);
     }
 
     @Override

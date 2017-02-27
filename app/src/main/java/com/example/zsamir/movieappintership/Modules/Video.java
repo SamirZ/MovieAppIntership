@@ -33,14 +33,6 @@ public class Video {
         return id;
     }
 
-    public String getIso6391() {
-        return iso6391;
-    }
-
-    public String getIso31661() {
-        return iso31661;
-    }
-
     public String getKey() {
         return key;
     }

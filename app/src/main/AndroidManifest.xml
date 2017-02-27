@@ -3,7 +3,7 @@
     package="com.example.zsamir.movieappintership">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <application
         android:name=".MovieAppApplication"
@@ -15,9 +15,9 @@
         <activity
             android:name=".Movies.MoviesActivity"
             android:label="@string/movies_label"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTask"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Movies.MovieDetailsActivity"
             android:label="@string/movies_label"
@@ -64,9 +64,9 @@
         <activity
             android:name=".TVSeries.TVSeriesActivity"
             android:label="@string/tv_series_name"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTask"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TVSeries.TVSeriesDetailsActivity"
             android:label="@string/tv_series_name"
@@ -101,9 +101,9 @@
         <activity
             android:name=".NewsFeed.NewsFeedActivity"
             android:label="@string/news_feed_name"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTask"/>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -127,9 +127,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.zsamir.movieappintership.TVSeries.SeasonActivity" />
         </activity>
-        <activity android:name=".Common.TrailerActivity"
+        <activity
+            android:name=".Common.TrailerActivity"
             android:screenOrientation="portrait">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.zsamir.movieappintership.TVSeries.SeasonActivity" />
@@ -150,20 +150,39 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.zsamir.movieappintership.NewsFeed.NewsFeedActivity" />
         </activity>
-        <activity android:name=".Common.RatingActivity"
+        <activity
+            android:name=".Common.RatingActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.zsamir.movieappintership.NewsFeed.NewsFeedActivity" />
         </activity>
-        <activity android:name=".Common.SettingsActivity"
+        <activity
+            android:name=".Common.SettingsActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesDetailsActivity" />
         </activity>
 
-        <receiver  android:process=":remote" android:name=".AlertReceiver"/>
+        <receiver
+            android:name=".AlertReceivers.MovieAlertReceiver"
+            android:process=":remote" />
+        <receiver
+            android:name=".AlertReceivers.TVAlertReceiver"
+            android:process=":remote" />
+
+        <activity android:name=".AlertReceivers.UpcomingMovieActivity" >
+
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity" />
+        </activity>
+        <activity android:name=".AlertReceivers.AiringEpisodesActivity">
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity" />
+        </activity>
     </application>
 
 </manifest>

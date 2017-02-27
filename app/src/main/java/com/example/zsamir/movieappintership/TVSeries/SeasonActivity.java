@@ -7,24 +7,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.EpisodeAdapter;
 import com.example.zsamir.movieappintership.Adapters.SeasonsAdapter;
 import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Modules.Episode;
 import com.example.zsamir.movieappintership.Modules.SeasonDetails;
-import com.example.zsamir.movieappintership.Modules.TVSeriesDetails;
+import com.example.zsamir.movieappintership.Modules.TVShowDetails;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.fabric.sdk.android.Fabric;
 
 public class SeasonActivity extends BaseActivity {
 
-    private TVSeriesDetails TVSeriesDetails;
+    private TVShowDetails TVShowDetails;
 
     private TextView seasonYear;
     private ArrayList<Episode> episodes;
@@ -42,9 +40,9 @@ public class SeasonActivity extends BaseActivity {
 
         if(getIntent().hasExtra("TVSeriesDetails")){
 
-            TVSeriesDetails = getIntent().getParcelableExtra("TVSeriesDetails");
+            TVShowDetails = getIntent().getParcelableExtra("TVSeriesDetails");
 
-            this.setTitle(TVSeriesDetails.getName());
+            this.setTitle(TVShowDetails.getName());
 
             setUpSeasons();
 
@@ -58,10 +56,10 @@ public class SeasonActivity extends BaseActivity {
 
     private void setUpSeasons() {
 
-        for(int i = 0; i< TVSeriesDetails.getSeasons().size(); i++){
-            if(TVSeriesDetails.getSeasons().get(i).getSeasonNumber()!=0){
-                list.add(Integer.toString(TVSeriesDetails.getSeasons().get(i).getSeasonNumber()));
-                years.add(TVSeriesDetails.getSeasons().get(i).getAirYear());
+        for(int i = 0; i< TVShowDetails.getSeasons().size(); i++){
+            if(TVShowDetails.getSeasons().get(i).getSeasonNumber()!=0){
+                list.add(Integer.toString(TVShowDetails.getSeasons().get(i).getSeasonNumber()));
+                years.add(TVShowDetails.getSeasons().get(i).getAirYear());
             }
         }
 
@@ -76,7 +74,7 @@ public class SeasonActivity extends BaseActivity {
     private void setUpEpisodes() {
         episodes = new ArrayList<>();
 
-        episodeAdapter = new EpisodeAdapter(episodes, TVSeriesDetails);
+        episodeAdapter = new EpisodeAdapter(episodes, TVShowDetails);
         RecyclerView mEpisodeRecyclerView = (RecyclerView) findViewById(R.id.episode_recycler_view);
         LinearLayoutManager linearVerticalLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         mEpisodeRecyclerView.setLayoutManager(linearVerticalLayoutManager);
@@ -86,14 +84,14 @@ public class SeasonActivity extends BaseActivity {
 
     public void setSeason(int i){
         ApiHandler apiHandler = ApiHandler.getInstance();
-        apiHandler.requestTVSeriesSeasons(TVSeriesDetails.getId(), i, new ApiHandler.TvSeriesSeasonListener() {
+        apiHandler.requestTVSeriesSeasons(TVShowDetails.getId(), i, new ApiHandler.TvSeriesSeasonListener() {
             @Override
             public void success(SeasonDetails response) {
                 episodes.clear();
                 if(response!=null)
-                    if(response.episodes!=null)
-                        if(response.episodes.size()>0)
-                        episodes.addAll(response.episodes);
+                    if(response.getEpisodes()!=null)
+                        if(response.getEpisodes().size()>0)
+                        episodes.addAll(response.getEpisodes());
                 episodeAdapter.notifyDataSetChanged();
             }
         });

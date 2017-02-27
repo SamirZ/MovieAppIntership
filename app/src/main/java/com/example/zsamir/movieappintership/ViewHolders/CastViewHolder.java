@@ -31,10 +31,10 @@ public class CastViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     }
     public void bindCast(Cast cast) {
         actor = cast;
-        if(cast.name!=null)
-        mCastName.setText(cast.name);
-        if(cast.character!=null)
-        mCastRoleName.setText(cast.character);
+        if(cast.getName()!=null)
+        mCastName.setText(cast.getName());
+        if(cast.getCharacter()!=null)
+        mCastRoleName.setText(cast.getCharacter());
         if(actor.getImageUrl()!=null)
         Glide.with(mCastImage.getContext()).load(actor.getImageUrl()).into(mCastImage);
     }
@@ -42,10 +42,10 @@ public class CastViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     public void bindCast(EpisodeCast cast) {
         this.cast = cast;
 
-        if(cast.name!=null)
-            mCastName.setText(cast.name);
-        if(cast.character!=null)
-            mCastRoleName.setText(cast.character);
+        if(cast.getName()!=null)
+            mCastName.setText(cast.getName());
+        if(cast.getCharacter()!=null)
+            mCastRoleName.setText(cast.getCharacter());
         if(cast.getImageUrl()!=null)
             Glide.with(mCastImage.getContext()).load(cast.getImageUrl()).into(mCastImage);
     }

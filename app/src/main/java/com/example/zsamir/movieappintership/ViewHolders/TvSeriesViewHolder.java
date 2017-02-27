@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.MovieAppApplication;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.TVSeries.TVSeriesDetailsActivity;
 
@@ -25,7 +25,7 @@ public class TvSeriesViewHolder extends RecyclerView.ViewHolder implements View.
     private TextView mTvSeriesReleaseDate;
     private TextView mTvSeriesRating;
 
-    private TVSeries TVSeries;
+    private TVShow TVShow;
 
     private ImageView mTVSeriesImageFav;
     private ImageView mTVSeriesImageWatch;
@@ -43,24 +43,24 @@ public class TvSeriesViewHolder extends RecyclerView.ViewHolder implements View.
         mTvSeriesImage.setOnClickListener(this);
     }
 
-    public void bindTvSeries(TVSeries TVSeries) {
-        this.TVSeries = TVSeries;
+    public void bindTvSeries(TVShow TVShow) {
+        this.TVShow = TVShow;
 
-        if(TVSeries.getName()!=null)
-        mTvSeriesName.setText(TVSeries.getName());
+        if(TVShow.getName()!=null)
+        mTvSeriesName.setText(TVShow.getName());
 
-        if(TVSeries.getTvSeriesGenres().size()>0){
-            mTvSeriesGenre.setText(TVSeries.getTvSeriesGenres().get(0));
+        if(TVShow.getTvSeriesGenres().size()>0){
+            mTvSeriesGenre.setText(TVShow.getTvSeriesGenres().get(0));
         }
         else
             mTvSeriesGenre.setText(" ");
 
 
         // no fin date!
-        if(TVSeries.getReleaseYear()!=null)
-            mTvSeriesReleaseDate.setText("(TV Series"+" "+ TVSeries.getReleaseYear()+""+")");
-        if(String.format(Locale.getDefault(),"%1$.1f", TVSeries.getVoteAverage())!=null)
-            mTvSeriesRating.setText(String.format(Locale.getDefault(),"%1$.1f", TVSeries.getVoteAverage()));
+        if(TVShow.getReleaseYear()!=null)
+            mTvSeriesReleaseDate.setText("(TV Series"+" "+ TVShow.getReleaseYear()+""+")");
+        if(String.format(Locale.getDefault(),"%1$.1f", TVShow.getVoteAverage())!=null)
+            mTvSeriesRating.setText(String.format(Locale.getDefault(),"%1$.1f", TVShow.getVoteAverage()));
 
         if(MovieAppApplication.isUserLoggedIn()){
 
@@ -69,7 +69,7 @@ public class TvSeriesViewHolder extends RecyclerView.ViewHolder implements View.
             mTVSeriesImageWatch.setVisibility(View.VISIBLE);
 
             if(MovieAppApplication.getUser().getFavTVSeriesList()!=null){
-                if(MovieAppApplication.getUser().getFavTVSeriesList().contains(TVSeries.getId())){
+                if(MovieAppApplication.getUser().getFavTVSeriesList().contains(TVShow.getId())){
                     Drawable likeIcon = DrawableCompat.wrap(ContextCompat.getDrawable(mTVSeriesImageFav.getContext(),R.drawable.like_filled_2));
                     mTVSeriesImageFav.setBackground(likeIcon);
 
@@ -80,7 +80,7 @@ public class TvSeriesViewHolder extends RecyclerView.ViewHolder implements View.
             }
 
             if(MovieAppApplication.getUser().getWatchlistTVSeriesList()!=null){
-                if(MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(TVSeries.getId())){
+                if(MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(TVShow.getId())){
                     Drawable bookmarkIcon = DrawableCompat.wrap(ContextCompat.getDrawable(mTVSeriesImageWatch.getContext(),R.drawable.bookmark_filled_2));
                     mTVSeriesImageWatch.setBackground(bookmarkIcon);
                 }else{
@@ -93,14 +93,14 @@ public class TvSeriesViewHolder extends RecyclerView.ViewHolder implements View.
             mTVSeriesImageWatch.setVisibility(View.GONE);
         }
 
-        Glide.with(mTvSeriesImage.getContext()).load(TVSeries.getPosterUrl()).into(mTvSeriesImage);
+        Glide.with(mTvSeriesImage.getContext()).load(TVShow.getPosterUrl()).into(mTvSeriesImage);
     }
 
     @Override
     public void onClick(View view) {
         //Toast.makeText(view.getContext(), TVSeries.getName(), Toast.LENGTH_SHORT).show();
         Intent i = new Intent(view.getContext(), TVSeriesDetailsActivity.class);
-        i.putExtra("TVSeries", TVSeries);
+        i.putExtra("TVSeries", TVShow);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         view.getContext().startActivity(i);
     }

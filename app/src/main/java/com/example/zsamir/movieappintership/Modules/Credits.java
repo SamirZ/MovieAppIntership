@@ -22,9 +22,6 @@ public class Credits implements Parcelable
     public final static Parcelable.Creator<Credits> CREATOR = new Creator<Credits>() {
 
 
-        @SuppressWarnings({
-                "unchecked"
-        })
         public Credits createFromParcel(Parcel in) {
             Credits instance = new Credits();
             instance.id = ((int) in.readValue((int.class.getClassLoader())));

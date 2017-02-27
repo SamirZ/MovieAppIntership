@@ -7,7 +7,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.zsamir.movieappintership.Modules.Episode;
-import com.example.zsamir.movieappintership.Modules.TVSeriesDetails;
+import com.example.zsamir.movieappintership.Modules.TVShowDetails;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.TVSeries.EpisodeActivity;
 
@@ -19,7 +19,7 @@ public class EpisodeViewHolder extends RecyclerView.ViewHolder implements View.O
     private TextView rating;
     private TextView airdate;
     private Episode episode;
-    private TVSeriesDetails TVSeriesDetails;
+    private TVShowDetails TVShowDetails;
 
     public EpisodeViewHolder(View itemView) {
         super(itemView);
@@ -31,10 +31,10 @@ public class EpisodeViewHolder extends RecyclerView.ViewHolder implements View.O
         itemView.setOnClickListener(this);
     }
 
-    public void bindEpisode(Episode episode, TVSeriesDetails TVSeriesDetails) {
+    public void bindEpisode(Episode episode, TVShowDetails TVShowDetails) {
 
-        if(TVSeriesDetails !=null){
-            this.TVSeriesDetails = TVSeriesDetails;
+        if(TVShowDetails !=null){
+            this.TVShowDetails = TVShowDetails;
         }
 
         if(episode!=null){
@@ -56,7 +56,7 @@ public class EpisodeViewHolder extends RecyclerView.ViewHolder implements View.O
     public void onClick(View v) {
         Intent i = new Intent(v.getContext(), EpisodeActivity.class);
         i.putExtra("EpisodeDetails",episode);
-        i.putExtra("TVSeriesDetails", TVSeriesDetails);
+        i.putExtra("TVSeriesDetails", TVShowDetails);
         if(!episode.getAirDate().equalsIgnoreCase("TBD")){
             v.getContext().startActivity(i);
         }else{

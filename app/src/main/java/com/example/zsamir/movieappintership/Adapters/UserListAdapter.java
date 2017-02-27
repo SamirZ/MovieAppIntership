@@ -6,22 +6,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
+import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.ViewHolders.UserListViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListViewHolder>{
     private List<Movie> mMovies;
-    private List<TVSeries> mTVSeries;
+    private List<TVShow> mTVSeries;
 
-    public UserListAdapter(ArrayList<Movie> mMovies) {
+    public UserListAdapter(List<Movie> mMovies, int i) {
         this.mMovies = mMovies;
     }
 
-    public UserListAdapter(List<TVSeries> mTVSeries){
+    public UserListAdapter(List<TVShow> mTVSeries){
         this.mTVSeries = mTVSeries;
     }
 
@@ -36,9 +35,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListViewHolder>{
         if(mMovies!=null){
             Movie movie = mMovies.get(position);
             holder.bindMovie(movie);
-        }else if(mTVSeries!=null){
-            TVSeries tvSeries = mTVSeries.get(position);
-            holder.bindTVSeries(tvSeries);
+        }else if(mTVSeries !=null){
+            TVShow TVShow = mTVSeries.get(position);
+            holder.bindTVSeries(TVShow);
         }
     }
 
@@ -46,7 +45,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListViewHolder>{
     public int getItemCount() {
         if(mMovies!=null)
             return mMovies.size();
-        else if(mTVSeries!=null)
+        else if(mTVSeries !=null)
             return mTVSeries.size();
         return 0;
     }
@@ -55,7 +54,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListViewHolder>{
         return mMovies;
     }
 
-    public List<TVSeries> getTVSeries() {
+    public List<TVShow> getTVSeries() {
         return mTVSeries;
     }
 }

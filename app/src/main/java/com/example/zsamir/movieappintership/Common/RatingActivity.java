@@ -13,8 +13,8 @@ import com.example.zsamir.movieappintership.LoginModules.PostResponse;
 import com.example.zsamir.movieappintership.LoginModules.Rating;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.MovieList;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
-import com.example.zsamir.movieappintership.Modules.TVSeriesList;
+import com.example.zsamir.movieappintership.Modules.TVShow;
+import com.example.zsamir.movieappintership.Modules.TVShowList;
 import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.R;
 
@@ -25,9 +25,9 @@ public class RatingActivity extends BaseActivity {
 
     private RatingBar ratingBar;
     private Movie movie;
-    private TVSeries tvSeries;
+    private TVShow TVShow;
     private List<Movie> ratedMovies = new ArrayList<>();
-    private List<TVSeries> ratedTVSeries = new ArrayList<>();
+    private List<TVShow> ratedTVSeries = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class RatingActivity extends BaseActivity {
 
         if(getIntent().hasExtra("TV")){
             setTitle(getString(R.string.rate_this)+" TV show");
-            tvSeries = getIntent().getParcelableExtra("TV");
+            TVShow = getIntent().getParcelableExtra("TV");
             requestRatedTVSeries();
         }
 
@@ -79,9 +79,9 @@ public class RatingActivity extends BaseActivity {
                             Toast.makeText(RatingActivity.this, "Successfully rated", Toast.LENGTH_SHORT).show();
                         }
                     });
-        }else if(tvSeries!=null){
+        }else if(TVShow !=null){
             Log.d("RATING", String.valueOf((double)ratingBar.getRating()));
-            ApiHandler.getInstance().rateTVShow(tvSeries.getId(),
+            ApiHandler.getInstance().rateTVShow(TVShow.getId(),
                     MovieAppApplication.getUser().getSessionId(),
                     new Rating((double) ratingBar.getRating()), new ApiHandler.PostResponseListener() {
                         @Override
@@ -135,33 +135,33 @@ public class RatingActivity extends BaseActivity {
     private void requestRatedTVSeries(){
         ApiHandler.getInstance().requestAccountRatedTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
             @Override
-            public void success(TVSeriesList response) {
-                for(TVSeries t:response.getTVSeries()){
+            public void success(TVShowList response) {
+                for(TVShow t:response.getTVShow()){
                     ratedTVSeries.add(t);
                 }
                 if(response.getTotalPages()>1){
                     for(int i = response.getTotalPages(); i>= 2; i--){
                         ApiHandler.getInstance().requestAccountRatedTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.TvSeriesListListener() {
                             @Override
-                            public void success(TVSeriesList response) {
-                                for (TVSeries t: response.getTVSeries()) {
+                            public void success(TVShowList response) {
+                                for (TVShow t: response.getTVShow()) {
                                     ratedTVSeries.add(t);
                                 }
                             }
                         });
                     }
-                    for (TVSeries t:ratedTVSeries) {
-                        if(tvSeries!=null){
-                            if(tvSeries.getId()==t.getId()){
+                    for (TVShow t: ratedTVSeries) {
+                        if(TVShow !=null){
+                            if(TVShow.getId()==t.getId()){
                                 Log.d("TV_RATING", String.valueOf((float)t.getRating()));
                                 ratingBar.setRating((float)t.getRating());
                             }
                         }
                     }
                 }else{
-                    for (TVSeries t:ratedTVSeries) {
-                        if(tvSeries!=null){
-                            if(tvSeries.getId()==t.getId()){
+                    for (TVShow t: ratedTVSeries) {
+                        if(TVShow !=null){
+                            if(TVShow.getId()==t.getId()){
                                 Log.d("TV_RATING", String.valueOf((float)t.getRating()));
                                 ratingBar.setRating((float)t.getRating());
                             }

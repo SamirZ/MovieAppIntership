@@ -15,14 +15,14 @@ import android.widget.Toast;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.BaseActivity;
+import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.LoginModules.Account;
 import com.example.zsamir.movieappintership.LoginModules.Session;
 import com.example.zsamir.movieappintership.LoginModules.Token;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.MovieList;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
-import com.example.zsamir.movieappintership.Modules.TVSeriesList;
+import com.example.zsamir.movieappintership.Modules.TVShowList;
 import com.example.zsamir.movieappintership.R;
 import com.google.gson.Gson;
 
@@ -243,16 +243,16 @@ public class LoginActivity extends BaseActivity {
     private void requestFavoriteTVSeries(){
         ApiHandler.getInstance().requestAccountFavoriteTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
             @Override
-            public void success(TVSeriesList response) {
-                for (TVSeries t: response.getTVSeries()) {
+            public void success(TVShowList response) {
+                for (TVShow t: response.getTVShow()) {
                     MovieAppApplication.getUser().addToFavoriteTVSeriesList(t.getId());
                 }
                 if(response.getTotalPages()>1){
                     for(int i = response.getTotalPages(); i>= 2; i--){
                         ApiHandler.getInstance().requestAccountFavoriteTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.TvSeriesListListener() {
                             @Override
-                            public void success(TVSeriesList response) {
-                                for (TVSeries t: response.getTVSeries()) {
+                            public void success(TVShowList response) {
+                                for (TVShow t: response.getTVShow()) {
                                     MovieAppApplication.getUser().addToFavoriteTVSeriesList(t.getId());
                                 }
                             }
@@ -289,16 +289,16 @@ public class LoginActivity extends BaseActivity {
     private void requestWatchlistTVSeries(){
         ApiHandler.getInstance().requestAccountWatchlistTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
             @Override
-            public void success(TVSeriesList response) {
-                for (TVSeries t: response.getTVSeries()) {
+            public void success(TVShowList response) {
+                for (TVShow t: response.getTVShow()) {
                     MovieAppApplication.getUser().addToWatchlistTVSeriesList(t.getId());
                 }
                 if(response.getTotalPages()>1){
                     for(int i = response.getTotalPages(); i>= 2; i--){
                         ApiHandler.getInstance().requestAccountWatchlistTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.TvSeriesListListener() {
                             @Override
-                            public void success(TVSeriesList response) {
-                                for (TVSeries t: response.getTVSeries()) {
+                            public void success(TVShowList response) {
+                                for (TVShow t: response.getTVShow()) {
                                     MovieAppApplication.getUser().addToWatchlistTVSeriesList(t.getId());
                                 }
                             }

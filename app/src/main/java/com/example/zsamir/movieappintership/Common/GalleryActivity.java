@@ -12,7 +12,7 @@ import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Modules.Backdrop;
 import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
+import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class GalleryActivity extends BaseActivity {
 
     ArrayList<Backdrop> backdrops = new ArrayList<>();
     Movie movie;
-    TVSeries TVSeries;
+    TVShow TVShow;
     ApiHandler apiHandler = ApiHandler.getInstance();
     ImageGalleryAdapter imageGalleryAdapter;
 
@@ -48,11 +48,11 @@ public class GalleryActivity extends BaseActivity {
     private void setTVSeriesGallery() {
         if(getIntent().hasExtra("TVSeries")){
             setTitle(getString(R.string.tv_series_name));
-            TVSeries = getIntent().getParcelableExtra("TVSeries");
-            imageGalleryAdapter = new ImageGalleryAdapter(backdrops, TVSeries);
+            TVShow = getIntent().getParcelableExtra("TVSeries");
+            imageGalleryAdapter = new ImageGalleryAdapter(backdrops, TVShow);
             TextView name = (TextView)findViewById(R.id.image_gallery_name);
-            if(TVSeries.getName()!=null && TVSeries.getReleaseYear()!=null)
-                name.setText(getString(R.string.images)+" : "+ TVSeries.getName()+" ("+ TVSeries.getReleaseYear()+")");
+            if(TVShow.getName()!=null && TVShow.getReleaseYear()!=null)
+                name.setText(getString(R.string.images)+" : "+ TVShow.getName()+" ("+ TVShow.getReleaseYear()+")");
             loadInitialTVSeriesImages();
         }
     }
@@ -70,10 +70,10 @@ public class GalleryActivity extends BaseActivity {
     }
 
     private void loadInitialTVSeriesImages() {
-        apiHandler.requestTVSeriesImages(TVSeries.getId(), new ApiHandler.ImagesListener() {
+        apiHandler.requestTVSeriesImages(TVShow.getId(), new ApiHandler.ImagesListener() {
             @Override
             public void success(Images response) {
-                backdrops.addAll(response.backdrops);
+                backdrops.addAll(response.getBackdrops());
                 TextView movieImageNumber = (TextView) findViewById(R.id.image_gallery_num_of_images);
                 movieImageNumber.setText(backdrops.size()+" "+getString(R.string.images1));
                 imageGalleryAdapter.notifyDataSetChanged();
@@ -85,7 +85,7 @@ public class GalleryActivity extends BaseActivity {
         apiHandler.requestMovieImages(movie.getId(), new ApiHandler.ImagesListener() {
             @Override
             public void success(Images response) {
-                backdrops.addAll(response.backdrops);
+                backdrops.addAll(response.getBackdrops());
                 TextView movieImageNumber = (TextView) findViewById(R.id.image_gallery_num_of_images);
                 movieImageNumber.setText(backdrops.size()+" "+getString(R.string.images1));
                 imageGalleryAdapter.notifyDataSetChanged();

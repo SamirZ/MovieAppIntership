@@ -37,7 +37,7 @@ public class ResultViewHolder extends RecyclerView.ViewHolder implements View.On
     public void bindResult(Result result) {
 
         media = result;
-        if(result.mediaType.equalsIgnoreCase("movie")){
+        if(result.getMediaType().equalsIgnoreCase("movie")){
             name.setText(result.toMovie().getTitle());
             if(result.toMovie().getReleaseYear().length()>0)
                 date.setText("("+result.toMovie().getReleaseYear()+")");
@@ -52,7 +52,7 @@ public class ResultViewHolder extends RecyclerView.ViewHolder implements View.On
                 Glide.with(image.getContext()).load(result.toMovie().getPosterUrl()).into(image);
             }
         }
-        if(result.mediaType.equalsIgnoreCase("tv")){
+        if(result.getMediaType().equalsIgnoreCase("tv")){
             name.setText(result.toTvSeries().getName());
             if(result.toTvSeries().getReleaseYear().length()>0)
                 date.setText("("+itemView.getContext().getString(R.string.tv_series_name)+" "+result.toTvSeries().getReleaseYear()+")");
@@ -72,13 +72,13 @@ public class ResultViewHolder extends RecyclerView.ViewHolder implements View.On
     @Override
     public void onClick(View v) {
 
-        if(media.mediaType.equalsIgnoreCase("movie")){
+        if(media.getMediaType().equalsIgnoreCase("movie")){
             Intent i = new Intent(v.getContext(), MovieDetailsActivity.class);
             i.putExtra("Movie", media.toMovie());
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             v.getContext().startActivity(i);
         }
-        if(media.mediaType.equalsIgnoreCase("tv")){
+        if(media.getMediaType().equalsIgnoreCase("tv")){
             Intent i = new Intent(v.getContext(), TVSeriesDetailsActivity.class);
             i.putExtra("TVSeries", media.toTvSeries());
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

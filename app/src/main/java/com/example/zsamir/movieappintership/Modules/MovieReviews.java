@@ -15,12 +15,6 @@ public class MovieReviews {
     @SerializedName("results")
     @Expose
     private List<MovieReview> results = null;
-    @SerializedName("total_pages")
-    @Expose
-    private Integer totalPages;
-    @SerializedName("total_results")
-    @Expose
-    private Integer totalResults;
 
     public Integer getId() {
         return id;
@@ -40,26 +34,6 @@ public class MovieReviews {
 
     public List<MovieReview> getResults() {
         return results;
-    }
-
-    public void setResults(List<MovieReview> results) {
-        this.results = results;
-    }
-
-    public Integer getTotalPages() {
-        return totalPages;
-    }
-
-    public void setTotalPages(Integer totalPages) {
-        this.totalPages = totalPages;
-    }
-
-    public Integer getTotalResults() {
-        return totalResults;
-    }
-
-    public void setTotalResults(Integer totalResults) {
-        this.totalResults = totalResults;
     }
 
 }

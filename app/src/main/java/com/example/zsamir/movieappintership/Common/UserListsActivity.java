@@ -16,6 +16,8 @@ import com.example.zsamir.movieappintership.Widgets.NonSwipeableViewPager;
 
 public class UserListsActivity extends BaseActivity {
 
+    private NonSwipeableViewPager mViewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,11 +25,12 @@ public class UserListsActivity extends BaseActivity {
 
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        NonSwipeableViewPager mViewPager = (NonSwipeableViewPager) findViewById(R.id.container);
+        mViewPager = (NonSwipeableViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        mViewPager.setCurrentItem(1);
 
         setType();
 
@@ -42,14 +45,17 @@ public class UserListsActivity extends BaseActivity {
                 if(type.equalsIgnoreCase("FAVORITES")){
                     setTitle(getString(R.string.favourites_label));
                     MovieAppApplication.setType("FAVORITES");
+                    mViewPager.setCurrentItem(0);
                 }
                 if(type.equalsIgnoreCase("WATCHLIST")){
                     setTitle(getString(R.string.watchlist_label));
                     MovieAppApplication.setType("WATCHLIST");
+                    mViewPager.setCurrentItem(0);
                 }
                 if(type.equalsIgnoreCase("RATINGS")){
                     setTitle(getString(R.string.ratings_label));
                     MovieAppApplication.setType("RATINGS");
+                    mViewPager.setCurrentItem(0);
                 }
             }
 

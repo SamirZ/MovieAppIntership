@@ -17,7 +17,7 @@ import com.example.zsamir.movieappintership.Modules.Episode;
 import com.example.zsamir.movieappintership.Modules.EpisodeCast;
 import com.example.zsamir.movieappintership.Modules.EpisodeCredits;
 import com.example.zsamir.movieappintership.Modules.EpisodeDetails;
-import com.example.zsamir.movieappintership.Modules.TVSeriesDetails;
+import com.example.zsamir.movieappintership.Modules.TVShowDetails;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.Locale;
 public class EpisodeActivity extends BaseActivity {
 
     private Episode episode;
-    private TVSeriesDetails TVSeriesDetails;
+    private TVShowDetails TVShowDetails;
     private ArrayList<EpisodeCast> actors = new ArrayList<>();
     private CastAdapter mCastAdapter = new CastAdapter(actors,0);
 
@@ -65,10 +65,10 @@ public class EpisodeActivity extends BaseActivity {
 
     private void setUpDetails() {
         if(getIntent().hasExtra("TVSeriesDetails")){
-            TVSeriesDetails = getIntent().getParcelableExtra("TVSeriesDetails");
-            this.setTitle(TVSeriesDetails.getName());
+            TVShowDetails = getIntent().getParcelableExtra("TVSeriesDetails");
+            this.setTitle(TVShowDetails.getName());
 
-            ApiHandler.getInstance().requestEpisodeDetails(TVSeriesDetails.getId(), episode.getSeasonNumber(), episode.getEpisodeNumber(), new ApiHandler.EpisodeDetailsListener() {
+            ApiHandler.getInstance().requestEpisodeDetails(TVShowDetails.getId(), episode.getSeasonNumber(), episode.getEpisodeNumber(), new ApiHandler.EpisodeDetailsListener() {
                 @Override
                 public void success(EpisodeDetails response) {
                     if(response.getOverview()!=null){
@@ -87,8 +87,8 @@ public class EpisodeActivity extends BaseActivity {
 
         }
 
-        if(TVSeriesDetails.getBackdropPath()!=null){
-            Glide.with(episodeImage.getContext()).load(TVSeriesDetails.getBackdropUrl()).into(episodeImage);
+        if(TVShowDetails.getBackdropPath()!=null){
+            Glide.with(episodeImage.getContext()).load(TVShowDetails.getBackdropUrl()).into(episodeImage);
         }
 
         if(episode.getName()!=null){
@@ -112,13 +112,13 @@ public class EpisodeActivity extends BaseActivity {
         }
 
         // get Cast
-        ApiHandler.getInstance().requestEpisodeCredits(TVSeriesDetails.getId(), episode.getSeasonNumber(), episode.getEpisodeNumber(), new ApiHandler.EpisodeCreditsListener() {
+        ApiHandler.getInstance().requestEpisodeCredits(TVShowDetails.getId(), episode.getSeasonNumber(), episode.getEpisodeNumber(), new ApiHandler.EpisodeCreditsListener() {
             @Override
             public void success(EpisodeCredits response) {
                 actors.clear();
                 if(response!=null){
-                    if(response.cast.size()>0){
-                        actors.addAll(response.cast);
+                    if(response.getCast().size()>0){
+                        actors.addAll(response.getCast());
                         mCastAdapter.notifyDataSetChanged();
                     }
                     else{

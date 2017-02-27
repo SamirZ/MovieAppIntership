@@ -7,43 +7,37 @@ public class Result {
 
     @SerializedName("poster_path")
     @Expose
-    public String posterPath;
+    private String posterPath;
     @SerializedName("id")
     @Expose
-    public Integer id;
+    private Integer id;
     @SerializedName("overview")
     @Expose
-    public String overview;
+    private String overview;
     @SerializedName("backdrop_path")
     @Expose
-    public String backdropPath;
+    private String backdropPath;
     @SerializedName("vote_average")
     @Expose
-    public float voteAverage;
+    private float voteAverage;
     @SerializedName("media_type")
     @Expose
-    public String mediaType;
+    private String mediaType;
     @SerializedName("first_air_date")
     @Expose
-    public String firstAirDate;
+    private String firstAirDate;
     @SerializedName("genre_ids")
     @Expose
-    public int[] genreIds = new int[0];
-    @SerializedName("vote_count")
-    @Expose
-    public Integer voteCount;
+    private int[] genreIds = new int[0];
     @SerializedName("name")
     @Expose
     public String name;
     @SerializedName("release_date")
     @Expose
-    public String releaseDate;
+    private String releaseDate;
     @SerializedName("title")
     @Expose
-    public String title;
-    @SerializedName("profile_path")
-    @Expose
-    public String profilePath;
+    private String title;
 
     public Movie toMovie(){
         if(mediaType.equalsIgnoreCase("movie"))
@@ -51,9 +45,9 @@ public class Result {
         return null;
     }
 
-    public TVSeries toTvSeries(){
+    public TVShow toTvSeries(){
         if(mediaType.equalsIgnoreCase("tv"))
-            return new TVSeries(posterPath,backdropPath,voteAverage,overview,firstAirDate,genreIds,name,id);
+            return new TVShow(posterPath,backdropPath,voteAverage,overview,firstAirDate,genreIds,name,id);
         return null;
     }
 
@@ -70,7 +64,7 @@ public class Result {
                 '}';
     }
 
-    public Result(String posterPath, Integer id, String overview, String backdropPath, float voteAverage, String mediaType, String firstAirDate, int[] genreIds, Integer voteCount, String name, String releaseDate, String title, String profilePath) {
+    public Result(String posterPath, Integer id, String overview, String backdropPath, float voteAverage, String mediaType, String firstAirDate, int[] genreIds, String name, String releaseDate, String title) {
         this.posterPath = posterPath;
         this.id = id;
         this.overview = overview;
@@ -79,10 +73,12 @@ public class Result {
         this.mediaType = mediaType;
         this.firstAirDate = firstAirDate;
         this.genreIds = genreIds;
-        this.voteCount = voteCount;
         this.name = name;
         this.releaseDate = releaseDate;
         this.title = title;
-        this.profilePath = profilePath;
+    }
+
+    public String getMediaType() {
+        return mediaType;
     }
 }

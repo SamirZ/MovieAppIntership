@@ -2,21 +2,20 @@ package com.example.zsamir.movieappintership.Modules;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class EpisodeCast implements Parcelable {
 
-    static final String BASE_IMG_URL = "http://image.tmdb.org/t/p/";
+    private static final String BASE_IMG_URL = "http://image.tmdb.org/t/p/";
     // Poster image sizes
-    static final String POSTER_SIZE_W92 = "w92";
-    static final String POSTER_SIZE_W154 = "w154";
-    static final String POSTER_SIZE_W185 = "w185";
-    static final String POSTER_SIZE_W342 = "w342";
-    static final String POSTER_SIZE_W500 = "w500";
-    static final String POSTER_W780 = "w780";
-    static final String POSTER_SIZE_ORIGINAL = "original";
+    //private static final String POSTER_SIZE_W92 = "w92";
+    //private static final String POSTER_SIZE_W154 = "w154";
+    private static final String POSTER_SIZE_W185 = "w185";
+    //private static final String POSTER_SIZE_W342 = "w342";
+    //private static final String POSTER_SIZE_W500 = "w500";
+    private static final String POSTER_W780 = "w780";
+    //private static final String POSTER_SIZE_ORIGINAL = "original";
 
     public String getPosterUrl() {
         return BASE_IMG_URL + POSTER_SIZE_W185 + profilePath;
@@ -28,22 +27,22 @@ public class EpisodeCast implements Parcelable {
 
     @SerializedName("character")
     @Expose
-    public String character;
+    private String character;
     @SerializedName("credit_id")
     @Expose
-    public String creditId;
+    private String creditId;
     @SerializedName("id")
     @Expose
-    public Integer id;
+    private Integer id;
     @SerializedName("name")
     @Expose
-    public String name;
+    private String name;
     @SerializedName("profile_path")
     @Expose
-    public String profilePath;
+    private String profilePath;
     @SerializedName("order")
     @Expose
-    public Integer order;
+    private Integer order;
 
     @Override
     public int describeContents() {
@@ -60,10 +59,7 @@ public class EpisodeCast implements Parcelable {
         dest.writeValue(this.order);
     }
 
-    public EpisodeCast() {
-    }
-
-    protected EpisodeCast(Parcel in) {
+    private EpisodeCast(Parcel in) {
         this.character = in.readString();
         this.creditId = in.readString();
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
@@ -86,5 +82,17 @@ public class EpisodeCast implements Parcelable {
 
     public Cast toCast(){
         return new Cast(0,character,creditId,id,name,order,profilePath);
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCharacter() {
+        return character;
     }
 }

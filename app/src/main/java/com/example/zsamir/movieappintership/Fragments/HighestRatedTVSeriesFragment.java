@@ -12,7 +12,7 @@ import com.example.zsamir.movieappintership.API.ApiHandler;
 
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
 import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
+import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
@@ -20,9 +20,9 @@ import java.util.ArrayList;
 public class HighestRatedTVSeriesFragment extends Fragment {
 
     private static HighestRatedTVSeriesFragment instance = null;
-    ArrayList<TVSeries> TVSeriesList = new ArrayList<>();
+    ArrayList<TVShow> TVShowList = new ArrayList<>();
     ApiHandler movieDbApi = ApiHandler.getInstance();
-    TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(TVSeriesList);
+    TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(TVShowList);
     int numberOfPages;
 
     public HighestRatedTVSeriesFragment() {
@@ -52,10 +52,10 @@ public class HighestRatedTVSeriesFragment extends Fragment {
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        if(TVSeriesList.size()==0)
+        if(TVShowList.size()==0)
             loadTopRatedTvSeries(1);
         else{
-            TVSeriesList.clear();
+            TVShowList.clear();
             loadTopRatedTvSeries(1);
             mTvSeriesAdapter.notifyDataSetChanged();
         }
@@ -76,12 +76,12 @@ public class HighestRatedTVSeriesFragment extends Fragment {
     private void loadTopRatedTvSeries(int page) {
         movieDbApi.requestHighestRatedTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
-            public void success(com.example.zsamir.movieappintership.Modules.TVSeriesList response) {
+            public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
                 numberOfPages = response.getTotalPages();
                 // addition
-                for (TVSeries t: response.getTVSeries()) {
-                    if(!TVSeriesList.contains(t))
-                        TVSeriesList.add(t);
+                for (TVShow t: response.getTVShow()) {
+                    if(!TVShowList.contains(t))
+                        TVShowList.add(t);
                 }
                 //TVSeriesList.addAll(response.getTVSeries());
                 mTvSeriesAdapter.notifyDataSetChanged();

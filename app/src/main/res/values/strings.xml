@@ -143,4 +143,6 @@
     <string name="account_name">Name:</string>
     <string name="account_username">Username:</string>
     <string name="trailer">Trailer</string>
+    <string name="tv_notification_text"> new episodes are airing today. Check out now!</string>
+    <string name="movie_notification_text"> movies coming soon. Check out now!</string>
 </resources>

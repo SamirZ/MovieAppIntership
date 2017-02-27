@@ -45,7 +45,6 @@ public class MovieDetailsActivity extends BaseActivity {
     private Movie mMovie;
     private Credits mCredits;
     private Images mMovieImages = new Images();
-    private MovieReviews mMovieReviews = new MovieReviews();
     private boolean liked = false;
     private boolean watchlist = false;
 
@@ -158,10 +157,10 @@ public class MovieDetailsActivity extends BaseActivity {
             @Override
             public void success(MovieDetails response) {
                 TextView mMovieReleaseDate = (TextView) findViewById(R.id.movie_details_release_date);
-                if(!response.productionCountries.isEmpty())
-                    mMovieReleaseDate.setText(response.getReleaseDate()+" "+ "("+response.productionCountries.get(0).name+")");
+                if(!response.getProductionCountries().isEmpty())
+                    mMovieReleaseDate.setText(mMovie.getReleaseDate()+" "+ "("+response.getProductionCountries().get(0).getName()+")");
                 else
-                    mMovieReleaseDate.setText(response.getReleaseDate());
+                    mMovieReleaseDate.setText(mMovie.getReleaseDate());
             }
         });
 
@@ -170,8 +169,8 @@ public class MovieDetailsActivity extends BaseActivity {
             public void success(Images response) {
                 if(response!=null){
                     mMovieImages = response;
-                    if(mMovieImages.backdrops.size()>0){
-                        backdrops.addAll(mMovieImages.backdrops);
+                    if(mMovieImages.getBackdrops().size()>0){
+                        backdrops.addAll(mMovieImages.getBackdrops());
                         mImageAdapter.notifyDataSetChanged();
                     }else{
                         movieImagesLabel.setVisibility(View.GONE);
@@ -196,19 +195,19 @@ public class MovieDetailsActivity extends BaseActivity {
                         mMovieWritersLabel.setVisibility(View.GONE);
                     }else{
                         for (Crew c : mCredits.crew) {
-                            if (c.department.equals("Directing")) {
+                            if (c.getDepartment().equals("Directing")) {
                                 director = c;
-                                mMovieDirector.setText(director.name);
+                                mMovieDirector.setText(director.getName());
                             }
-                            if (c.department.equals("Writing")) {
+                            if (c.getDepartment().equals("Writing")) {
                                 writers.add(c);
                             }
                         }
                         if (writers.size() > 2)
-                            mMovieWriters.setText(writers.get(0).name + ", " + writers.get(1).name + ", " + writers.get(2).name);
+                            mMovieWriters.setText(writers.get(0).getName() + ", " + writers.get(1).getName() + ", " + writers.get(2).getName());
                         else {
                             if (!writers.isEmpty())
-                                mMovieWriters.setText(writers.get(0).name);
+                                mMovieWriters.setText(writers.get(0).getName());
                             else{
                                 mMovieWriters.setVisibility(View.GONE);
                                 mMovieWritersLabel.setVisibility(View.GONE);
@@ -235,7 +234,7 @@ public class MovieDetailsActivity extends BaseActivity {
                     }
                     if(actors.size()>0) {
                         for(int i=0;i<actors.size() && i<3;i++){
-                            sb.append(actors.get(i).name);
+                            sb.append(actors.get(i).getName());
                             if(i!=2)
                                 sb.append(", ");
                         }
@@ -254,7 +253,7 @@ public class MovieDetailsActivity extends BaseActivity {
         ApiHandler.getInstance().requestMovieReviews(mMovie.getId(), new ApiHandler.MovieReviewsListener() {
             @Override
             public void success(MovieReviews response) {
-                mMovieReviews = response;
+
                 if(response!=null){
                     if(response.getResults().size()>0){
                         reviewList.addAll(response.getResults());

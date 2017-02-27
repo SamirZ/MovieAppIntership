@@ -11,7 +11,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/colorMovieDetailsBackground"
-    tools:context="com.example.zsamir.movieappintership.TVSeries.TVSeriesDetailsActivity">
+    tools:context="com.example.zsamir.movieappintership.TVShow.TVSeriesDetailsActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"

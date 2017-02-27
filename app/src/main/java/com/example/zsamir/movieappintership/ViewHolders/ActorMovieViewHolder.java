@@ -53,8 +53,8 @@ public class ActorMovieViewHolder extends RecyclerView.ViewHolder implements Vie
             public void success(Credits response) {
                 allActors.addAll(response.cast);
                 for (Cast a:allActors) {
-                    if(a.id==mActor.id){
-                        mMovieRoleName.setText(a.character);
+                    if(a.getId()==mActor.getId()){
+                        mMovieRoleName.setText(a.getCharacter());
                     }
                 }
 

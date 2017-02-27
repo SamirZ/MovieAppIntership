@@ -11,15 +11,13 @@ import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.BuildConfig;
 import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
+import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.Modules.Video;
 import com.example.zsamir.movieappintership.Modules.Videos;
 import com.example.zsamir.movieappintership.R;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
-import com.google.android.youtube.player.YouTubePlayerSupportFragment;
-import com.google.android.youtube.player.YouTubePlayerView;
 
 public class TrailerActivity extends BaseActivity implements YouTubePlayer.OnInitializedListener {
 
@@ -135,7 +133,7 @@ public class TrailerActivity extends BaseActivity implements YouTubePlayer.OnIni
         if(getIntent().hasExtra("TVID")){
 
             setTitle(getString(R.string.tv_series_name));
-            TVSeries tv = getIntent().getParcelableExtra("TVID");
+            TVShow tv = getIntent().getParcelableExtra("TVID");
             name.setText(getString(R.string.trailer));
             name.append(" "+tv.getName());
             desc.setText(tv.getOverview());

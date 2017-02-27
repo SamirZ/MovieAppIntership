@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
 import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
-import com.example.zsamir.movieappintership.Modules.TVSeries;
+import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.R;
 
 import java.util.ArrayList;
@@ -19,9 +19,9 @@ import java.util.ArrayList;
 public class LatestTVSeriesFragment extends Fragment {
 
     private static LatestTVSeriesFragment instance = null;
-    private ArrayList<TVSeries> TVSeriesList = new ArrayList<>();
+    private ArrayList<TVShow> TVShowList = new ArrayList<>();
     private ApiHandler movieDbApi = ApiHandler.getInstance();
-    private TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(TVSeriesList);
+    private TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(TVShowList);
     int numberOfPages;
 
     public LatestTVSeriesFragment() {
@@ -49,10 +49,10 @@ public class LatestTVSeriesFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        if(TVSeriesList.size()==0)
+        if(TVShowList.size()==0)
             loadLatestTvSeries(1);
         else{
-            TVSeriesList.clear();
+            TVShowList.clear();
             loadLatestTvSeries(1);
             mTvSeriesAdapter.notifyDataSetChanged();
         }
@@ -72,12 +72,12 @@ public class LatestTVSeriesFragment extends Fragment {
     private void loadLatestTvSeries(int page) {
         movieDbApi.requestLatestTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
-            public void success(com.example.zsamir.movieappintership.Modules.TVSeriesList response) {
+            public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
                 numberOfPages = response.getTotalPages();
                 //
-                for (TVSeries t: response.getTVSeries()) {
-                    if(!TVSeriesList.contains(t))
-                        TVSeriesList.add(t);
+                for (TVShow t: response.getTVShow()) {
+                    if(!TVShowList.contains(t))
+                        TVShowList.add(t);
                 }
                 //TVSeriesList.addAll(response.getTVSeries());
                 mTvSeriesAdapter.notifyDataSetChanged();
