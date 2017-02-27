@@ -98,7 +98,7 @@ public class SettingsActivity extends BaseActivity {
                     if (isChecked) {
                         // TV NOTIFICATION ON
                         getSharedPreferences("PREFERENCE", 0).edit().putBoolean("tvNotif", true).apply();
-                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_FIFTEEN_MINUTES/15,pendingIntent);
+                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
 
                     }
                     else {
@@ -148,7 +148,7 @@ public class SettingsActivity extends BaseActivity {
                     AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
                     if (isChecked) {
-                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_FIFTEEN_MINUTES/15,pendingIntent);
+                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY*7,pendingIntent);
                         getSharedPreferences("PREFERENCE", 0).edit().putBoolean("movieNotif", true).apply();
 
                     }

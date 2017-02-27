@@ -1,5 +1,6 @@
 package com.example.zsamir.movieappintership.Fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,22 +12,24 @@ import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.UserListAdapter;
-import com.example.zsamir.movieappintership.MovieAppApplication;
+import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.LoginModules.Account;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.MovieList;
 import com.example.zsamir.movieappintership.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListMoviesFragment extends Fragment {
 
-    private ArrayList<Movie> moviesList = new ArrayList<>();
+    private List<Movie> moviesList = new ArrayList<>();
     private UserListAdapter mMovieAdapter;
-    private Account user = MovieAppApplication.getUser();
+    private Account user;
 
     public ListMoviesFragment() {
-        mMovieAdapter = new UserListAdapter(moviesList);
+        mMovieAdapter = new UserListAdapter(moviesList, 1);
     }
 
     public static ListMoviesFragment newInstance() {
@@ -40,107 +43,73 @@ public class ListMoviesFragment extends Fragment {
 
         RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.user_list_recyclerView);
 
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("PREFERENCE", 0);
+        if (sharedPreferences.contains("USER")) {
+            Gson gson = new Gson();
+            user = gson.fromJson(sharedPreferences.getString("USER", ""), Account.class);
+        }
         LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        if(moviesList.size()==0){
-            loadMovies();
-        }else{
-            moviesList.clear();
-            loadMovies();
-            mMovieAdapter.notifyDataSetChanged();
-        }
+        loadMovies(1);
+
         mRecyclerView.setLayoutManager(layoutManager);
+
+
+        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(layoutManager ) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                //if(page+1<=numberOfPages)
+                loadMovies(page);
+            }
+        };
+        mRecyclerView.addOnScrollListener(scrollListener);
 
         return rootView;
     }
 
-    private void loadMovies() {
-        String type = getActivity().getIntent().getStringExtra("TYPE");
+    private void loadMovies(int page) {
+        if(getActivity().getIntent().hasExtra("TYPE")) {
+            String type = getActivity().getIntent().getStringExtra("TYPE");
 
-        Log.d("TYPE",type);
-        if(type.equalsIgnoreCase("FAVORITES"))
-            searchForFavoriteMovies();
-
-        if(type.equalsIgnoreCase("WATCHLIST"))
-            searchForWatchlistMovies();
-
-        if(type.equalsIgnoreCase("RATINGS"))
-            searchForRatedMovies();
-
+            Log.d("TYPE", type);
+            if (type.equalsIgnoreCase("FAVORITES"))
+                searchForFavoriteMovies(page);
+            else if (type.equalsIgnoreCase("WATCHLIST"))
+                searchForWatchlistMovies(page);
+            else if (type.equalsIgnoreCase("RATINGS"))
+                searchForRatedMovies(page);
+        }
     }
 
-    private void searchForRatedMovies() {
-        ApiHandler.getInstance().requestAccountRatedMovies(user.getId(), user.getSessionId(), 1, new ApiHandler.MovieListListener() {
+    private void searchForRatedMovies(int page) {
+        ApiHandler.getInstance().requestAccountRatedMovies(user.getId(), user.getSessionId(), page, new ApiHandler.MovieListListener() {
             @Override
             public void success(MovieList response) {
-                for (Movie t: response.getMovies()) {
-                    moviesList.add(t);
-                }
+                moviesList.addAll(response.getMovies());
                 mMovieAdapter.notifyDataSetChanged();
-                if(response.getTotalPages()>1){
-                    for(int i = response.getTotalPages(); i>= 2; i--){
-                        ApiHandler.getInstance().requestAccountRatedMovies(user.getId(), user.getSessionId(), i, new ApiHandler.MovieListListener() {
-                            @Override
-                            public void success(MovieList response) {
-                                for (Movie t: response.getMovies()) {
-                                    moviesList.add(t);
-                                }
-                                mMovieAdapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-                }
+
             }
         });
     }
 
-    private void searchForWatchlistMovies() {
-        ApiHandler.getInstance().requestAccountWatchlistMovies(user.getId(), user.getSessionId(), 1, new ApiHandler.MovieListListener() {
+    private void searchForWatchlistMovies(int page) {
+        ApiHandler.getInstance().requestAccountWatchlistMovies(user.getId(), user.getSessionId(), page, new ApiHandler.MovieListListener() {
             @Override
             public void success(MovieList response) {
-                for (Movie t: response.getMovies()) {
-                    moviesList.add(t);
-                }
+                moviesList.addAll(response.getMovies());
                 mMovieAdapter.notifyDataSetChanged();
-                if(response.getTotalPages()>1){
-                    for(int i = response.getTotalPages(); i>= 2; i--){
-                        ApiHandler.getInstance().requestAccountWatchlistMovies(user.getId(), user.getSessionId(), i, new ApiHandler.MovieListListener() {
-                            @Override
-                            public void success(MovieList response) {
-                                for (Movie t: response.getMovies()) {
-                                    moviesList.add(t);
-                                }
-                                mMovieAdapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-                }
+
             }
         });
     }
 
-    private void searchForFavoriteMovies() {
-        ApiHandler.getInstance().requestAccountFavoriteMovies(user.getId(), user.getSessionId(), 1, new ApiHandler.MovieListListener() {
+    private void searchForFavoriteMovies(int page) {
+        ApiHandler.getInstance().requestAccountFavoriteMovies(user.getId(), user.getSessionId(), page, new ApiHandler.MovieListListener() {
             @Override
             public void success(MovieList response) {
-                for (Movie t: response.getMovies()) {
-                    moviesList.add(t);
-                }
+                moviesList.addAll(response.getMovies());
                 mMovieAdapter.notifyDataSetChanged();
-                if(response.getTotalPages()>1){
-                    for(int i = response.getTotalPages(); i>= 2; i--){
-                        ApiHandler.getInstance().requestAccountFavoriteMovies(user.getId(), user.getSessionId(), i, new ApiHandler.MovieListListener() {
-                            @Override
-                            public void success(MovieList response) {
-                                for (Movie t: response.getMovies()) {
-                                    moviesList.add(t);
-                                }
-                                mMovieAdapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-                }
             }
         });
     }

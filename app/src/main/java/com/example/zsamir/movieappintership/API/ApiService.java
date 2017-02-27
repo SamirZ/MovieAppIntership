@@ -38,7 +38,7 @@ interface ApiService {
     Call<MovieList> fetchHighestRatedMovies(@Query("api_key") String apiKey, @Query("page") int page);
 
     @GET("movie/upcoming")
-    Call<MovieList> fetchUpcomingMovies(@Query("api_key") String apiKey, @Query("page") int page);
+    Call<MovieList> fetchUpcomingMovies(@Query("api_key") String apiKey,@Query("region") String region, @Query("page") int page);
 
     @GET("movie/{id}")
     Call<MovieDetails> fetchMovie(@Path("id") int movieId, @Query("api_key") String apiKey);

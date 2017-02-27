@@ -11,7 +11,6 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
-import com.example.zsamir.movieappintership.Common.SplashActivity;
 import com.example.zsamir.movieappintership.LoginModules.Account;
 import com.example.zsamir.movieappintership.LoginModules.Session;
 import com.example.zsamir.movieappintership.LoginModules.Token;
@@ -27,17 +26,21 @@ import java.util.List;
 public class TVAlertReceiver extends BroadcastReceiver{
 
     private List<TVShow> watchlist = new ArrayList<>();
+    private List<TVShow> common = new ArrayList<>();
     private Account user;
     private Context c;
     private boolean tvNotif = false;
+    private Intent tvIntent;
+    private SharedPreferences sharedPreferences;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
         //EDIT NOTIFICATION
-        SharedPreferences sharedPreferences = context.getSharedPreferences("PREFERENCE", 0);
+        sharedPreferences = context.getSharedPreferences("PREFERENCE", 0);
         if (sharedPreferences.contains("USER")) {
             final Gson gson = new Gson();
+            tvIntent = new Intent(context, AiringEpisodesActivity.class);
             user = gson.fromJson(sharedPreferences.getString("USER", ""), Account.class);
             String pass = sharedPreferences.getString("PASSWORD","");
             c = context;
@@ -52,9 +55,7 @@ public class TVAlertReceiver extends BroadcastReceiver{
 
     public void createNotification(Context context, String msg, String msgText, String msgAlert, Integer notificationId){
 
-
-        PendingIntent notificIntent = PendingIntent.getActivity(context, notificationId,
-                new Intent(context, SplashActivity.class), 0);
+        PendingIntent notificIntent = PendingIntent.getActivity(context, notificationId, tvIntent, 0);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
@@ -92,28 +93,78 @@ public class TVAlertReceiver extends BroadcastReceiver{
                                     public void success(Session response) {
                                         if(response!=null){
                                             if(tvNotif){
-                                                ApiHandler.getInstance().requestAccountWatchlistTVSeries(user.getId(), response.getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
+                                                ApiHandler.getInstance().requestAiringTodayTvSeries(1, new ApiHandler.TvSeriesListListener() {
                                                     @Override
                                                     public void success(TVShowList response) {
-                                                        if(response!=null) {
-                                                            for (TVShow t : response.getTVShow()) {
-                                                                watchlist.add(t);
+                                                        Log.d("SUCCESS","ENTERED");
+                                                        for (TVShow t: response.getTVShow()) {
+                                                            watchlist.add(t);
+                                                        }
+                                                        if(response.getTotalPages()>1){
+                                                            for(int i = response.getTotalPages(); i>= 2; i--){
+                                                                ApiHandler.getInstance().requestAiringTodayTvSeries(i, new ApiHandler.TvSeriesListListener() {
+                                                                    @Override
+                                                                    public void success(TVShowList response) {
+                                                                        for (TVShow t: response.getTVShow()) {
+                                                                            watchlist.add(t);
+                                                                        }
+                                                                    }
+                                                                });
                                                             }
-                                                            ApiHandler.getInstance().requestAiringTodayTvSeries(1, new ApiHandler.TvSeriesListListener() {
+
+                                                            ApiHandler.getInstance().requestAccountWatchlistTVSeries(user.getId(), user.getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
                                                                 @Override
                                                                 public void success(TVShowList response) {
-                                                                    for (int i = 0; i < response.getTVShow().size(); i++) {
-                                                                        for (int j = 0; j < watchlist.size(); j++) {
-                                                                            if (response.getTVShow().get(i).getId() == watchlist.get(j).getId()) {
-                                                                                createNotification(c, watchlist.get(j).getName(), c.getString(R.string.tv_notification_text), c.getString(R.string.app_name),j+1000);
-                                                                                Log.d("TEST", "TEST");
+                                                                    if(response!=null){
+
+                                                                        for (TVShow t:response.getTVShow()) {
+                                                                            for (TVShow tv:watchlist) {
+                                                                                if(t.getId()==tv.getId()) {
+                                                                                    if(!common.contains(t))
+                                                                                        common.add(t);
+                                                                                }
                                                                             }
                                                                         }
+
+                                                                        //common.retainAll(watchlist);
+                                                                        Gson gson = new Gson();
+                                                                        TVShowList tvShowList = new TVShowList();
+                                                                        tvShowList.setTVShow(common);
+                                                                        String serializedObject = gson.toJson(tvShowList);
+                                                                        sharedPreferences.edit().putString("AIRING", serializedObject).apply();
+                                                                        createNotification(c, c.getString(R.string.app_name) , String.valueOf(common.size())+" "+c.getString(R.string.tv_notification_text), c.getString(R.string.app_name),10);
+                                                                    }
+                                                                }
+                                                            });
+                                                        }else{
+                                                            ApiHandler.getInstance().requestAccountWatchlistTVSeries(user.getId(), user.getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
+                                                                @Override
+                                                                public void success(TVShowList response) {
+                                                                    if(response!=null){
+
+                                                                        for (TVShow t:response.getTVShow()) {
+                                                                            for (TVShow tv:watchlist) {
+                                                                                if(t.getId()==tv.getId()) {
+                                                                                    if(!common.contains(t))
+                                                                                        common.add(t);
+                                                                                }
+                                                                            }
+                                                                        }
+
+                                                                        //common.retainAll(watchlist);
+                                                                        Gson gson = new Gson();
+                                                                        TVShowList tvShowList = new TVShowList();
+                                                                        tvShowList.setTVShow(common);
+                                                                        String serializedObject = gson.toJson(tvShowList);
+                                                                        sharedPreferences.edit().putString("AIRING", serializedObject).apply();
+                                                                        createNotification(c, c.getString(R.string.app_name) , String.valueOf(common.size())+" "+c.getString(R.string.tv_notification_text), c.getString(R.string.app_name),10);
                                                                     }
                                                                 }
                                                             });
                                                         }
+
                                                     }
+
                                                 });
                                             }
                                         }

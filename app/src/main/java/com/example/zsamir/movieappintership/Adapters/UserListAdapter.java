@@ -10,14 +10,13 @@ import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.ViewHolders.UserListViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListViewHolder>{
     private List<Movie> mMovies;
     private List<TVShow> mTVSeries;
 
-    public UserListAdapter(ArrayList<Movie> mMovies) {
+    public UserListAdapter(List<Movie> mMovies, int i) {
         this.mMovies = mMovies;
     }
 

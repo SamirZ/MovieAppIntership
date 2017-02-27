@@ -177,7 +177,7 @@ public class ApiHandler {
 
     public void requestUpcomingMovies(int page, @Nullable final MovieListListener listener) {
 
-        getApiService().fetchUpcomingMovies(sApiKey, page).enqueue(new Callback<MovieList>() {
+        getApiService().fetchUpcomingMovies(sApiKey,"US", page).enqueue(new Callback<MovieList>() {
             @Override
             public void onResponse(Call<MovieList> call, Response<MovieList> response) {
                 if (listener != null) {

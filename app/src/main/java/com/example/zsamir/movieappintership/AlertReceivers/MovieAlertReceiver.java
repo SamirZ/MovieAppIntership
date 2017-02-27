@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
-import com.example.zsamir.movieappintership.Common.SplashActivity;
 import com.example.zsamir.movieappintership.LoginModules.Account;
 import com.example.zsamir.movieappintership.LoginModules.Session;
 import com.example.zsamir.movieappintership.LoginModules.Token;
@@ -22,6 +21,7 @@ public class MovieAlertReceiver extends BroadcastReceiver{
 
     private Context c;
     private boolean movieNotif = false;
+    private Intent movieIntent;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -30,6 +30,7 @@ public class MovieAlertReceiver extends BroadcastReceiver{
         SharedPreferences sharedPreferences = context.getSharedPreferences("PREFERENCE", 0);
         if (sharedPreferences.contains("USER")) {
             final Gson gson = new Gson();
+            movieIntent = new Intent(context, UpcomingMovieActivity.class);
             Account user = gson.fromJson(sharedPreferences.getString("USER", ""), Account.class);
             String pass = sharedPreferences.getString("PASSWORD","");
             c = context;
@@ -46,8 +47,7 @@ public class MovieAlertReceiver extends BroadcastReceiver{
 
         //int m = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
 
-        PendingIntent notificIntent = PendingIntent.getActivity(context, notificationId,
-                new Intent(context, SplashActivity.class), 0);
+        PendingIntent notificIntent = PendingIntent.getActivity(context, notificationId, movieIntent, 0);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
@@ -69,7 +69,7 @@ public class MovieAlertReceiver extends BroadcastReceiver{
 
     }
 
-    private void requestToken(final String username, final String password){
+    private void requestToken(final String username,final String password){
 
         ApiHandler.getInstance().requestToken(new ApiHandler.TokenListener() {
             @Override
@@ -87,8 +87,8 @@ public class MovieAlertReceiver extends BroadcastReceiver{
                                                 ApiHandler.getInstance().requestUpcomingMovies(1, new ApiHandler.MovieListListener() {
                                                     @Override
                                                     public void success(MovieList response) {
-                                                        for (int i = 0; i < response.getMovies().size(); i++) {
-                                                            createNotification(c, response.getMovies().get(i).getTitle(), c.getString(R.string.movie_notification_text), c.getString(R.string.app_name),i);
+                                                        if(response!=null){
+                                                            createNotification(c, c.getString(R.string.app_name), String.valueOf(response.getTotalResults())+" "+c.getString(R.string.movie_notification_text), c.getString(R.string.app_name),1);
                                                         }
                                                     }
                                                 });
@@ -102,7 +102,6 @@ public class MovieAlertReceiver extends BroadcastReceiver{
                 }
             }
         });
-
 
     }
 
