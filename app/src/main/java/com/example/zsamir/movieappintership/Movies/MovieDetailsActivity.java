@@ -79,6 +79,7 @@ public class MovieDetailsActivity extends BaseActivity {
 
     private ImageView mMovieImage;
     private ImageView rateImage;
+    private ImageView playVideo;
 
     private View movieDetailsCastBreaklinne;
     private View movieImagesBreakline;
@@ -149,6 +150,7 @@ public class MovieDetailsActivity extends BaseActivity {
         mMovieStars = (TextView) findViewById(R.id.movie_details_stars_2);
         mMovieName = (TextView) findViewById(R.id.movie_details_name);
         mMovieGenre = (TextView) findViewById(R.id.movie_details_genre);
+        playVideo = (ImageView) findViewById(R.id.movie_play_video);
     }
 
     private void setDetailedData() {
@@ -307,7 +309,7 @@ public class MovieDetailsActivity extends BaseActivity {
 
         if(mMovie.getBackdropUrl()!=null){
             Glide.with(this).load(mMovie.getBackdropUrl()).into(mMovieImage);
-            mMovieImage.setOnClickListener(new View.OnClickListener() {
+            playVideo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(MovieDetailsActivity.this, TrailerActivity.class);

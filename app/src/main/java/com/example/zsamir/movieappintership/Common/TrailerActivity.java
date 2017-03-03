@@ -116,11 +116,12 @@ public class TrailerActivity extends BaseActivity implements YouTubePlayer.OnIni
 
                                 FragmentManager fragmentManager = getFragmentManager();
                                 YouTubePlayerFragment mYoutubePlayerFragment = (YouTubePlayerFragment) fragmentManager.findFragmentById(R.id.video_container);
-                                mYoutubePlayerFragment.initialize(API_KEY, TrailerActivity.this);
-                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.video_container, mYoutubePlayerFragment);
-                                fragmentTransaction.commit();
-
+                                if(mYoutubePlayerFragment!=null) {
+                                    mYoutubePlayerFragment.initialize(API_KEY, TrailerActivity.this);
+                                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                    fragmentTransaction.replace(R.id.video_container, mYoutubePlayerFragment);
+                                    fragmentTransaction.commit();
+                                }
                                 VIDEO_ID = v.getKey();
                                 break;
                             }
@@ -129,8 +130,7 @@ public class TrailerActivity extends BaseActivity implements YouTubePlayer.OnIni
                 }
             });
         }
-
-        if(getIntent().hasExtra("TVID")){
+        else if(getIntent().hasExtra("TVID")){
 
             setTitle(getString(R.string.tv_series_name));
             TVShow tv = getIntent().getParcelableExtra("TVID");
@@ -147,10 +147,12 @@ public class TrailerActivity extends BaseActivity implements YouTubePlayer.OnIni
 
                                 FragmentManager fragmentManager = getFragmentManager();
                                 YouTubePlayerFragment mYoutubePlayerFragment = (YouTubePlayerFragment) fragmentManager.findFragmentById(R.id.video_container);
-                                mYoutubePlayerFragment.initialize(API_KEY, TrailerActivity.this);
-                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.video_container, mYoutubePlayerFragment);
-                                fragmentTransaction.commit();
+                                if(mYoutubePlayerFragment!=null) {
+                                    mYoutubePlayerFragment.initialize(API_KEY, TrailerActivity.this);
+                                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                    fragmentTransaction.replace(R.id.video_container, mYoutubePlayerFragment);
+                                    fragmentTransaction.commit();
+                                }
 
                                 VIDEO_ID = v.getKey();
                                 break;
@@ -193,7 +195,7 @@ public class TrailerActivity extends BaseActivity implements YouTubePlayer.OnIni
     {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(menuItem);
