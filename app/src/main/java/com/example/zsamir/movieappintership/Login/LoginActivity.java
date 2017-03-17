@@ -24,6 +24,7 @@ import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.MovieList;
 import com.example.zsamir.movieappintership.Modules.TVShowList;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 import com.google.gson.Gson;
 
 public class LoginActivity extends BaseActivity {
@@ -58,18 +59,22 @@ public class LoginActivity extends BaseActivity {
             public void onClick(View v) {
                 username = mUsername.getText().toString();
                 password = mPassword.getText().toString();
-                if(username.length()>0){
-                    if(password.length()>0){
-                        progress = new ProgressDialog(LoginActivity.this,ProgressDialog.THEME_HOLO_DARK);
-                        progress.setMessage("Loading...");
-                        progress.setCancelable(false);
-                        progress.show();
-                        sendRequest(progress,username,password);
-                    }else {
-                        Toast.makeText(LoginActivity.this, "Enter your password!", Toast.LENGTH_SHORT).show();
+                if(isNetworkAvailable()){
+                    if(username.length()>0){
+                        if(password.length()>0){
+                            progress = new ProgressDialog(LoginActivity.this,ProgressDialog.THEME_HOLO_DARK);
+                            progress.setMessage("Loading...");
+                            progress.setCancelable(false);
+                            progress.show();
+                            sendRequest(progress,username,password);
+                        }else {
+                            Toast.makeText(LoginActivity.this, getString(R.string.password_warrning), Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        Toast.makeText(LoginActivity.this, getString(R.string.username_warrning), Toast.LENGTH_SHORT).show();
                     }
                 }else{
-                    Toast.makeText(LoginActivity.this, "Enter your username!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, getString(R.string.connection_warrning), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -172,7 +177,6 @@ public class LoginActivity extends BaseActivity {
                                                         sharedPreferencesEditor.putString("PASSWORD", password);
                                                         sharedPreferencesEditor.apply();
 
-
                                                         requestFavoriteMovies();
                                                         requestFavoriteTVSeries();
                                                         requestWatchlistMovies();
@@ -223,7 +227,9 @@ public class LoginActivity extends BaseActivity {
             public void success(MovieList response) {
                 for (Movie t: response.getMovies()) {
                     MovieAppApplication.getUser().addToFavoriteMoviesList(t.getId());
+                    t.type = "FAVORITES";
                 }
+                RealmUtils.getInstance().addMoviesToRealm(response.getMovies());
                 if(response.getTotalPages()>1){
                     for(int i = response.getTotalPages(); i>= 2; i--){
                         ApiHandler.getInstance().requestAccountFavoriteMovies(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.MovieListListener() {
@@ -231,7 +237,9 @@ public class LoginActivity extends BaseActivity {
                             public void success(MovieList response) {
                                 for (Movie t: response.getMovies()) {
                                     MovieAppApplication.getUser().addToFavoriteMoviesList(t.getId());
+                                    t.type = "FAVORITES";
                                 }
+                                RealmUtils.getInstance().addMoviesToRealm(response.getMovies());
                             }
                         });
                     }
@@ -246,7 +254,9 @@ public class LoginActivity extends BaseActivity {
             public void success(TVShowList response) {
                 for (TVShow t: response.getTVShow()) {
                     MovieAppApplication.getUser().addToFavoriteTVSeriesList(t.getId());
+                    t.type = "FAVORITES";
                 }
+                RealmUtils.getInstance().addTVShowsToRealm(response.getTVShow());
                 if(response.getTotalPages()>1){
                     for(int i = response.getTotalPages(); i>= 2; i--){
                         ApiHandler.getInstance().requestAccountFavoriteTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.TvSeriesListListener() {
@@ -254,7 +264,9 @@ public class LoginActivity extends BaseActivity {
                             public void success(TVShowList response) {
                                 for (TVShow t: response.getTVShow()) {
                                     MovieAppApplication.getUser().addToFavoriteTVSeriesList(t.getId());
+                                    t.type = "FAVORITES";
                                 }
+                                RealmUtils.getInstance().addTVShowsToRealm(response.getTVShow());
                             }
                         });
                     }
@@ -269,7 +281,9 @@ public class LoginActivity extends BaseActivity {
             public void success(MovieList response) {
                 for (Movie t: response.getMovies()) {
                     MovieAppApplication.getUser().addToWatchlistMoviesList(t.getId());
+                    t.type = "WATCHLIST";
                 }
+                RealmUtils.getInstance().addMoviesToRealm(response.getMovies());
                 if(response.getTotalPages()>1){
                     for(int i = response.getTotalPages(); i>= 2; i--){
                         ApiHandler.getInstance().requestAccountWatchlistMovies(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.MovieListListener() {
@@ -277,7 +291,9 @@ public class LoginActivity extends BaseActivity {
                             public void success(MovieList response) {
                                 for (Movie t: response.getMovies()) {
                                     MovieAppApplication.getUser().addToWatchlistMoviesList(t.getId());
+                                    t.type = "WATCHLIST";
                                 }
+                                RealmUtils.getInstance().addMoviesToRealm(response.getMovies());
                             }
                         });
                     }
@@ -292,7 +308,9 @@ public class LoginActivity extends BaseActivity {
             public void success(TVShowList response) {
                 for (TVShow t: response.getTVShow()) {
                     MovieAppApplication.getUser().addToWatchlistTVSeriesList(t.getId());
+                    t.type = "WATCHLIST";
                 }
+                RealmUtils.getInstance().addTVShowsToRealm(response.getTVShow());
                 if(response.getTotalPages()>1){
                     for(int i = response.getTotalPages(); i>= 2; i--){
                         ApiHandler.getInstance().requestAccountWatchlistTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.TvSeriesListListener() {
@@ -300,7 +318,9 @@ public class LoginActivity extends BaseActivity {
                             public void success(TVShowList response) {
                                 for (TVShow t: response.getTVShow()) {
                                     MovieAppApplication.getUser().addToWatchlistTVSeriesList(t.getId());
+                                    t.type = "WATCHLIST";
                                 }
+                                RealmUtils.getInstance().addTVShowsToRealm(response.getTVShow());
                             }
                         });
                     }

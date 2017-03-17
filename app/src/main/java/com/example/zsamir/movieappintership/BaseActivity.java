@@ -1,10 +1,13 @@
 package com.example.zsamir.movieappintership;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -24,7 +27,10 @@ import com.example.zsamir.movieappintership.Common.UserListsActivity;
 import com.example.zsamir.movieappintership.Login.LoginActivity;
 import com.example.zsamir.movieappintership.Movies.MoviesActivity;
 import com.example.zsamir.movieappintership.NewsFeed.NewsFeedActivity;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 import com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity;
+
+import io.realm.Realm;
 
 public class BaseActivity extends AppCompatActivity{
 
@@ -303,6 +309,13 @@ public class BaseActivity extends AppCompatActivity{
                 return false;
             }
         });
+    }
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 }

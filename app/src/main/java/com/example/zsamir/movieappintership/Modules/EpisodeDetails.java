@@ -4,10 +4,14 @@ package com.example.zsamir.movieappintership.Modules;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class EpisodeDetails {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class EpisodeDetails extends RealmObject{
 
     @SerializedName("name")
     @Expose
+    @PrimaryKey
     private String name;
 
     @SerializedName("overview")
@@ -17,6 +21,9 @@ public class EpisodeDetails {
     @SerializedName("vote_average")
     @Expose
     private Float voteAverage = null;
+
+    public EpisodeDetails() {
+    }
 
     public String getName() {
         return name;
@@ -32,5 +39,13 @@ public class EpisodeDetails {
 
     public Float getVoteAverage() {
         return voteAverage;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public void setVoteAverage(Float voteAverage) {
+        this.voteAverage = voteAverage;
     }
 }

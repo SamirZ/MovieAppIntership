@@ -21,6 +21,8 @@ import com.example.zsamir.movieappintership.Common.SearchActivity;
 import com.example.zsamir.movieappintership.Login.LoginActivity;
 import com.example.zsamir.movieappintership.R;
 
+import io.realm.Realm;
+
 public class MoviesActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private NavigationView navigationView;

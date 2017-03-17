@@ -56,19 +56,17 @@ public class ListTVSeriesFragment extends Fragment {
         }else{
             TVShowList.clear();
             loadTVSeries(1);
-            mTvSeriesAdapter.notifyDataSetChanged();
         }
         mRecyclerView.setLayoutManager(layoutManager);
-        if(TVShowList.size()>15){
-            scrollListener = new EndlessRecyclerViewScrollListener(layoutManager ) {
-                @Override
-                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                    //if(page+1<=numberOfPages)
-                    loadTVSeries(page);
-                }
-            };
-            mRecyclerView.addOnScrollListener(scrollListener);
-        }
+
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager ) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                //if(page+1<=numberOfPages)
+                loadTVSeries(page);
+            }
+        };
+        mRecyclerView.addOnScrollListener(scrollListener);
 
         return rootView;
     }
@@ -80,11 +78,9 @@ public class ListTVSeriesFragment extends Fragment {
             Log.d("TYPE", type);
             if (type.equalsIgnoreCase("FAVORITES"))
                 searchForFavoriteTVSeries(page);
-
-            if (type.equalsIgnoreCase("WATCHLIST"))
+            else if (type.equalsIgnoreCase("WATCHLIST"))
                 searchForWatchlistTVSeries(page);
-
-            if (type.equalsIgnoreCase("RATINGS"))
+            else if (type.equalsIgnoreCase("RATINGS"))
                 searchForRatedTVSeries(page);
 
         }

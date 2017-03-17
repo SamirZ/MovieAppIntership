@@ -6,30 +6,42 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.example.zsamir.movieappintership.Adapters.NewsFeedAdapter;
 import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Common.SearchActivity;
 import com.example.zsamir.movieappintership.Login.LoginActivity;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 public class NewsFeedActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private NavigationView navigationView;
+
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_feed);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.news_feed_recyclerView);
+        recyclerView = (RecyclerView) findViewById(R.id.news_feed_recyclerView);
 
         ReadRss readRss = new ReadRss(this, recyclerView);
-        readRss.execute();
+
+        if(isNetworkAvailable()){
+            readRss.execute();
+        }
+        else{
+            if(!checkFirstRun())
+                readNewsFeedFromRealm();
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -38,7 +50,7 @@ public class NewsFeedActivity extends BaseActivity implements NavigationView.OnN
 
         setBottomNavigationBar((AHBottomNavigation) findViewById(R.id.bottom_navigation_news_feed),0);
 
-        checkFirstRun();
+
 
         navigationView = (NavigationView) findViewById(R.id.nav_view_news_feed);
         navigationView.setNavigationItemSelectedListener(this);
@@ -98,7 +110,7 @@ public class NewsFeedActivity extends BaseActivity implements NavigationView.OnN
         return true;
     }
 
-    public void checkFirstRun() {
+    public boolean checkFirstRun() {
         boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isFirstRun", true);
         if (isFirstRun){
             // Place your dialog code here to display the dialog
@@ -111,6 +123,7 @@ public class NewsFeedActivity extends BaseActivity implements NavigationView.OnN
         if(isFirstRun){
             showLoginDialog();
         }
+        return isFirstRun;
     }
 
     @Override
@@ -125,5 +138,14 @@ public class NewsFeedActivity extends BaseActivity implements NavigationView.OnN
             });
         }
 
+    }
+
+    private void readNewsFeedFromRealm() {
+
+        NewsFeedAdapter newsFeedAdapter = new NewsFeedAdapter(
+                                RealmUtils.getInstance().readNewsFeedItemsFromRealm());
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(NewsFeedActivity.this,LinearLayoutManager.VERTICAL,false));
+        recyclerView.setAdapter(newsFeedAdapter);
     }
 }

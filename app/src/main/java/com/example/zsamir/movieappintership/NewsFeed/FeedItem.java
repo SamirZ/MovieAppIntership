@@ -1,7 +1,9 @@
 package com.example.zsamir.movieappintership.NewsFeed;
 
 
-public class FeedItem {
+import io.realm.RealmObject;
+
+public class FeedItem extends RealmObject{
 
     private String title;
     private String link;
@@ -21,7 +23,7 @@ public class FeedItem {
         return link;
     }
 
-    void setLink(String link) {
+    public void setLink(String link) {
         this.link = link;
     }
 
@@ -29,7 +31,7 @@ public class FeedItem {
         return description;
     }
 
-    void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -37,7 +39,7 @@ public class FeedItem {
         return author;
     }
 
-    void setAuthor(String author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 
@@ -45,7 +47,7 @@ public class FeedItem {
         return pubDate;
     }
 
-    void setPubDate(String pubDate) {
+    public void setPubDate(String pubDate) {
         this.pubDate = pubDate;
     }
 }

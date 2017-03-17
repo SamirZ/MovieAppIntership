@@ -7,22 +7,29 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TVShowDetails extends ImageFormat implements Parcelable {
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
+
+public class TVShowDetails extends RealmObject implements Parcelable {
 
     @SerializedName("backdrop_path")
     @Expose
     private String backdropPath;
     @SerializedName("created_by")
     @Expose
+    @Ignore
     private List<CreatedBy> createdBy = null;
     @SerializedName("first_air_date")
     @Expose
     private String firstAirDate;
     @SerializedName("genres")
     @Expose
+    @Ignore
     private List<Genre> genres = null;
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private Integer id;
     @SerializedName("in_production")
     @Expose
@@ -41,6 +48,7 @@ public class TVShowDetails extends ImageFormat implements Parcelable {
     private Integer numberOfSeasons;
     @SerializedName("origin_country")
     @Expose
+    @Ignore
     private List<String> originCountry = null;
     @SerializedName("original_language")
     @Expose
@@ -56,10 +64,18 @@ public class TVShowDetails extends ImageFormat implements Parcelable {
     private String posterPath;
     @SerializedName("seasons")
     @Expose
+    @Ignore
     private List<Season> seasons = null;
     @SerializedName("vote_average")
     @Expose
     private Float voteAverage;
+
+    public TVShowDetails() {
+    }
+
+    public void setSeasons(List<Season> seasons) {
+        this.seasons = seasons;
+    }
 
     public String getBackdropPath() {
         return backdropPath;
@@ -92,6 +108,14 @@ public class TVShowDetails extends ImageFormat implements Parcelable {
         }
         else
             return null;
+    }
+
+    public String getLastAirDate() {
+        return lastAirDate;
+    }
+
+    public void setLastAirDate(String lastAirDate) {
+        this.lastAirDate = lastAirDate;
     }
 
     public Integer getId() {
@@ -181,11 +205,11 @@ public class TVShowDetails extends ImageFormat implements Parcelable {
     };
 
     public String getPosterUrl() {
-        return BASE_IMG_URL + POSTER_SIZE_W185 + posterPath;
+        return ImageFormat.BASE_IMG_URL + ImageFormat.POSTER_SIZE_W185 + posterPath;
     }
 
     public String getBackdropUrl() {
-        return BASE_IMG_URL + BACKDROP_SIZE_W1280+ backdropPath;
+        return ImageFormat.BASE_IMG_URL + ImageFormat.BACKDROP_SIZE_W1280+ backdropPath;
     }
 
 }

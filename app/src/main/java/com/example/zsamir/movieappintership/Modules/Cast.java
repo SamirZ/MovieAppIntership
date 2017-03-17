@@ -2,12 +2,26 @@ package com.example.zsamir.movieappintership.Modules;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Cast extends ImageFormat implements Parcelable
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class Cast extends RealmObject implements Parcelable
 {
     public Cast() {
+    }
+
+    public Cast(Cast c) {
+        this.castId = c.castId;
+        this.character = c.character;
+        this.creditId = c.creditId;
+        this.id = c.id;
+        this.name = c.name;
+        this.order = c.order;
+        this.profilePath = c.profilePath;
     }
 
     public Cast(int castId, String character, String creditId, int id, String name, int order, String profilePath) {
@@ -31,6 +45,7 @@ public class Cast extends ImageFormat implements Parcelable
     private String creditId;
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private int id;
     @SerializedName("name")
     @Expose
@@ -43,19 +58,16 @@ public class Cast extends ImageFormat implements Parcelable
     private String profilePath;
 
     public String getPosterUrl() {
-        return BASE_IMG_URL + POSTER_SIZE_W185 + profilePath;
+        return ImageFormat.BASE_IMG_URL + ImageFormat.POSTER_SIZE_W185 + profilePath;
     }
 
     public String getImageUrl() {
-        return BASE_IMG_URL +  POSTER_W780 + profilePath;
+        return ImageFormat.BASE_IMG_URL +  ImageFormat.POSTER_W780 + profilePath;
     }
 
     public final static Parcelable.Creator<Cast> CREATOR = new Creator<Cast>() {
 
 
-        @SuppressWarnings({
-                "unchecked"
-        })
         public Cast createFromParcel(Parcel in) {
             Cast instance = new Cast();
             instance.castId = ((int) in.readValue((int.class.getClassLoader())));
@@ -100,4 +112,50 @@ public class Cast extends ImageFormat implements Parcelable
     public String getCharacter() {
         return character;
     }
+
+    public int getCastId() {
+        return castId;
+    }
+
+    public void setCastId(int castId) {
+        this.castId = castId;
+    }
+
+    public void setCharacter(String character) {
+        this.character = character;
+    }
+
+    public String getCreditId() {
+        return creditId;
+    }
+
+    public void setCreditId(String creditId) {
+        this.creditId = creditId;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public String getProfilePath() {
+        return profilePath;
+    }
+
+    public void setProfilePath(String profilePath) {
+        this.profilePath = profilePath;
+    }
+
+
 }

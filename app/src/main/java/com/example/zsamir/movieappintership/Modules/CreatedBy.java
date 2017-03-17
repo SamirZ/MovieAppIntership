@@ -5,7 +5,10 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class CreatedBy implements Parcelable
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class CreatedBy extends RealmObject implements Parcelable
 {
 
     public int getId() {
@@ -26,6 +29,7 @@ public class CreatedBy implements Parcelable
 
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private int id;
     @SerializedName("name")
     @Expose
@@ -33,6 +37,15 @@ public class CreatedBy implements Parcelable
     @SerializedName("profile_path")
     @Expose
     private String profilePath;
+
+    public String getProfilePath() {
+        return profilePath;
+    }
+
+    public void setProfilePath(String profilePath) {
+        this.profilePath = profilePath;
+    }
+
     public final static Parcelable.Creator<CreatedBy> CREATOR = new Creator<CreatedBy>() {
 
         public CreatedBy createFromParcel(Parcel in) {

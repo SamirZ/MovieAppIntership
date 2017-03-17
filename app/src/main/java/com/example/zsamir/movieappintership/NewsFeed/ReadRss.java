@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.zsamir.movieappintership.Adapters.NewsFeedAdapter;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import io.realm.Realm;
 
 class ReadRss extends AsyncTask<Void,Void,Void> {
 
@@ -46,10 +49,14 @@ class ReadRss extends AsyncTask<Void,Void,Void> {
         super.onPostExecute(aVoid);
         progressDialog.dismiss();
 
+        RealmUtils.getInstance().deleteAllNewsFeed();
+        RealmUtils.getInstance().addNewsFeedItemsToRealm(feedItems);
+
         NewsFeedAdapter newsFeedAdapter = new NewsFeedAdapter(feedItems);
         recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
         recyclerView.setAdapter(newsFeedAdapter);
     }
+
 
     @Override
     protected Void doInBackground(Void... params) {

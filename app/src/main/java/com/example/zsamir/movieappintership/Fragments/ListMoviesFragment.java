@@ -51,7 +51,12 @@ public class ListMoviesFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        loadMovies(1);
+        if(moviesList.size()==0){
+            loadMovies(1);
+        }else{
+            moviesList.clear();
+            loadMovies(1);
+        }
 
         mRecyclerView.setLayoutManager(layoutManager);
 

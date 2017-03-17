@@ -11,9 +11,11 @@ import android.view.ViewGroup;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
+import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import java.util.ArrayList;
 
@@ -52,39 +54,59 @@ public class HighestRatedTVSeriesFragment extends Fragment {
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        if(TVShowList.size()==0)
-            loadTopRatedTvSeries(1);
-        else{
-            TVShowList.clear();
-            loadTopRatedTvSeries(1);
-            mTvSeriesAdapter.notifyDataSetChanged();
-        }
-
-        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                //if(page+1<=numberOfPages)
-                loadTopRatedTvSeries(page);
+        if(((BaseActivity)getActivity()).isNetworkAvailable()){
+            if(TVShowList.size()==0)
+                loadTopRatedTvSeries(1);
+            else{
+                TVShowList.clear();
+                loadTopRatedTvSeries(1);
+                mTvSeriesAdapter.notifyDataSetChanged();
             }
-        };
-        mRecyclerView.addOnScrollListener(scrollListener);
+
+            EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                    //if(page+1<=numberOfPages)
+                    loadTopRatedTvSeries(page);
+                }
+            };
+            mRecyclerView.addOnScrollListener(scrollListener);
+        }else{
+            TvSeriesAdapter mmTvSeriesAdapter = new TvSeriesAdapter(RealmUtils.getInstance().readHighestRatedTVShowsFromRealm());
+            mRecyclerView.setAdapter(mmTvSeriesAdapter);
+            mmTvSeriesAdapter.notifyDataSetChanged();
+        }
 
         return rootView;
     }
 
 
-    private void loadTopRatedTvSeries(int page) {
+    private void loadTopRatedTvSeries(final int page) {
         movieDbApi.requestHighestRatedTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
             public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
-                numberOfPages = response.getTotalPages();
-                // addition
-                for (TVShow t: response.getTVShow()) {
-                    if(!TVShowList.contains(t))
-                        TVShowList.add(t);
+                if(response!=null){
+                    numberOfPages = response.getTotalPages();
+                    //addition
+                    for (TVShow t: response.getTVShow()) {
+                        if(!TVShowList.contains(t)){
+                            t.type = "HIGHEST";
+                            if(t.getGenres().length>0){
+                                t.allGenres = "";
+                                for (int i = 0; i < t.getGenres().length; i++) {
+                                    t.allGenres+=t.getGenres()[i]+",";
+                                }
+                                t.allGenres = t.allGenres.substring(0, t.allGenres.length()-1);
+                            }
+                            TVShowList.add(t);
+                        }
+                    }
+                    if(page==1){
+                        RealmUtils.getInstance().deleteAllHighestRatedTVShows();
+                    }
+                    RealmUtils.getInstance().addTVShowsToRealm(TVShowList);
+                    mTvSeriesAdapter.notifyDataSetChanged();
                 }
-                //TVSeriesList.addAll(response.getTVSeries());
-                mTvSeriesAdapter.notifyDataSetChanged();
             }
         });
     }

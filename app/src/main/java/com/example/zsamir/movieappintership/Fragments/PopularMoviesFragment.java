@@ -4,16 +4,19 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
+import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.MovieList;
 import com.example.zsamir.movieappintership.Adapters.MovieAdapter;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import java.util.ArrayList;
 
@@ -48,30 +51,38 @@ public class PopularMoviesFragment extends Fragment{
         RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.popular_recyclerView);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
-        if(moviesList.size()==0)
-            loadPopularMovies(1);
-        else{
-            moviesList.clear();
-            loadPopularMovies(1);
-            mMovieAdapter.notifyDataSetChanged();
+        mRecyclerView.setLayoutManager(gridLayoutManager );
+        mRecyclerView.setAdapter(mMovieAdapter);
+        Log.d("Network ", String.valueOf(((BaseActivity)getActivity()).isNetworkAvailable()));
+
+        if(((BaseActivity)getActivity()).isNetworkAvailable()){
+            if(moviesList.size()==0)
+                loadPopularMovies(1);
+            else{
+                moviesList.clear();
+                loadPopularMovies(1);
+            }
+
+            EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                    //if(page+1<=numberOfPages)
+                    loadPopularMovies(page);
+                }
+            };
+            mRecyclerView.addOnScrollListener(scrollListener);
+        }else{
+            MovieAdapter mmMovieAdapter = new MovieAdapter(RealmUtils.getInstance().readPopularMoviesFromRealm());
+            mRecyclerView.setAdapter(mmMovieAdapter);
+            mmMovieAdapter.notifyDataSetChanged();
         }
 
-        mRecyclerView.setLayoutManager(gridLayoutManager );
-        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                //if(page+1<=numberOfPages)
-                loadPopularMovies(page);
-            }
-        };
-        mRecyclerView.addOnScrollListener(scrollListener);
-        mRecyclerView.setAdapter(mMovieAdapter);
 
         return rootView;
     }
 
 
-    private void loadPopularMovies(int page){
+    private void loadPopularMovies(final int page){
         apiHandler.requestMostPopularMovies(page, new ApiHandler.MovieListListener() {
             @Override
             public void success(MovieList response) {
@@ -79,13 +90,24 @@ public class PopularMoviesFragment extends Fragment{
                     numberOfPages = response.getTotalPages();
                     // addition
                     for (Movie m: response.getMovies()) {
-                        if(!moviesList.contains(m))
+                        if(!moviesList.contains(m)){
+                            m.type = "POPULAR";
+                            m.allGenres = "";
+                            for (int i = 0; i < m.getGenreIds().length; i++) {
+                                m.allGenres+=m.getGenreIds()[i]+",";
+                            }
+                            m.allGenres = m.allGenres.substring(0, m.allGenres.length()-1);
                             moviesList.add(m);
+                        }
                     }
-                    //moviesList.addAll(response.getMovies());
+                    if(page==1){
+                        RealmUtils.getInstance().deleteAllPopularMovies();
+                    }
+                    RealmUtils.getInstance().addMoviesToRealm(moviesList);
                     mMovieAdapter.notifyDataSetChanged();
                 }
             }
         });
     }
+
 }

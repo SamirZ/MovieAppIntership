@@ -5,14 +5,22 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Movie extends ImageFormat implements Parcelable {
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
+
+public class Movie extends RealmObject implements Parcelable {
 
     public int numOfBackdrops;
     public int lastLoadedBackdrop;
+    @Ignore
     public List<Backdrop> backdropList;
+
+    public String type;
 
     @SerializedName("poster_path")
     @Expose
@@ -25,9 +33,11 @@ public class Movie extends ImageFormat implements Parcelable {
     private String releaseDate;
     @SerializedName("genre_ids")
     @Expose
+    @Ignore
     private int[] genreIds = new int[0];
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private int id;
     @SerializedName("title")
     @Expose
@@ -45,6 +55,8 @@ public class Movie extends ImageFormat implements Parcelable {
     @Expose
     private int rating;
 
+    public String allGenres;
+
     public int getRating() {
         return rating;
     }
@@ -55,7 +67,7 @@ public class Movie extends ImageFormat implements Parcelable {
 
     // Returns a poster with default size
     public String getPosterUrl() {
-        return BASE_IMG_URL + POSTER_SIZE_W185 + posterPath;
+        return ImageFormat.BASE_IMG_URL + ImageFormat.POSTER_SIZE_W154 + posterPath;
     }
 
     public String getOverview() {
@@ -63,13 +75,21 @@ public class Movie extends ImageFormat implements Parcelable {
     }
 
     public String getReleaseDate() {
+        if(releaseDate!=null){
         String[] s = releaseDate.split("-");
-        if(s[2].startsWith("0")){
-            String s1 = s[2].substring(1);
-            return s1 + " " + getMonth(Integer.parseInt(s[1])) + " " + s[0];
-        }
-        return s[2]+" "+ getMonth(Integer.parseInt(s[1]))+ " "+ s[0];
+            if(s.length>1){
+                if(s[2].startsWith("0")){
+                    String s1 = s[2].substring(1);
+                    return s1 + " " + getMonth(Integer.parseInt(s[1])) + " " + s[0];
+                }
+                return s[2]+" "+ getMonth(Integer.parseInt(s[1]))+ " "+ s[0];
+            }
+        }return null;
 
+    }
+
+    public String getOrgReleaseDate(){
+        return releaseDate;
     }
 
     private String getMonth(int i) {
@@ -111,17 +131,25 @@ public class Movie extends ImageFormat implements Parcelable {
         }
     }
 
-    private  int[] getGenreIds() {
+    public  int[] getGenreIds() {
         return genreIds;
     }
 
     public List<String> getMovieGenres() {
         List<String> genres = new ArrayList<>();
         int[] ids = getGenreIds();
-        for (int i=0; i<getGenreIds().length; i++) {
-            MovieGenres genre = MovieGenres.getById(ids[i]);
-            if (genre != null) {
-                genres.add(genre.getTitle());
+        if(allGenres!=null){
+            String[] g = allGenres.split(",");
+            for (String s:g) {
+                genres.add(MovieGenres.getById(Integer.parseInt(s)).getTitle());
+            }
+        }
+        else{
+            for (int id1 : ids) {
+                MovieGenres genre = MovieGenres.getById(id1);
+                if (genre != null) {
+                    genres.add(genre.getTitle());
+                }
             }
         }
         return genres;
@@ -144,7 +172,7 @@ public class Movie extends ImageFormat implements Parcelable {
     }
 
     public String getBackdropUrl() {
-        return BASE_IMG_URL + BACKDROP_SIZE_W1280+ backdropPath;
+        return ImageFormat.BASE_IMG_URL + ImageFormat.BACKDROP_SIZE_W780 + backdropPath;
     }
 
     public void setBackdropPath(String backdropPath) {
@@ -153,6 +181,47 @@ public class Movie extends ImageFormat implements Parcelable {
 
     public float getVoteAverage() {
         return voteAverage;
+    }
+
+
+
+    public void setVoteAverage(float voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+
+    public boolean getVideo() {
+        return video;
+    }
+
+    public void setVideo(boolean video) {
+        this.video = video;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Movie() {
     }
 
     public Movie(String posterPath, String overview, String releaseDate, int[] genreIds, int id, String title, String backdropPath, float voteAverage) {
@@ -176,6 +245,7 @@ public class Movie extends ImageFormat implements Parcelable {
         dest.writeInt(this.numOfBackdrops);
         dest.writeInt(this.lastLoadedBackdrop);
         dest.writeTypedList(this.backdropList);
+        dest.writeString(this.type);
         dest.writeString(this.posterPath);
         dest.writeString(this.overview);
         dest.writeString(this.releaseDate);
@@ -186,15 +256,14 @@ public class Movie extends ImageFormat implements Parcelable {
         dest.writeByte(this.video ? (byte) 1 : (byte) 0);
         dest.writeFloat(this.voteAverage);
         dest.writeInt(this.rating);
-    }
-
-    public Movie() {
+        dest.writeString(this.allGenres);
     }
 
     protected Movie(Parcel in) {
         this.numOfBackdrops = in.readInt();
         this.lastLoadedBackdrop = in.readInt();
         this.backdropList = in.createTypedArrayList(Backdrop.CREATOR);
+        this.type = in.readString();
         this.posterPath = in.readString();
         this.overview = in.readString();
         this.releaseDate = in.readString();
@@ -205,9 +274,10 @@ public class Movie extends ImageFormat implements Parcelable {
         this.video = in.readByte() != 0;
         this.voteAverage = in.readFloat();
         this.rating = in.readInt();
+        this.allGenres = in.readString();
     }
 
-    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
         @Override
         public Movie createFromParcel(Parcel source) {
             return new Movie(source);
@@ -218,4 +288,16 @@ public class Movie extends ImageFormat implements Parcelable {
             return new Movie[size];
         }
     };
+
+    public Movie(String posterPath, String overview, String releaseDate, int id, String title, String backdropPath, float voteAverage, String allGenres, String type) {
+        this.posterPath = posterPath;
+        this.overview = overview;
+        this.releaseDate = releaseDate;
+        this.id = id;
+        this.title = title;
+        this.backdropPath = backdropPath;
+        this.voteAverage = voteAverage;
+        this.allGenres = allGenres;
+        this.type = type;
+    }
 }
