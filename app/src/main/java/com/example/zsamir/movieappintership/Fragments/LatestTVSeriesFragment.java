@@ -21,9 +21,9 @@ import java.util.ArrayList;
 public class LatestTVSeriesFragment extends Fragment {
 
     private static LatestTVSeriesFragment instance = null;
-    private ArrayList<TVShow> TVShowList = new ArrayList<>();
+    private ArrayList<TVShow> tvShowList = new ArrayList<>();
     private ApiHandler movieDbApi = ApiHandler.getInstance();
-    private TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(TVShowList);
+    private TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(tvShowList);
     int numberOfPages;
 
     public LatestTVSeriesFragment() {
@@ -43,6 +43,12 @@ public class LatestTVSeriesFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mTvSeriesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_latest_tvseries, container, false);
@@ -52,11 +58,13 @@ public class LatestTVSeriesFragment extends Fragment {
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
+        mTvSeriesAdapter.notifyDataSetChanged();
+
         if(((BaseActivity)getActivity()).isNetworkAvailable()){
-            if(TVShowList.size()==0)
+            if(tvShowList.size()==0)
                 loadLatestTvSeries(1);
             else{
-                TVShowList.clear();
+                tvShowList.clear();
                 loadLatestTvSeries(1);
                 mTvSeriesAdapter.notifyDataSetChanged();
             }
@@ -84,8 +92,14 @@ public class LatestTVSeriesFragment extends Fragment {
             public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
                 //addition
                 for (TVShow t: response.getTVShow()) {
-                    if(!TVShowList.contains(t)){
-                        t.type = "LATEST";
+                    if(!tvShowList.contains(t)){
+                        TVShow tv = RealmUtils.getInstance().readTVShowFromRealm(t.getId());
+                        if(tv!=null) {
+                            t.popular = tv.popular;
+                            t.airing= tv.airing;
+                            t.highestrated = tv.highestrated;
+                        }
+                        t.latest = true;
                         if(t.getGenres().length>0){
                             t.allGenres = "";
                             for (int i = 0; i < t.getGenres().length; i++) {
@@ -93,13 +107,10 @@ public class LatestTVSeriesFragment extends Fragment {
                             }
                             t.allGenres = t.allGenres.substring(0, t.allGenres.length()-1);
                         }
-                        TVShowList.add(t);
+                        tvShowList.add(t);
                     }
                 }
-                if(page==1){
-                    RealmUtils.getInstance().deleteAllLatestTVShows();
-                }
-                RealmUtils.getInstance().addTVShowsToRealm(TVShowList);
+                RealmUtils.getInstance().addTVShowsToRealm(tvShowList);
                 mTvSeriesAdapter.notifyDataSetChanged();
             }
         });

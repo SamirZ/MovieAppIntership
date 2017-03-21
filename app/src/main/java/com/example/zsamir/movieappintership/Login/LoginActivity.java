@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.BaseActivity;
+import com.example.zsamir.movieappintership.Common.AccountListsRequestHandler;
 import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.LoginModules.Account;
@@ -24,8 +26,11 @@ import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.MovieList;
 import com.example.zsamir.movieappintership.Modules.TVShowList;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmInteger;
 import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
 
 public class LoginActivity extends BaseActivity {
 
@@ -98,7 +103,6 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 String url = "https://www.themoviedb.org/account/reset-password";
-
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
@@ -177,11 +181,12 @@ public class LoginActivity extends BaseActivity {
                                                         sharedPreferencesEditor.putString("PASSWORD", password);
                                                         sharedPreferencesEditor.apply();
 
-                                                        requestFavoriteMovies();
-                                                        requestFavoriteTVSeries();
-                                                        requestWatchlistMovies();
-                                                        requestWatchlistTVSeries();
+                                                        RealmUtils.getInstance().createRealmAccount();
 
+                                                        AccountListsRequestHandler.getInstance().requestFavoriteMovies();
+                                                        AccountListsRequestHandler.getInstance().requestFavoriteTVSeries();
+                                                        AccountListsRequestHandler.getInstance().requestWatchlistMovies();
+                                                        AccountListsRequestHandler.getInstance().requestWatchlistTVSeries();
 
                                                         Intent returnIntent = new Intent();
                                                         setResult(RESULT_OK,returnIntent);
@@ -217,117 +222,6 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
-    }
-
-
-
-    private void requestFavoriteMovies(){
-        ApiHandler.getInstance().requestAccountFavoriteMovies(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), 1, new ApiHandler.MovieListListener() {
-            @Override
-            public void success(MovieList response) {
-                for (Movie t: response.getMovies()) {
-                    MovieAppApplication.getUser().addToFavoriteMoviesList(t.getId());
-                    t.type = "FAVORITES";
-                }
-                RealmUtils.getInstance().addMoviesToRealm(response.getMovies());
-                if(response.getTotalPages()>1){
-                    for(int i = response.getTotalPages(); i>= 2; i--){
-                        ApiHandler.getInstance().requestAccountFavoriteMovies(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.MovieListListener() {
-                            @Override
-                            public void success(MovieList response) {
-                                for (Movie t: response.getMovies()) {
-                                    MovieAppApplication.getUser().addToFavoriteMoviesList(t.getId());
-                                    t.type = "FAVORITES";
-                                }
-                                RealmUtils.getInstance().addMoviesToRealm(response.getMovies());
-                            }
-                        });
-                    }
-                }
-            }
-        });
-    }
-
-    private void requestFavoriteTVSeries(){
-        ApiHandler.getInstance().requestAccountFavoriteTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
-            @Override
-            public void success(TVShowList response) {
-                for (TVShow t: response.getTVShow()) {
-                    MovieAppApplication.getUser().addToFavoriteTVSeriesList(t.getId());
-                    t.type = "FAVORITES";
-                }
-                RealmUtils.getInstance().addTVShowsToRealm(response.getTVShow());
-                if(response.getTotalPages()>1){
-                    for(int i = response.getTotalPages(); i>= 2; i--){
-                        ApiHandler.getInstance().requestAccountFavoriteTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.TvSeriesListListener() {
-                            @Override
-                            public void success(TVShowList response) {
-                                for (TVShow t: response.getTVShow()) {
-                                    MovieAppApplication.getUser().addToFavoriteTVSeriesList(t.getId());
-                                    t.type = "FAVORITES";
-                                }
-                                RealmUtils.getInstance().addTVShowsToRealm(response.getTVShow());
-                            }
-                        });
-                    }
-                }
-            }
-        });
-    }
-
-    private void requestWatchlistMovies(){
-        ApiHandler.getInstance().requestAccountWatchlistMovies(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), 1, new ApiHandler.MovieListListener() {
-            @Override
-            public void success(MovieList response) {
-                for (Movie t: response.getMovies()) {
-                    MovieAppApplication.getUser().addToWatchlistMoviesList(t.getId());
-                    t.type = "WATCHLIST";
-                }
-                RealmUtils.getInstance().addMoviesToRealm(response.getMovies());
-                if(response.getTotalPages()>1){
-                    for(int i = response.getTotalPages(); i>= 2; i--){
-                        ApiHandler.getInstance().requestAccountWatchlistMovies(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.MovieListListener() {
-                            @Override
-                            public void success(MovieList response) {
-                                for (Movie t: response.getMovies()) {
-                                    MovieAppApplication.getUser().addToWatchlistMoviesList(t.getId());
-                                    t.type = "WATCHLIST";
-                                }
-                                RealmUtils.getInstance().addMoviesToRealm(response.getMovies());
-                            }
-                        });
-                    }
-                }
-            }
-        });
-    }
-
-    private void requestWatchlistTVSeries(){
-        ApiHandler.getInstance().requestAccountWatchlistTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
-            @Override
-            public void success(TVShowList response) {
-                for (TVShow t: response.getTVShow()) {
-                    MovieAppApplication.getUser().addToWatchlistTVSeriesList(t.getId());
-                    t.type = "WATCHLIST";
-                }
-                RealmUtils.getInstance().addTVShowsToRealm(response.getTVShow());
-                if(response.getTotalPages()>1){
-                    for(int i = response.getTotalPages(); i>= 2; i--){
-                        ApiHandler.getInstance().requestAccountWatchlistTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.TvSeriesListListener() {
-                            @Override
-                            public void success(TVShowList response) {
-                                for (TVShow t: response.getTVShow()) {
-                                    MovieAppApplication.getUser().addToWatchlistTVSeriesList(t.getId());
-                                    t.type = "WATCHLIST";
-                                }
-                                RealmUtils.getInstance().addTVShowsToRealm(response.getTVShow());
-                            }
-                        });
-                    }
-                }
-
-            }
-        });
     }
 
 }

@@ -20,6 +20,7 @@ import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Common.SearchActivity;
 import com.example.zsamir.movieappintership.Login.LoginActivity;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import io.realm.Realm;
 
@@ -31,6 +32,9 @@ public class MoviesActivity extends BaseActivity implements NavigationView.OnNav
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
+
+        if(isNetworkAvailable())
+            RealmUtils.getInstance().deleteAllMovies();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -49,6 +53,7 @@ public class MoviesActivity extends BaseActivity implements NavigationView.OnNav
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
@@ -107,13 +112,16 @@ public class MoviesActivity extends BaseActivity implements NavigationView.OnNav
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
-        if(resultCode == RESULT_OK){
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    recreate();
-                }
-            });
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                recreate();
+            }
+        });
+    }
+
+    @Override
+    public void onNetworkAvailable() {
+        super.onNetworkAvailable();
     }
 }

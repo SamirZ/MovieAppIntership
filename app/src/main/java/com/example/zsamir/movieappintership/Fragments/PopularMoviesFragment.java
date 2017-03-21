@@ -45,6 +45,12 @@ public class PopularMoviesFragment extends Fragment{
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mMovieAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_popular_movies, container, false);
@@ -53,7 +59,8 @@ public class PopularMoviesFragment extends Fragment{
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mMovieAdapter);
-        Log.d("Network ", String.valueOf(((BaseActivity)getActivity()).isNetworkAvailable()));
+
+        mMovieAdapter.notifyDataSetChanged();
 
         if(((BaseActivity)getActivity()).isNetworkAvailable()){
             if(moviesList.size()==0)
@@ -91,7 +98,12 @@ public class PopularMoviesFragment extends Fragment{
                     // addition
                     for (Movie m: response.getMovies()) {
                         if(!moviesList.contains(m)){
-                            m.type = "POPULAR";
+                            Movie movie = RealmUtils.getInstance().readMovieFromRealm(m.getId());
+                            if(movie!=null) {
+                                m.latest = movie.latest;
+                                m.highestrated = movie.highestrated;
+                            }
+                            m.popular = true;
                             m.allGenres = "";
                             for (int i = 0; i < m.getGenreIds().length; i++) {
                                 m.allGenres+=m.getGenreIds()[i]+",";
@@ -100,10 +112,8 @@ public class PopularMoviesFragment extends Fragment{
                             moviesList.add(m);
                         }
                     }
-                    if(page==1){
-                        RealmUtils.getInstance().deleteAllPopularMovies();
-                    }
-                    RealmUtils.getInstance().addMoviesToRealm(moviesList);
+                    Log.d("POPULAR M SIZE", String.valueOf(moviesList.size()));
+                    RealmUtils.getInstance().addMoviesToRealm(moviesList,"POPULAR");
                     mMovieAdapter.notifyDataSetChanged();
                 }
             }

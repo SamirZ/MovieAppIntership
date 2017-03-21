@@ -14,6 +14,7 @@ public class RealmTVShowDetails extends RealmObject {
 
     @PrimaryKey
     private int id;
+
     private String lastAirDate;
     private boolean inProduction;
 

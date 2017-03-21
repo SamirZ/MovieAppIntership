@@ -156,10 +156,8 @@ public class ActorProfileActivity extends BaseActivity {
                 @Override
                 public void success(MovieList response) {
                     mMovies.addAll(response.getMovies());
-                    for (Movie m:mMovies) {
-                        m.type = String.valueOf(mActor.getId());
-                    }
-                    RealmUtils.getInstance().addMoviesToRealm(mMovies);
+                    //identify actor
+                    //RealmUtils.getInstance().addMoviesToRealm(mMovies);
                     mMovieAdapter.notifyDataSetChanged();
                 }
             });
@@ -240,7 +238,7 @@ public class ActorProfileActivity extends BaseActivity {
                     more.setVisibility(View.GONE);
                 }
 
-                mMovies.addAll(RealmUtils.getInstance().readActorMoviesFromRealm(cast.getId()));
+                //mMovies.addAll(RealmUtils.getInstance().readActorMoviesFromRealm(cast.getId()));
                 mMovieAdapter.notifyDataSetChanged();
 
                 RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.actor_movies_recyclerView);

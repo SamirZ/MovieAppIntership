@@ -17,6 +17,8 @@ import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.Modules.TVShowList;
 import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.PostModel;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ public class RatingActivity extends BaseActivity {
 
     private RatingBar ratingBar;
     private Movie movie;
-    private TVShow TVShow;
+    private TVShow tvShow;
     private List<Movie> ratedMovies = new ArrayList<>();
     private List<TVShow> ratedTVSeries = new ArrayList<>();
 
@@ -42,7 +44,7 @@ public class RatingActivity extends BaseActivity {
 
         if(getIntent().hasExtra("TV")){
             setTitle(getString(R.string.rate_this)+" TV show");
-            TVShow = getIntent().getParcelableExtra("TV");
+            tvShow = getIntent().getParcelableExtra("TV");
             requestRatedTVSeries();
         }
 
@@ -69,26 +71,54 @@ public class RatingActivity extends BaseActivity {
     }
 
     private void rateMedia() {
-        if(movie!=null){
-            Log.d("RATING", String.valueOf((double)ratingBar.getRating()));
-            ApiHandler.getInstance().rateMovie(movie.getId(),
-                    MovieAppApplication.getUser().getSessionId(),
-                    new Rating((double) ratingBar.getRating()), new ApiHandler.PostResponseListener() {
-                        @Override
-                        public void success(PostResponse response) {
-                            Toast.makeText(RatingActivity.this, "Successfully rated", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        }else if(TVShow !=null){
-            Log.d("RATING", String.valueOf((double)ratingBar.getRating()));
-            ApiHandler.getInstance().rateTVShow(TVShow.getId(),
-                    MovieAppApplication.getUser().getSessionId(),
-                    new Rating((double) ratingBar.getRating()), new ApiHandler.PostResponseListener() {
-                        @Override
-                        public void success(PostResponse response) {
-                            Toast.makeText(RatingActivity.this, "Successfully rated", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+        if(isNetworkAvailable()) {
+            if (movie != null) {
+                Log.d("RATING", String.valueOf((double) ratingBar.getRating()));
+                ApiHandler.getInstance().rateMovie(movie.getId(),
+                        MovieAppApplication.getUser().getSessionId(),
+                        new Rating((double) ratingBar.getRating()), new ApiHandler.PostResponseListener() {
+                            @Override
+                            public void success(PostResponse response) {
+                                Toast.makeText(RatingActivity.this, "Successfully rated", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else if (tvShow != null) {
+                Log.d("RATING", String.valueOf((double) ratingBar.getRating()));
+                ApiHandler.getInstance().rateTVShow(tvShow.getId(),
+                        MovieAppApplication.getUser().getSessionId(),
+                        new Rating((double) ratingBar.getRating()), new ApiHandler.PostResponseListener() {
+                            @Override
+                            public void success(PostResponse response) {
+                                Toast.makeText(RatingActivity.this, "Successfully rated", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        }else{
+            float amount = ratingBar.getRating();
+            String strAmount = String.valueOf(amount);
+
+            if (movie != null) {
+                Log.d("RATING", strAmount);
+
+                PostModel postModel = RealmUtils.getInstance().readPostModel(movie.getId());
+                if(postModel!=null) {
+                    RealmUtils.getInstance().setRating(postModel,strAmount);
+                    RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                }else{
+                    RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(movie.getId(),strAmount,true,false));
+                }
+                Toast.makeText(RatingActivity.this, "Rating stored", Toast.LENGTH_SHORT).show();
+            } else if (tvShow != null) {
+                Log.d("RATING", String.valueOf(ratingBar.getRating()));
+                PostModel postModel = RealmUtils.getInstance().readPostModel(tvShow.getId());
+                if(postModel!=null) {
+                    RealmUtils.getInstance().setRating(postModel,strAmount);
+                    RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                }else{
+                    RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(tvShow.getId(),strAmount,false,true));
+                }
+                Toast.makeText(RatingActivity.this, "Rating stored", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -151,8 +181,8 @@ public class RatingActivity extends BaseActivity {
                         });
                     }
                     for (TVShow t: ratedTVSeries) {
-                        if(TVShow !=null){
-                            if(TVShow.getId()==t.getId()){
+                        if(tvShow !=null){
+                            if(tvShow.getId()==t.getId()){
                                 Log.d("TV_RATING", String.valueOf((float)t.getRating()));
                                 ratingBar.setRating((float)t.getRating());
                             }
@@ -160,8 +190,8 @@ public class RatingActivity extends BaseActivity {
                     }
                 }else{
                     for (TVShow t: ratedTVSeries) {
-                        if(TVShow !=null){
-                            if(TVShow.getId()==t.getId()){
+                        if(tvShow !=null){
+                            if(tvShow.getId()==t.getId()){
                                 Log.d("TV_RATING", String.valueOf((float)t.getRating()));
                                 ratingBar.setRating((float)t.getRating());
                             }

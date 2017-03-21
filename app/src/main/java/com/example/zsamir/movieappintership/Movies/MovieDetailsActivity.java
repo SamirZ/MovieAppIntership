@@ -5,7 +5,6 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +34,7 @@ import com.example.zsamir.movieappintership.Modules.MovieReview;
 import com.example.zsamir.movieappintership.Modules.MovieReviews;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.Common.RatingActivity;
-import com.example.zsamir.movieappintership.RealmUtils.RealmMovieDetails;
+import com.example.zsamir.movieappintership.RealmUtils.PostModel;
 import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import java.util.ArrayList;
@@ -90,7 +89,6 @@ public class MovieDetailsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-        setFinishOnTouchOutside(true);
 
         if (getIntent().hasExtra("Movie")) {
             mMovie = getIntent().getParcelableExtra("Movie");
@@ -167,7 +165,7 @@ public class MovieDetailsActivity extends BaseActivity {
                     TextView mMovieReleaseDate = (TextView) findViewById(R.id.movie_details_release_date);
                     if(!response.getProductionCountries().isEmpty()) {
 
-                        // NOT WORKING ?
+                        // NOT WORKING ???????
                         RealmUtils.getInstance().addRealmMovieDetailsProductionCountry(mMovie.getId(),response.getProductionCountries().get(0));
 
 
@@ -185,7 +183,6 @@ public class MovieDetailsActivity extends BaseActivity {
                         if(mMovieImages.getBackdrops().size()>0){
                             backdrops.addAll(mMovieImages.getBackdrops());
 
-                            // NOT WORKING ?
                             RealmUtils.getInstance().addRealmMovieDetailsBackrops(mMovie.getId(),backdrops);
 
                             mImageAdapter.notifyDataSetChanged();
@@ -214,7 +211,7 @@ public class MovieDetailsActivity extends BaseActivity {
                             for (Crew c : mCredits.crew) {
                                 if (c.getDepartment().equals("Directing")) {
                                     director = c;
-                                    // NOT WORKING
+
                                     RealmUtils.getInstance().addRealmMovieDetailsDirector(mMovie.getId(),director);
                                     mMovieDirector.setText(director.getName());
                                     break;
@@ -250,7 +247,6 @@ public class MovieDetailsActivity extends BaseActivity {
                         if(mCredits.cast.size()>0){
                             actors.addAll(mCredits.cast);
 
-                            // NOT WORKING ?
                             RealmUtils.getInstance().addRealmMovieDetailsActors(mMovie.getId(),actors);
 
                             mCastAdapter.notifyDataSetChanged();
@@ -286,7 +282,6 @@ public class MovieDetailsActivity extends BaseActivity {
                         if(response.getResults().size()>0){
                             reviewList.addAll(response.getResults());
 
-                            // NOT WORKING ?
                             RealmUtils.getInstance().addRealmMovieDetailsReviews(mMovie.getId(),reviewList);
 
                         }else{
@@ -445,37 +440,75 @@ public class MovieDetailsActivity extends BaseActivity {
                 if(!liked && MovieAppApplication.isUserLoggedIn()){
                     item.setIcon(ContextCompat.getDrawable(this,R.drawable.like_filled_menu));
                     if(!MovieAppApplication.getUser().getFavMovieList().contains(mMovie.getId())){
-                        MovieAppApplication.getUser().addToFavoriteMoviesList(mMovie.getId());
+                        if(isNetworkAvailable()) {
+                            ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
+                                    MovieAppApplication.getUser().getSessionId(),
+                                    new Favorite("movie", mMovie.getId(), true),
+                                    new ApiHandler.PostResponseListener() {
+                                        @Override
+                                        public void success(PostResponse response) {
+                                            ArrayList<Integer> l = new ArrayList<>();
+                                            l.add(mMovie.getId());
+                                            MovieAppApplication.getUser().addToFavoriteMoviesList(mMovie.getId());
+                                            liked = true;
+                                            RealmUtils.getInstance().addRealmAccountFavMovies(l);
+                                        }
+                                    });
+                        }else{
+                            //OFFLINE LIKE
+                            ArrayList<Integer> l = new ArrayList<>();
+                            l.add(mMovie.getId());
+                            MovieAppApplication.getUser().addToFavoriteMoviesList(mMovie.getId());
+                            liked = true;
+                            RealmUtils.getInstance().addRealmAccountFavMovies(l);
 
-                        ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
-                                MovieAppApplication.getUser().getSessionId(),
-                                new Favorite("movie",mMovie.getId(),true),
-                                new ApiHandler.PostResponseListener() {
-                                    @Override
-                                    public void success(PostResponse response) {
-                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
-                                        Log.d("RESPONSE", response.statusMessage);
-                                    }
-                                });
+                            //POST FOR SYNC
+                            PostModel postModel = RealmUtils.getInstance().readPostModel(mMovie.getId());
+                            if(postModel!=null) {
+                                RealmUtils.getInstance().setRating(postModel,true);
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(mMovie.getId(),true,true,false));
+                            }
+                        }
                     }
-                    liked = true;
                 }else if(liked && MovieAppApplication.isUserLoggedIn()){
                     item.setIcon(ContextCompat.getDrawable(this,R.drawable.like_menu));
                     if(MovieAppApplication.getUser().getFavMovieList().contains(mMovie.getId())){
-                        MovieAppApplication.getUser().removeFromFavoriteMovieList(mMovie.getId());
-
-                        ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
-                                MovieAppApplication.getUser().getSessionId(),
-                                new Favorite("movie",mMovie.getId(),false),
-                                new ApiHandler.PostResponseListener() {
-                                    @Override
-                                    public void success(PostResponse response) {
-                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
-                                        Log.d("RESPONSE", response.statusMessage);
-                                    }
-                                });
+                        if(isNetworkAvailable()) {
+                            ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
+                                    MovieAppApplication.getUser().getSessionId(),
+                                    new Favorite("movie", mMovie.getId(), false),
+                                    new ApiHandler.PostResponseListener() {
+                                        @Override
+                                        public void success(PostResponse response) {
+                                            MovieAppApplication.getUser().removeFromFavoriteMovieList(mMovie.getId());
+                                            liked = false;
+                                            RealmUtils.getInstance().removeRealmAccountFavMovie(mMovie.getId());
+                                        }
+                                    });
+                        }else{
+                            //OFFLINE UNLIKE
+                            MovieAppApplication.getUser().removeFromFavoriteMovieList(mMovie.getId());
+                            liked = false;
+                            RealmUtils.getInstance().removeRealmAccountFavMovie(mMovie.getId());
+                            //DELETE POST
+                            PostModel postModel = RealmUtils.getInstance().readPostModel(mMovie.getId());
+                            if(postModel!=null) {
+                                RealmUtils.getInstance().setRating(postModel,false);
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(mMovie.getId(),false,true,false));
+                            }
+                            /*
+                            if(postModel.getRating()==null && !postModel.isFav() && !postModel.isWatch()){
+                                RealmUtils.getInstance().deletePostModel(mMovie.getId());
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }
+                            */
+                        }
                     }
-                    liked = false;
                 }else if(!MovieAppApplication.isUserLoggedIn()){
                     showLoginDialog();
                 }
@@ -484,37 +517,76 @@ public class MovieDetailsActivity extends BaseActivity {
                 if(!watchlist && MovieAppApplication.isUserLoggedIn()){
                     item.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_filled_menu));
                     if(!MovieAppApplication.getUser().getWatchlistMovieList().contains(mMovie.getId())){
-                        MovieAppApplication.getUser().addToWatchlistMoviesList(mMovie.getId());
+                        if(isNetworkAvailable()) {
+                            ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
+                                    MovieAppApplication.getUser().getSessionId(),
+                                    new Watchlist("movie", mMovie.getId(), true),
+                                    new ApiHandler.PostResponseListener() {
+                                        @Override
+                                        public void success(PostResponse response) {
+                                            ArrayList<Integer> l = new ArrayList<>();
+                                            l.add(mMovie.getId());
+                                            MovieAppApplication.getUser().addToWatchlistMoviesList(mMovie.getId());
+                                            watchlist = true;
+                                            RealmUtils.getInstance().addRealmAccountWatchlistMovies(l);
+                                        }
+                                    });
+                        }else{
+                            //OFFLINE PUT ON WATCHLIST
+                            ArrayList<Integer> l = new ArrayList<>();
+                            l.add(mMovie.getId());
+                            MovieAppApplication.getUser().addToWatchlistMoviesList(mMovie.getId());
+                            watchlist = true;
+                            RealmUtils.getInstance().addRealmAccountWatchlistMovies(l);
 
-                        ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
-                                MovieAppApplication.getUser().getSessionId(),
-                                new Watchlist("movie",mMovie.getId(),true),
-                                new ApiHandler.PostResponseListener() {
-                                    @Override
-                                    public void success(PostResponse response) {
-                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
-                                        Log.d("RESPONSE", response.statusMessage);
-                                    }
-                                });
+                            //POST FOR SYNC
+                            PostModel postModel = RealmUtils.getInstance().readPostModel(mMovie.getId());
+                            if(postModel!=null) {
+                                RealmUtils.getInstance().setWatch(postModel,true);
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(mMovie.getId(),true,true,false,1));
+                            }
+                        }
                     }
-                    watchlist = true;
                 }else if(watchlist && MovieAppApplication.isUserLoggedIn()){
                     item.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_menu));
                     if(MovieAppApplication.getUser().getWatchlistMovieList().contains(mMovie.getId())){
-                        MovieAppApplication.getUser().removeFromWatchlistMovieList(mMovie.getId());
+                        if(isNetworkAvailable()) {
+                            ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
+                                    MovieAppApplication.getUser().getSessionId(),
+                                    new Watchlist("movie", mMovie.getId(), false),
+                                    new ApiHandler.PostResponseListener() {
+                                        @Override
+                                        public void success(PostResponse response) {
+                                            MovieAppApplication.getUser().removeFromWatchlistMovieList(mMovie.getId());
+                                            watchlist = false;
+                                            RealmUtils.getInstance().removeRealmAccountWatchlistMovies(mMovie.getId());
+                                        }
+                                    });
+                        }else{
+                            //OFFLINE REMOVE FROM WATCHLIST
+                            MovieAppApplication.getUser().removeFromWatchlistMovieList(mMovie.getId());
+                            watchlist = false;
+                            RealmUtils.getInstance().removeRealmAccountWatchlistMovies(mMovie.getId());
 
-                        ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
-                                MovieAppApplication.getUser().getSessionId(),
-                                new Watchlist("movie",mMovie.getId(),false),
-                                new ApiHandler.PostResponseListener() {
-                                    @Override
-                                    public void success(PostResponse response) {
-                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
-                                        Log.d("RESPONSE", response.statusMessage);
-                                    }
-                                });
+                            //DELETE POST
+                            PostModel postModel = RealmUtils.getInstance().readPostModel(mMovie.getId());
+                            if(postModel!=null) {
+                                RealmUtils.getInstance().setWatch(postModel,false);
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(mMovie.getId(),false,true,false,1));
+                            }
+                            /*
+                            if(postModel.getRating()==null && !postModel.isFav() && !postModel.isWatch()){
+                                RealmUtils.getInstance().deletePostModel(mMovie.getId());
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }
+                            */
+                        }
                     }
-                    watchlist = false;
                 }else if(!MovieAppApplication.isUserLoggedIn()){
                     showLoginDialog();
                 }

@@ -45,6 +45,12 @@ public class LatestMoviesFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mMovieAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_latest_movies, container, false);
@@ -53,6 +59,8 @@ public class LatestMoviesFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setAdapter(mMovieAdapter);
+
+        mMovieAdapter.notifyDataSetChanged();
 
         if(((BaseActivity)getActivity()).isNetworkAvailable()){
             if(moviesList.size()==0)
@@ -92,7 +100,12 @@ public class LatestMoviesFragment extends Fragment {
                     // addition
                     for (Movie m: response.getMovies()) {
                         if(!moviesList.contains(m)){
-                            m.type = "LATEST";
+                            Movie movie = RealmUtils.getInstance().readMovieFromRealm(m.getId());
+                            if(movie!=null) {
+                                m.highestrated = movie.highestrated;
+                                m.popular = movie.popular;
+                            }
+                            m.latest = true;
                             m.allGenres = "";
                             for (int i = 0; i < m.getGenreIds().length; i++) {
                                 if(m.getGenreIds()[i]!=m.getGenreIds().length-1)
@@ -103,10 +116,8 @@ public class LatestMoviesFragment extends Fragment {
                             moviesList.add(m);
                         }
                     }
-                    if(page==1){
-                        RealmUtils.getInstance().deleteAllLatestMovies();
-                    }
-                    RealmUtils.getInstance().addMoviesToRealm(moviesList);
+                    if(moviesList!=null)
+                        RealmUtils.getInstance().addMoviesToRealm(moviesList,"LATEST");
                     mMovieAdapter.notifyDataSetChanged();
                 }
             }

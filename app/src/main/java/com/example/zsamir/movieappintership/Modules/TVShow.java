@@ -15,6 +15,11 @@ import io.realm.annotations.PrimaryKey;
 
 public class TVShow extends RealmObject implements Parcelable {
 
+    public boolean popular;
+    public boolean latest;
+    public boolean highestrated;
+    public boolean airing;
+
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
@@ -61,8 +66,6 @@ public class TVShow extends RealmObject implements Parcelable {
     @SerializedName("rating")
     @Expose
     private int rating;
-
-    public String type;
 
     public String allGenres;
 
@@ -254,19 +257,6 @@ public class TVShow extends RealmObject implements Parcelable {
     public TVShow() {
     }
 
-    public TVShow(String posterPath, float popularity, int id, String backdropPath, float voteAverage, String overview, String firstAirDate, String name, int rating, String type, String allGenres) {
-        this.posterPath = posterPath;
-        this.popularity = popularity;
-        this.id = id;
-        this.backdropPath = backdropPath;
-        this.voteAverage = voteAverage;
-        this.overview = overview;
-        this.firstAirDate = firstAirDate;
-        this.name = name;
-        this.rating = rating;
-        this.type = type;
-        this.allGenres = allGenres;
-    }
 
     public TVShow(String posterPath, String backdropPath, float voteAverage, String overview, String firstAirDate, int[] genreIds, String name, int id) {
         this.posterPath = posterPath;

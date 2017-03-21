@@ -44,6 +44,12 @@ public class PopularTVSeriesFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mTvSeriesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_popular_tvseries, container, false);
@@ -52,6 +58,8 @@ public class PopularTVSeriesFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setAdapter(mTvSeriesAdapter);
+
+        mTvSeriesAdapter.notifyDataSetChanged();
 
         if(((BaseActivity)getActivity()).isNetworkAvailable()){
             if(TVShowList.size()==0){
@@ -86,7 +94,13 @@ public class PopularTVSeriesFragment extends Fragment {
                 //addition
                 for (TVShow t: response.getTVShow()) {
                     if(!TVShowList.contains(t)){
-                        t.type = "POPULAR";
+                        TVShow tv = RealmUtils.getInstance().readTVShowFromRealm(t.getId());
+                        if(tv!=null) {
+                            t.airing = tv.airing;
+                            t.latest = tv.latest;
+                            t.highestrated = tv.highestrated;
+                        }
+                        t.popular = true;
                         if(t.getGenres().length>0){
                             t.allGenres = "";
                             for (int i = 0; i < t.getGenres().length; i++) {
@@ -96,9 +110,6 @@ public class PopularTVSeriesFragment extends Fragment {
                         }
                         TVShowList.add(t);
                     }
-                }
-                if(page==1){
-                    RealmUtils.getInstance().deleteAllPopularTVShows();
                 }
                 RealmUtils.getInstance().addTVShowsToRealm(TVShowList);
                 mTvSeriesAdapter.notifyDataSetChanged();

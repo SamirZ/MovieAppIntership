@@ -2,6 +2,7 @@ package com.example.zsamir.movieappintership.Modules;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,9 @@ public class Movie extends RealmObject implements Parcelable {
     @Ignore
     public List<Backdrop> backdropList;
 
-    public String type;
+    public boolean popular;
+    public boolean latest;
+    public boolean highestrated;
 
     @SerializedName("poster_path")
     @Expose
@@ -141,7 +144,8 @@ public class Movie extends RealmObject implements Parcelable {
         if(allGenres!=null){
             String[] g = allGenres.split(",");
             for (String s:g) {
-                genres.add(MovieGenres.getById(Integer.parseInt(s)).getTitle());
+                if(s.length()>0)
+                    genres.add(MovieGenres.getById(Integer.parseInt(s)).getTitle());
             }
         }
         else{
@@ -213,13 +217,6 @@ public class Movie extends RealmObject implements Parcelable {
         this.posterPath = posterPath;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public Movie() {
     }
@@ -245,7 +242,9 @@ public class Movie extends RealmObject implements Parcelable {
         dest.writeInt(this.numOfBackdrops);
         dest.writeInt(this.lastLoadedBackdrop);
         dest.writeTypedList(this.backdropList);
-        dest.writeString(this.type);
+        dest.writeByte(this.popular ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.latest ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.highestrated ? (byte) 1 : (byte) 0);
         dest.writeString(this.posterPath);
         dest.writeString(this.overview);
         dest.writeString(this.releaseDate);
@@ -263,7 +262,9 @@ public class Movie extends RealmObject implements Parcelable {
         this.numOfBackdrops = in.readInt();
         this.lastLoadedBackdrop = in.readInt();
         this.backdropList = in.createTypedArrayList(Backdrop.CREATOR);
-        this.type = in.readString();
+        this.popular = in.readByte() != 0;
+        this.latest = in.readByte() != 0;
+        this.highestrated = in.readByte() != 0;
         this.posterPath = in.readString();
         this.overview = in.readString();
         this.releaseDate = in.readString();
@@ -289,7 +290,7 @@ public class Movie extends RealmObject implements Parcelable {
         }
     };
 
-    public Movie(String posterPath, String overview, String releaseDate, int id, String title, String backdropPath, float voteAverage, String allGenres, String type) {
+    public Movie(String posterPath, String overview, String releaseDate, int id, String title, String backdropPath, float voteAverage, String allGenres, boolean popular, boolean latest, boolean highestrated) {
         this.posterPath = posterPath;
         this.overview = overview;
         this.releaseDate = releaseDate;
@@ -298,6 +299,24 @@ public class Movie extends RealmObject implements Parcelable {
         this.backdropPath = backdropPath;
         this.voteAverage = voteAverage;
         this.allGenres = allGenres;
-        this.type = type;
+        this.popular = popular;
+        this.latest = latest;
+        this.highestrated = highestrated;
+    }
+
+    public Movie(boolean popular, boolean latest, boolean highestrated, String posterPath, String overview, String releaseDate, int id, String title, String backdropPath, boolean video, float voteAverage, int rating, String allGenres) {
+        this.popular = popular;
+        this.latest = latest;
+        this.highestrated = highestrated;
+        this.posterPath = posterPath;
+        this.overview = overview;
+        this.releaseDate = releaseDate;
+        this.id = id;
+        this.title = title;
+        this.backdropPath = backdropPath;
+        this.video = video;
+        this.voteAverage = voteAverage;
+        this.rating = rating;
+        this.allGenres = allGenres;
     }
 }

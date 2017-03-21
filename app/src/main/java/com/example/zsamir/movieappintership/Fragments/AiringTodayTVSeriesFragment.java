@@ -45,6 +45,12 @@ public class AiringTodayTVSeriesFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mTvSeriesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_airing_today_tvseries, container, false);
@@ -54,6 +60,8 @@ public class AiringTodayTVSeriesFragment extends Fragment {
 
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mTvSeriesAdapter);
+
+        mTvSeriesAdapter.notifyDataSetChanged();
 
         if(((BaseActivity)getActivity()).isNetworkAvailable()){
             if(TVShowList.size()==0)
@@ -89,7 +97,13 @@ public class AiringTodayTVSeriesFragment extends Fragment {
                 //addition
                 for (TVShow t: response.getTVShow()) {
                     if(!TVShowList.contains(t)){
-                        t.type = "AIRING";
+                        TVShow tv = RealmUtils.getInstance().readTVShowFromRealm(t.getId());
+                        if(tv!=null) {
+                            t.popular = tv.popular;
+                            t.latest = tv.latest;
+                            t.highestrated = tv.highestrated;
+                        }
+                        t.airing = true;
                         if(t.getGenres().length>0){
                             t.allGenres = "";
                             for (int i = 0; i < t.getGenres().length; i++) {
@@ -99,9 +113,6 @@ public class AiringTodayTVSeriesFragment extends Fragment {
                         }
                         TVShowList.add(t);
                     }
-                }
-                if(page==1){
-                    RealmUtils.getInstance().deleteAllAiringTodayTVShows();
                 }
                 RealmUtils.getInstance().addTVShowsToRealm(TVShowList);
                 mTvSeriesAdapter.notifyDataSetChanged();

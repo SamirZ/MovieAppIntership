@@ -3,11 +3,14 @@ package com.example.zsamir.movieappintership;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -16,32 +19,56 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.example.zsamir.movieappintership.API.ApiHandler;
+import com.example.zsamir.movieappintership.Common.AccountListsRequestHandler;
+import com.example.zsamir.movieappintership.Common.RatingActivity;
 import com.example.zsamir.movieappintership.Common.SettingsActivity;
 import com.example.zsamir.movieappintership.Common.UserListsActivity;
 import com.example.zsamir.movieappintership.Login.LoginActivity;
+import com.example.zsamir.movieappintership.LoginModules.Favorite;
+import com.example.zsamir.movieappintership.LoginModules.PostResponse;
+import com.example.zsamir.movieappintership.LoginModules.Rating;
+import com.example.zsamir.movieappintership.LoginModules.Watchlist;
 import com.example.zsamir.movieappintership.Movies.MoviesActivity;
 import com.example.zsamir.movieappintership.NewsFeed.NewsFeedActivity;
+import com.example.zsamir.movieappintership.RealmUtils.PostModel;
 import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 import com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity;
 
+import java.util.ArrayList;
+
 import io.realm.Realm;
 
-public class BaseActivity extends AppCompatActivity{
+public class BaseActivity extends AppCompatActivity implements NetworkStateReceiver.NetworkStateReceiverListener {
 
     private NavigationView navigationView;
+    private NetworkStateReceiver networkStateReceiver;
+    private boolean networkStateReceiverOn = false;
+    private boolean conn;
 
-    public void setUpDrawer(DrawerLayout drawer,Toolbar toolbar){
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //networkStateReceiver = new NetworkStateReceiver(this);
+        //networkStateReceiver.addListener(this);
+        //this.registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    public void setUpDrawer(DrawerLayout drawer, Toolbar toolbar){
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
     }
+
 
     public void showLoginDialog(){
         AlertDialog dialog = new AlertDialog.Builder(BaseActivity.this, R.style.MyDialogTheme)
@@ -185,6 +212,7 @@ public class BaseActivity extends AppCompatActivity{
                                         TextView t = (TextView)navigationView.getHeaderView(0).findViewById(R.id.person_name);
                                         t.setText("");
                                         MovieAppApplication.setUser(null);
+                                        RealmUtils.getInstance().deleteRealmAccount();
                                         navigationView.inflateMenu(R.menu.login_drawer);
                                         SharedPreferences sharedPreferences = getSharedPreferences("PREFERENCE", 0);
                                         sharedPreferences.edit().remove("USER").apply();
@@ -196,7 +224,6 @@ public class BaseActivity extends AppCompatActivity{
                                         if(sharedPreferences.contains("tvNotif"))
                                             sharedPreferences.edit().remove("tvNotif").apply();
 
-                                        //Restart activity
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
@@ -318,4 +345,145 @@ public class BaseActivity extends AppCompatActivity{
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    @Override
+    public void onNetworkAvailable() {
+
+        SharedPreferences sharedPreferences = getSharedPreferences("PREFERENCE", 0);
+        if (sharedPreferences.contains("CONNECTION")) {
+            conn = sharedPreferences.getBoolean("CONNECTION",false);
+            if(!conn){
+                SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+                sharedPreferencesEditor.putBoolean("CONNECTION", true).apply();
+
+                //APPLY ALL THE ACTIONS USER DID IN OFFLINE MODE
+                ArrayList<PostModel> postModels = RealmUtils.getInstance().readPostModels();
+
+                for (final PostModel p:postModels) {
+                    Log.d("POSTMODEL:",p.toString());
+                    // UPDATE FAVORITES
+                    if(p.isMovie()) {
+                        ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
+                                MovieAppApplication.getUser().getSessionId(),
+                                new Favorite("movie", p.getId(), p.isFav()), new ApiHandler.PostResponseListener() {
+                                    @Override
+                                    public void success(PostResponse response) {
+                                    }
+                                });
+                    }else if(p.isTV()){
+                        ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
+                                MovieAppApplication.getUser().getSessionId(),
+                                new Favorite("tv", p.getId(), p.isFav()), new ApiHandler.PostResponseListener() {
+                                    @Override
+                                    public void success(PostResponse response) {
+                                    }
+                                });
+                    }
+
+                    // UPDATE WATCHLIST
+                    if(p.isMovie()) {
+                        ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
+                                MovieAppApplication.getUser().getSessionId(),
+                                new Watchlist("movie", p.getId(), p.isWatch()),
+                                new ApiHandler.PostResponseListener() {
+                                    @Override
+                                    public void success(PostResponse response) {
+                                    }
+                                });
+                    }else if(p.isTV()){
+                        ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
+                                MovieAppApplication.getUser().getSessionId(),
+                                new Watchlist("tv", p.getId(), p.isWatch()),
+                                new ApiHandler.PostResponseListener() {
+                                    @Override
+                                    public void success(PostResponse response) {
+                                    }
+                                });
+                    }
+
+                    // UPDATE RATING
+
+                    if(p.getRating()!=null){
+                        Log.d("RATING TEST",p.getRating());
+                        String strAmount = p.getRating();
+                        float amount = Float.parseFloat(strAmount);
+                        if (p.isTV()) {
+                            ApiHandler.getInstance().rateTVShow(p.getId(),
+                                    MovieAppApplication.getUser().getSessionId(),
+                                    new Rating((double)amount), new ApiHandler.PostResponseListener() {
+                                        @Override
+                                        public void success(PostResponse response) {
+                                        }
+                                    });
+                        } else if (p.isMovie()) {
+                            ApiHandler.getInstance().rateMovie(p.getId(),
+                                    MovieAppApplication.getUser().getSessionId(),
+                                    new Rating((double)amount), new ApiHandler.PostResponseListener() {
+                                        @Override
+                                        public void success(PostResponse response) {
+                                        }
+                                    });
+                        }
+                    }
+                    // UPDATE RATINGS
+                }
+                // DELETE POST REQUESTS
+                RealmUtils.getInstance().deletePostModels();
+
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recreate();
+                    }
+                });
+            }
+        }else{
+            SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+            sharedPreferencesEditor.putBoolean("CONNECTION", true);
+            sharedPreferencesEditor.apply();
+        }
+    }
+
+    @Override
+    public void onNetworkUnavailable() {
+        SharedPreferences sharedPreferences = getSharedPreferences("PREFERENCE", 0);
+        if (sharedPreferences.contains("CONNECTION")) {
+            conn = sharedPreferences.getBoolean("CONNECTION",true);
+            if(conn){
+                SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+                sharedPreferencesEditor.putBoolean("CONNECTION", false).apply();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recreate();
+                    }
+                });
+            }
+        }else{
+            SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+            sharedPreferencesEditor.putBoolean("CONNECTION", false);
+            sharedPreferencesEditor.apply();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!networkStateReceiverOn) {
+            networkStateReceiver = new NetworkStateReceiver(this);
+            networkStateReceiver.addListener(this);
+            this.registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+            networkStateReceiverOn = true;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onStop();
+        if(networkStateReceiverOn) {
+            unregisterReceiver(networkStateReceiver);
+            networkStateReceiverOn = false;
+        }
+    }
 }

@@ -44,6 +44,12 @@ public class HighestRatedMoviesFragment extends Fragment{
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mMovieAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_highest_rated_movies, container, false);
@@ -52,6 +58,8 @@ public class HighestRatedMoviesFragment extends Fragment{
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mMovieAdapter);
+
+        mMovieAdapter.notifyDataSetChanged();
 
         if(((BaseActivity)getActivity()).isNetworkAvailable()){
             if(moviesList.size()==0)
@@ -87,7 +95,12 @@ public class HighestRatedMoviesFragment extends Fragment{
                 // addition
                 for (Movie m: response.getMovies()) {
                     if(!moviesList.contains(m)){
-                        m.type = "HIGHEST";
+                        Movie movie = RealmUtils.getInstance().readMovieFromRealm(m.getId());
+                        if(movie!=null) {
+                            m.popular = movie.popular;
+                            m.latest = movie.latest;
+                        }
+                        m.highestrated = true;
                         m.allGenres = "";
                         for (int i = 0; i < m.getGenreIds().length; i++) {
                             if(m.getGenreIds()[i]!=m.getGenreIds().length-1)
@@ -98,10 +111,7 @@ public class HighestRatedMoviesFragment extends Fragment{
                         moviesList.add(m);
                     }
                 }
-                if(page==1){
-                    RealmUtils.getInstance().deleteAllHighestRatedMovies();
-                }
-                RealmUtils.getInstance().addMoviesToRealm(moviesList);
+                RealmUtils.getInstance().addMoviesToRealm(moviesList,"HIGHEST");
                 mMovieAdapter.notifyDataSetChanged();
             }
         });
