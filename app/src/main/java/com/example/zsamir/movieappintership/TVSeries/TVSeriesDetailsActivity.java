@@ -79,6 +79,7 @@ public class TVSeriesDetailsActivity extends BaseActivity {
 
     private ImageView mTvSeriesImage;
     private ImageView rateImage;
+    private ImageView playVideo;
 
     private RecyclerView mImageRecyclerView;
     private RecyclerView mCastRecyclerView;
@@ -125,6 +126,7 @@ public class TVSeriesDetailsActivity extends BaseActivity {
         castLabel = (TextView) findViewById(R.id.tv_series_cast_label);
         mTVSeriesStars = (TextView) findViewById(R.id.tv_series_details_stars_2);
         mTVSeriesStarsLabel = (TextView) findViewById(R.id.tv_series_details_stars_1);
+        playVideo = (ImageView) findViewById(R.id.tv_play_video);
 
         tvSeriesImagesBreakline = findViewById(R.id.tv_series_details_images_breakline);
 
@@ -167,7 +169,7 @@ public class TVSeriesDetailsActivity extends BaseActivity {
 
         if(mTVShow.getBackdropUrl()!=null){
             Glide.with(this).load(mTVShow.getBackdropUrl()).into(mTvSeriesImage);
-            mTvSeriesImage.setOnClickListener(new View.OnClickListener() {
+            playVideo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(TVSeriesDetailsActivity.this, TrailerActivity.class);

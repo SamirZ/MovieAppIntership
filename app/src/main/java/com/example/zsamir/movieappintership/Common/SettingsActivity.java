@@ -99,7 +99,6 @@ public class SettingsActivity extends BaseActivity {
                         // TV NOTIFICATION ON
                         getSharedPreferences("PREFERENCE", 0).edit().putBoolean("tvNotif", true).apply();
                         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
-
                     }
                     else {
                         // TV NOTIFICATION OFF
@@ -134,6 +133,12 @@ public class SettingsActivity extends BaseActivity {
                     movieNotifyOn = false;
 
                     Calendar calendar = Calendar.getInstance();
+
+                    int i = calendar.get(Calendar.MINUTE);
+                    i++;
+                    if(i>60)
+                        i=0;
+                    calendar.set(Calendar.MINUTE,i);
 
                     //calendar.set(Calendar.HOUR_OF_DAY,0);
 
