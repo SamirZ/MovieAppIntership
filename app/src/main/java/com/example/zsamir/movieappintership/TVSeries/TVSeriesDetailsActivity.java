@@ -5,7 +5,6 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +20,7 @@ import com.example.zsamir.movieappintership.Common.GalleryActivity;
 import com.example.zsamir.movieappintership.Common.TrailerActivity;
 import com.example.zsamir.movieappintership.Modules.TVShowDetails;
 import com.example.zsamir.movieappintership.Modules.TVShow;
+import com.example.zsamir.movieappintership.Modules.TVShowGenres;
 import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.LoginModules.Favorite;
 import com.example.zsamir.movieappintership.LoginModules.PostResponse;
@@ -32,6 +32,8 @@ import com.example.zsamir.movieappintership.Modules.Images;
 import com.example.zsamir.movieappintership.Modules.Season;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.Common.RatingActivity;
+import com.example.zsamir.movieappintership.RealmUtils.PostModel;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,13 +93,15 @@ public class TVSeriesDetailsActivity extends BaseActivity {
 
         if (getIntent().hasExtra("TVSeries")) {
             mTVShow = getIntent().getParcelableExtra("TVSeries");
+
+            mImageAdapter = new ImageAdapter(backdrops, mTVShow);
         }
 
         setUpViews();
 
-        setDetailedData();
-
         setKnowData();
+
+        setDetailedData();
 
         setUpImages();
 
@@ -144,7 +148,6 @@ public class TVSeriesDetailsActivity extends BaseActivity {
     }
 
     private void setUpImages() {
-        mImageAdapter = new ImageAdapter(backdrops, mTVShow);
         LinearLayoutManager layoutManagerImage = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mImageRecyclerView.setLayoutManager(layoutManagerImage);
         mImageRecyclerView.setAdapter(mImageAdapter);
@@ -154,18 +157,33 @@ public class TVSeriesDetailsActivity extends BaseActivity {
         if(mTVShow.getName()!=null && mTVShow.getReleaseYear()!=null)
         mTvSeriesName.setText(mTVShow.getName()+" ("+ mTVShow.getReleaseYear()+")");
 
-        if(mTVShow.getTvSeriesGenres().size()>0){
-            String s = "";
-            for (int i = 0; i< mTVShow.getTvSeriesGenres().size(); i++) {
-                if(i!= mTVShow.getTvSeriesGenres().size()-1)
-                    s = s + mTVShow.getTvSeriesGenres().get(i) +", ";
-                else
-                    s = s + mTVShow.getTvSeriesGenres().get(i);
+
+        if(isNetworkAvailable()) {
+            if (mTVShow.getTvSeriesGenres().size() > 0) {
+                String s = "";
+                for (int i = 0; i < mTVShow.getTvSeriesGenres().size(); i++) {
+                    if (i != mTVShow.getTvSeriesGenres().size() - 1)
+                        s = s + mTVShow.getTvSeriesGenres().get(i) + ", ";
+                    else
+                        s = s + mTVShow.getTvSeriesGenres().get(i);
+                }
+                mTvSeriesGenre.setText(s);
+            } else
+                mTvSeriesGenre.setText(" ");
+        }else {
+            if (mTVShow.allGenres != null) {
+                String[] genres = mTVShow.allGenres.split(",");
+                String s = "";
+                for (int i = 0; i < genres.length; i++) {
+                    if (i != genres.length - 1){
+                        s = s + TVShowGenres.getById(Integer.parseInt(genres[i])).getTitle() + ", ";
+                    }
+                    else
+                        s = s + TVShowGenres.getById(Integer.parseInt(genres[i])).getTitle();
+                }
+                mTvSeriesGenre.setText(s);
             }
-            mTvSeriesGenre.setText(s);
         }
-        else
-            mTvSeriesGenre.setText(" ");
 
         if(mTVShow.getBackdropUrl()!=null){
             Glide.with(this).load(mTVShow.getBackdropUrl()).into(mTvSeriesImage);
@@ -194,117 +212,128 @@ public class TVSeriesDetailsActivity extends BaseActivity {
     }
 
     private void setDetailedData() {
-        ApiHandler apiHandler = ApiHandler.getInstance();
-        apiHandler.requestTVSeriesDetails(mTVShow.getId(), new ApiHandler.TvSeriesDetailsListener() {
-            @Override
-            public void success(TVShowDetails response) {
 
-                mTVShowDetails = response;
+        if (isNetworkAvailable()) {
 
+            RealmUtils.getInstance().deleteTVShowDetails(mTVShow.getId());
+            RealmUtils.getInstance().createRealmTVShowDetails(mTVShow.getId());
 
+            ApiHandler apiHandler = ApiHandler.getInstance();
+            apiHandler.requestTVSeriesDetails(mTVShow.getId(), new ApiHandler.TvSeriesDetailsListener() {
+                @Override
+                public void success(TVShowDetails response) {
 
-                if(mTVShowDetails !=null){
-                    if(mTVShowDetails.getSeasons()!=null){
-                        if(mTVShowDetails.getNumberOfSeasons()>0){
-                            seeSeasons.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Intent i = new Intent(view.getContext(), SeasonActivity.class);
-                                    if(mTVShowDetails !=null)
-                                        i.putExtra("TVSeriesDetails", mTVShowDetails);
-                                    view.getContext().startActivity(i);
-                                }
-                            });
-                        }
-                        else{
+                    mTVShowDetails = response;
+                    RealmUtils.getInstance().addRealmTVShowDetails(mTVShow.getId(),mTVShowDetails);
+
+                    if (mTVShowDetails != null) {
+                        if (mTVShowDetails.getSeasons() != null) {
+                            RealmUtils.getInstance().addRealmTVShowDetailsSeasons(mTVShow.getId(),mTVShowDetails.getSeasons());
+                            if (mTVShowDetails.getNumberOfSeasons() > 0) {
+                                seeSeasons.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent i = new Intent(view.getContext(), SeasonActivity.class);
+                                        if (mTVShowDetails != null)
+                                            i.putExtra("TVSeriesDetails", mTVShowDetails);
+                                        view.getContext().startActivity(i);
+                                    }
+                                });
+                            } else {
+                                seeSeasons.setVisibility(View.GONE);
+                            }
+                        } else {
                             seeSeasons.setVisibility(View.GONE);
                         }
-                    }else{
+                    } else {
                         seeSeasons.setVisibility(View.GONE);
                     }
-                }else{
-                    seeSeasons.setVisibility(View.GONE);
-                }
 
-                if(response!=null){
-                    if(response.getCreatedBy()!=null && response.getCreatedBy().size()>0)
-                        mTVSeriesDirector.setText(response.getCreatedBy().get(0).getName());
-                    else{
+                    if (response != null) {
+                        if (response.getCreatedBy() != null && response.getCreatedBy().size() > 0){
+                            mTVSeriesDirector.setText(response.getCreatedBy().get(0).getName());
+                            RealmUtils.getInstance().addRealmTVShowDetailsCreatedBy(mTVShow.getId(),response.getCreatedBy().get(0));
+                        }
+                        else {
+                            mTVSeriesDirector.setVisibility(View.GONE);
+                            mTVSeriesDirectorLabel.setVisibility(View.GONE);
+                        }
+                    } else {
                         mTVSeriesDirector.setVisibility(View.GONE);
                         mTVSeriesDirectorLabel.setVisibility(View.GONE);
                     }
-                }else{
-                    mTVSeriesDirector.setVisibility(View.GONE);
-                    mTVSeriesDirectorLabel.setVisibility(View.GONE);
-                }
 
-                if(response!=null) {
-                    if (response.getReleaseYear() != null && response.getFinishYear() != null)
-                        mTVSeriesFirstAiringDate.setText("TV Series (" + response.getReleaseYear() + "-" + response.getFinishYear() + ")");
-                    else
+                    if (response != null) {
+                        if (response.getReleaseYear() != null && response.getFinishYear() != null) {
+                            mTVSeriesFirstAiringDate.setText("TV Series (" + response.getReleaseYear() + "-" + response.getFinishYear() + ")");
+                            RealmUtils.getInstance().addRealmTVShowDetailsLastAirDate(mTVShow.getId(),response.getLastAirDate());
+                        }else
+                            mTVSeriesFirstAiringDate.setVisibility(View.GONE);
+                    } else
                         mTVSeriesFirstAiringDate.setVisibility(View.GONE);
-                }else
-                    mTVSeriesFirstAiringDate.setVisibility(View.GONE);
 
 
-                if(response!=null) {
-                    if (response.getVoteAverage() != null) {
-                        mRating.setText(String.format(Locale.getDefault(), "%1$.1f", response.getVoteAverage()));
-                        mRating2.setText(getString(R.string.max_rating));
-                    }
-                }
+                    mRating.setText(String.format(Locale.getDefault(), "%1$.1f", mTVShow.getVoteAverage()));
+                    mRating2.setText(getString(R.string.max_rating));
 
 
-                View.OnClickListener onClickListener = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(MovieAppApplication.isUserLoggedIn()){
-                            Intent i = new Intent(TVSeriesDetailsActivity.this, RatingActivity.class);
-                            i.putExtra("TV", mTVShow);
-                            startActivityForResult(i,1);
-                        }else{
-                            showLoginDialog();
+                    View.OnClickListener onClickListener = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (MovieAppApplication.isUserLoggedIn()) {
+                                Intent i = new Intent(TVSeriesDetailsActivity.this, RatingActivity.class);
+                                i.putExtra("TV", mTVShow);
+                                startActivityForResult(i, 1);
+                            } else {
+                                showLoginDialog();
+                            }
                         }
-                    }
-                };
+                    };
 
-                rateImage.setOnClickListener(onClickListener);
-                rateText.setOnClickListener(onClickListener);
+                    rateImage.setOnClickListener(onClickListener);
+                    rateText.setOnClickListener(onClickListener);
 
 
-                String writers = "";
-                if(response!=null) {
-                    if (response.getCreatedBy().size() > 1) {
-                        for (int i = 0; i < response.getCreatedBy().size(); i++) {
-                            if (i != response.getCreatedBy().size() - 1)
-                                writers = writers + response.getCreatedBy().get(i).getName() + " ,";
-                            else
-                                writers = writers + response.getCreatedBy().get(i).getName();
+                    String writers = "";
+                    if (response != null) {
+                        if (response.getCreatedBy().size() > 1) {
+                            for (int i = 0; i < response.getCreatedBy().size(); i++) {
+                                if (i != response.getCreatedBy().size() - 1)
+                                    writers = writers + response.getCreatedBy().get(i).getName() + " ,";
+                                else
+                                    writers = writers + response.getCreatedBy().get(i).getName();
+                                RealmUtils.getInstance().addRealmTVShowDetailsWriters(mTVShow.getId(),response.getCreatedBy());
+                            }
+                            mTVSeriesWriters.setText(writers);
+                        } else {
+                            mTVSeriesWriters.setVisibility(View.GONE);
+                            mTVSeriesWritersLablel.setVisibility(View.GONE);
                         }
-                        mTVSeriesWriters.setText(writers);
                     } else {
                         mTVSeriesWriters.setVisibility(View.GONE);
                         mTVSeriesWritersLablel.setVisibility(View.GONE);
                     }
-                }else {
-                    mTVSeriesWriters.setVisibility(View.GONE);
-                    mTVSeriesWritersLablel.setVisibility(View.GONE);
-                }
 
-                if(response!=null) {
-                    if (response.getSeasons() != null) {
-                        String seasonsText = "";
-                        String yearsText = "";
-                        seasons = response.getSeasons();
-                        for (int i = seasons.size() - 1; i >= 0; i--) {
-                            if (seasons.get(i).getSeasonNumber() != 0) {
-                                seasonsText = seasonsText + seasons.get(i).getSeasonNumber() + " ";
-                                yearsText = yearsText + seasons.get(i).getAirYear() + " ";
+                    if (response != null) {
+                        if (response.getSeasons() != null) {
+                            String seasonsText = "";
+                            String yearsText = "";
+                            seasons = response.getSeasons();
+                            for (int i = seasons.size() - 1; i >= 0; i--) {
+                                if (seasons.get(i).getSeasonNumber() != 0) {
+                                    seasonsText = seasonsText + seasons.get(i).getSeasonNumber() + " ";
+                                    yearsText = yearsText + seasons.get(i).getAirYear() + " ";
+                                }
                             }
-                        }
-                        if (seasonsText.length() > 1 && yearsText.length() > 1) {
-                            mTVSeriesSeasons.setText(seasonsText);
-                            mTVSeriesSeasonsYears.setText(yearsText);
+                            if (seasonsText.length() > 1 && yearsText.length() > 1) {
+                                mTVSeriesSeasons.setText(seasonsText);
+                                mTVSeriesSeasonsYears.setText(yearsText);
+                            } else {
+                                mTVSeriesSeasons.setVisibility(View.GONE);
+                                mTVSeriesSeasonsLabel.setVisibility(View.GONE);
+                                mTVSeriesSeasonsYears.setVisibility(View.GONE);
+                                mTVSeriesSeasonsYearsLabel.setVisibility(View.GONE);
+                            }
                         } else {
                             mTVSeriesSeasons.setVisibility(View.GONE);
                             mTVSeriesSeasonsLabel.setVisibility(View.GONE);
@@ -317,66 +346,224 @@ public class TVSeriesDetailsActivity extends BaseActivity {
                         mTVSeriesSeasonsYears.setVisibility(View.GONE);
                         mTVSeriesSeasonsYearsLabel.setVisibility(View.GONE);
                     }
-                }else {
+                }
+            });
+
+//
+            apiHandler.requestTVSeriesImages(mTVShow.getId(), new ApiHandler.ImagesListener() {
+                @Override
+                public void success(Images response) {
+                    mTVSeriesImages = response;
+                    if (response != null) {
+                        if (mTVSeriesImages.getBackdrops().size() > 0) {
+                            backdrops.addAll(mTVSeriesImages.getBackdrops());
+                            RealmUtils.getInstance().addRealmTVShowDetailsBackdrops(mTVShow.getId(),backdrops);
+                            mImageAdapter.notifyDataSetChanged();
+                        } else {
+                            tvSeriesImagesLabel.setVisibility(View.GONE);
+                            tvSeriesImagesSeeAll.setVisibility(View.GONE);
+                            tvSeriesImagesBreakline.setVisibility(View.GONE);
+                        }
+                    } else {
+                        tvSeriesImagesLabel.setVisibility(View.GONE);
+                        tvSeriesImagesSeeAll.setVisibility(View.GONE);
+                        tvSeriesImagesBreakline.setVisibility(View.GONE);
+                    }
+                }
+            });
+
+
+            apiHandler.requestTVSeriesCredits(mTVShow.getId(), new ApiHandler.CreditsListener() {
+                @Override
+                public void success(Credits response) {
+                    if (response != null) {
+                        mCredits = response;
+                        StringBuilder sb = new StringBuilder();
+                        if (mCredits.cast != null) {
+                            actors.addAll(mCredits.cast);
+                            RealmUtils.getInstance().addRealmTVShowDetailsActors(mTVShow.getId(),actors);
+                            mCastAdapter.notifyDataSetChanged();
+                            if (actors.size() > 0) {
+                                for (int i = 0; i < actors.size() && i < 3; i++) {
+                                    sb.append(actors.get(i).getName());
+                                    if (i != 2)
+                                        sb.append(", ");
+                                }
+                                mTVSeriesStars.setText(sb.toString());
+                            } else {
+                                mTVSeriesStarsLabel.setVisibility(View.GONE);
+                                mTVSeriesStars.setVisibility(View.GONE);
+                                castLabel.setVisibility(View.GONE);
+                            }
+
+                        } else {
+                            castLabel.setVisibility(View.GONE);
+                        }
+                    }
+                }
+            });
+        }else{
+            //Offline mode
+            //RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId())
+
+
+            if (RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()) != null) {
+                mTVShowDetails = RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getTvShowDetails();
+                mTVShowDetails.setSeasons(RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getSeasons());
+                if (RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getSeasons() != null) {
+                    if (RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getSeasons().size() > 0) {
+                        seeSeasons.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent i = new Intent(view.getContext(), SeasonActivity.class);
+                                if (mTVShowDetails != null)
+                                    i.putExtra("TVSeriesDetails", mTVShowDetails);
+                                view.getContext().startActivity(i);
+                            }
+                        });
+                    } else {
+                        seeSeasons.setVisibility(View.GONE);
+                    }
+                } else {
+                    seeSeasons.setVisibility(View.GONE);
+                }
+            } else {
+                seeSeasons.setVisibility(View.GONE);
+            }
+
+            if (RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()) != null) {
+                if (RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getCreatedBy() != null)
+                    mTVSeriesDirector.setText(RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getCreatedBy().getName());
+                else {
+                    mTVSeriesDirector.setVisibility(View.GONE);
+                    mTVSeriesDirectorLabel.setVisibility(View.GONE);
+                }
+            } else {
+                mTVSeriesDirector.setVisibility(View.GONE);
+                mTVSeriesDirectorLabel.setVisibility(View.GONE);
+            }
+
+            if (RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()) != null) {
+                if (mTVShow.getReleaseYear() != null && RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getFinishYear() != null)
+                    mTVSeriesFirstAiringDate.setText("TV Series (" + mTVShow.getReleaseYear() + "-" + RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getFinishYear() + ")");
+                else
+                    mTVSeriesFirstAiringDate.setVisibility(View.GONE);
+            } else
+                mTVSeriesFirstAiringDate.setVisibility(View.GONE);
+
+
+            if (mTVShow != null) {
+                mRating.setText(String.format(Locale.getDefault(), "%1$.1f", mTVShow.getVoteAverage()));
+                mRating2.setText(getString(R.string.max_rating));
+            }
+
+
+            View.OnClickListener onClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (MovieAppApplication.isUserLoggedIn()) {
+                        Intent i = new Intent(TVSeriesDetailsActivity.this, RatingActivity.class);
+                        i.putExtra("TV", mTVShow);
+                        startActivityForResult(i, 1);
+                    } else {
+                        showLoginDialog();
+                    }
+                }
+            };
+
+            rateImage.setOnClickListener(onClickListener);
+            rateText.setOnClickListener(onClickListener);
+
+
+            String writers = "";
+            if (RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()) != null) {
+                if (RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getWriters().size() > 1) {
+                    for (int i = 0; i < RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getWriters().size(); i++) {
+                        if (i != RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getWriters().size() - 1)
+                            writers = writers + RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getWriters().get(i).getName() + " ,";
+                        else
+                            writers = writers + RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getWriters().get(i).getName();
+                    }
+                    mTVSeriesWriters.setText(writers);
+                } else {
+                    mTVSeriesWriters.setVisibility(View.GONE);
+                    mTVSeriesWritersLablel.setVisibility(View.GONE);
+                }
+            } else {
+                mTVSeriesWriters.setVisibility(View.GONE);
+                mTVSeriesWritersLablel.setVisibility(View.GONE);
+            }
+
+            if (RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()) != null) {
+                if (RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getSeasons() != null) {
+                    String seasonsText = "";
+                    String yearsText = "";
+                    seasons = RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getSeasons();
+
+                    for (int i = seasons.size() - 1; i >= 0; i--) {
+                        if (seasons.get(i).getSeasonNumber() != 0) {
+                            seasonsText = seasonsText + seasons.get(i).getSeasonNumber() + " ";
+                            yearsText = yearsText + seasons.get(i).getAirYear() + " ";
+                        }
+                    }
+                    if (seasonsText.length() > 1 && yearsText.length() > 1) {
+                        mTVSeriesSeasons.setText(seasonsText);
+                        mTVSeriesSeasonsYears.setText(yearsText);
+                    } else {
+                        mTVSeriesSeasons.setVisibility(View.GONE);
+                        mTVSeriesSeasonsLabel.setVisibility(View.GONE);
+                        mTVSeriesSeasonsYears.setVisibility(View.GONE);
+                        mTVSeriesSeasonsYearsLabel.setVisibility(View.GONE);
+                    }
+                } else {
                     mTVSeriesSeasons.setVisibility(View.GONE);
                     mTVSeriesSeasonsLabel.setVisibility(View.GONE);
                     mTVSeriesSeasonsYears.setVisibility(View.GONE);
                     mTVSeriesSeasonsYearsLabel.setVisibility(View.GONE);
                 }
+            } else {
+                mTVSeriesSeasons.setVisibility(View.GONE);
+                mTVSeriesSeasonsLabel.setVisibility(View.GONE);
+                mTVSeriesSeasonsYears.setVisibility(View.GONE);
+                mTVSeriesSeasonsYearsLabel.setVisibility(View.GONE);
             }
-        });
 
-
-        apiHandler.requestTVSeriesImages(mTVShow.getId(), new ApiHandler.ImagesListener() {
-            @Override
-            public void success(Images response) {
-                mTVSeriesImages = response;
-                if(response!=null){
-                    if(mTVSeriesImages.getBackdrops().size()>0){
-                        backdrops.addAll(mTVSeriesImages.getBackdrops());
-                        mImageAdapter.notifyDataSetChanged();
-                    }else{
-                        tvSeriesImagesLabel.setVisibility(View.GONE);
-                        tvSeriesImagesSeeAll.setVisibility(View.GONE);
-                        tvSeriesImagesBreakline.setVisibility(View.GONE);
-                    }
-                }else{
+            if (RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()) != null) {
+                if (RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getBackdrops().size() > 0) {
+                    backdrops.addAll(RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getBackdrops());
+                    mImageAdapter.notifyDataSetChanged();
+                } else {
                     tvSeriesImagesLabel.setVisibility(View.GONE);
                     tvSeriesImagesSeeAll.setVisibility(View.GONE);
                     tvSeriesImagesBreakline.setVisibility(View.GONE);
                 }
+            } else {
+                tvSeriesImagesLabel.setVisibility(View.GONE);
+                tvSeriesImagesSeeAll.setVisibility(View.GONE);
+                tvSeriesImagesBreakline.setVisibility(View.GONE);
             }
-        });
 
-
-        apiHandler.requestTVSeriesCredits(mTVShow.getId(), new ApiHandler.CreditsListener() {
-            @Override
-            public void success(Credits response) {
-                if(response!=null){
-                    mCredits = response;
-                    StringBuilder sb = new StringBuilder();
-                    if(mCredits.cast!=null){
-                        actors.addAll(mCredits.cast);
-                        mCastAdapter.notifyDataSetChanged();
-                        if(actors.size()>0) {
-                            for(int i=0;i<actors.size() && i<3;i++){
-                                sb.append(actors.get(i).getName());
-                                if(i!=2)
-                                    sb.append(", ");
-                            }
-                            mTVSeriesStars.setText(sb.toString());
-                        }else{
-                            mTVSeriesStarsLabel.setVisibility(View.GONE);
-                            mTVSeriesStars.setVisibility(View.GONE);
-                            castLabel.setVisibility(View.GONE);
-                        }
-
-                    }else{
-                        castLabel.setVisibility(View.GONE);
+            StringBuilder sb = new StringBuilder();
+            if (RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()) != null) {
+                actors.addAll(RealmUtils.getInstance().readRealmTVShowDetails(mTVShow.getId()).getActors());
+                mCastAdapter.notifyDataSetChanged();
+                if (actors.size() > 0) {
+                    for (int i = 0; i < actors.size() && i < 3; i++) {
+                        sb.append(actors.get(i).getName());
+                        if (i != 2)
+                            sb.append(", ");
                     }
+                    mTVSeriesStars.setText(sb.toString());
+                } else {
+                    mTVSeriesStarsLabel.setVisibility(View.GONE);
+                    mTVSeriesStars.setVisibility(View.GONE);
+                    castLabel.setVisibility(View.GONE);
                 }
+
+            } else {
+                castLabel.setVisibility(View.GONE);
             }
-        });
+        }
     }
 
     @Override
@@ -413,37 +600,69 @@ public class TVSeriesDetailsActivity extends BaseActivity {
                 if(!liked && MovieAppApplication.isUserLoggedIn()){
                     menuItem.setIcon(ContextCompat.getDrawable(this,R.drawable.like_filled_menu));
                     if(!MovieAppApplication.getUser().getFavTVSeriesList().contains(mTVShow.getId())){
-                        MovieAppApplication.getUser().addToFavoriteTVSeriesList(mTVShow.getId());
+                        if(isNetworkAvailable()) {
+                            ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
+                                    MovieAppApplication.getUser().getSessionId(),
+                                    new Favorite("tv", mTVShow.getId(), true),
+                                    new ApiHandler.PostResponseListener() {
+                                        @Override
+                                        public void success(PostResponse response) {
+                                            ArrayList<Integer> l = new ArrayList<>();
+                                            l.add(mTVShow.getId());
+                                            MovieAppApplication.getUser().addToFavoriteTVSeriesList(mTVShow.getId());
+                                            liked = true;
+                                            RealmUtils.getInstance().addRealmAccountFavTVShow(l);
+                                        }
+                                    });
+                        }else{
+                            //OFFLINE LIKE
+                            ArrayList<Integer> l = new ArrayList<>();
+                            l.add(mTVShow.getId());
+                            MovieAppApplication.getUser().addToFavoriteTVSeriesList(mTVShow.getId());
+                            liked = true;
+                            RealmUtils.getInstance().addRealmAccountFavTVShow(l);
 
-                        ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
-                                MovieAppApplication.getUser().getSessionId(),
-                                new Favorite("tv", mTVShow.getId(),true),
-                                new ApiHandler.PostResponseListener() {
-                                    @Override
-                                    public void success(PostResponse response) {
-                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
-                                        Log.d("RESPONSE", response.statusMessage);
-                                    }
-                                });
+                            //POST FOR SYNC
+                            PostModel postModel = RealmUtils.getInstance().readPostModel(mTVShow.getId());
+                            if(postModel!=null) {
+                                RealmUtils.getInstance().setRating(postModel,true);
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(mTVShow.getId(),true,false,true));
+                            }
+                        }
                     }
-                    liked = true;
                 }else if(liked && MovieAppApplication.isUserLoggedIn()){
                     menuItem.setIcon(ContextCompat.getDrawable(this,R.drawable.like_menu));
                     if(MovieAppApplication.getUser().getFavTVSeriesList().contains(mTVShow.getId())){
-                        MovieAppApplication.getUser().removeFromFavoriteTVSeriesList(mTVShow.getId());
+                        if(isNetworkAvailable()) {
+                            ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
+                                    MovieAppApplication.getUser().getSessionId(),
+                                    new Favorite("tv", mTVShow.getId(), false),
+                                    new ApiHandler.PostResponseListener() {
+                                        @Override
+                                        public void success(PostResponse response) {
+                                            MovieAppApplication.getUser().removeFromFavoriteTVSeriesList(mTVShow.getId());
+                                            liked = false;
+                                            RealmUtils.getInstance().removeRealmAccountFavTVShow(mTVShow.getId());
+                                        }
+                                    });
+                        }else{
+                            //OFFLINE UNLIKE
+                            MovieAppApplication.getUser().removeFromFavoriteTVSeriesList(mTVShow.getId());
+                            liked = false;
+                            RealmUtils.getInstance().removeRealmAccountFavTVShow(mTVShow.getId());
 
-                        ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
-                                MovieAppApplication.getUser().getSessionId(),
-                                new Favorite("tv", mTVShow.getId(),false),
-                                new ApiHandler.PostResponseListener() {
-                                    @Override
-                                    public void success(PostResponse response) {
-                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
-                                        Log.d("RESPONSE", response.statusMessage);
-                                    }
-                                });
+                            //DELETE POST
+                            PostModel postModel = RealmUtils.getInstance().readPostModel(mTVShow.getId());
+                            if(postModel!=null) {
+                                RealmUtils.getInstance().setRating(postModel,false);
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(mTVShow.getId(),false,false,true));
+                            }
+                        }
                     }
-                    liked = false;
                 }else if(!MovieAppApplication.isUserLoggedIn()){
                         showLoginDialog();
                 }
@@ -452,37 +671,69 @@ public class TVSeriesDetailsActivity extends BaseActivity {
                 if(!watchlist && MovieAppApplication.isUserLoggedIn()){
                     menuItem.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_filled_menu));
                     if(!MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(mTVShow.getId())){
-                        MovieAppApplication.getUser().addToWatchlistTVSeriesList(mTVShow.getId());
+                        if(isNetworkAvailable()) {
+                            ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
+                                    MovieAppApplication.getUser().getSessionId(),
+                                    new Watchlist("tv", mTVShow.getId(), true),
+                                    new ApiHandler.PostResponseListener() {
+                                        @Override
+                                        public void success(PostResponse response) {
+                                            ArrayList<Integer> l = new ArrayList<>();
+                                            l.add(mTVShow.getId());
+                                            MovieAppApplication.getUser().addToWatchlistTVSeriesList(mTVShow.getId());
+                                            watchlist = true;
+                                            RealmUtils.getInstance().addRealmAccountWatchlistTVShow(l);
+                                        }
+                                    });
+                        }else{
+                            //OFFLINE PUT ON WATCHLIST
+                            ArrayList<Integer> l = new ArrayList<>();
+                            l.add(mTVShow.getId());
+                            MovieAppApplication.getUser().addToWatchlistTVSeriesList(mTVShow.getId());
+                            watchlist = true;
+                            RealmUtils.getInstance().addRealmAccountWatchlistTVShow(l);
 
-                        ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
-                                MovieAppApplication.getUser().getSessionId(),
-                                new Watchlist("tv", mTVShow.getId(),true),
-                                new ApiHandler.PostResponseListener() {
-                                    @Override
-                                    public void success(PostResponse response) {
-                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
-                                        Log.d("RESPONSE", response.statusMessage);
-                                    }
-                                });
+                            //POST FOR SYNC
+                            PostModel postModel = RealmUtils.getInstance().readPostModel(mTVShow.getId());
+                            if(postModel!=null) {
+                                RealmUtils.getInstance().setWatch(postModel,true);
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(mTVShow.getId(),true,false,true,1));
+                            }
+                        }
                     }
-                    watchlist = true;
                 }else if(watchlist && MovieAppApplication.isUserLoggedIn()){
                     menuItem.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_menu));
                     if(MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(mTVShow.getId())){
-                        MovieAppApplication.getUser().removeFromWatchlistTVSeriesList(mTVShow.getId());
+                        if(isNetworkAvailable()) {
+                            ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
+                                    MovieAppApplication.getUser().getSessionId(),
+                                    new Watchlist("tv", mTVShow.getId(), false),
+                                    new ApiHandler.PostResponseListener() {
+                                        @Override
+                                        public void success(PostResponse response) {
+                                            MovieAppApplication.getUser().removeFromWatchlistTVSeriesList(mTVShow.getId());
+                                            watchlist = false;
+                                            RealmUtils.getInstance().removeRealmAccountWatchlistTVShow(mTVShow.getId());
+                                        }
+                                    });
+                        }else{
+                            // OFFLINE REMOVE FROM WATCHLIST
+                            MovieAppApplication.getUser().removeFromWatchlistTVSeriesList(mTVShow.getId());
+                            watchlist = false;
+                            RealmUtils.getInstance().removeRealmAccountWatchlistTVShow(mTVShow.getId());
 
-                        ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
-                                MovieAppApplication.getUser().getSessionId(),
-                                new Watchlist("tv", mTVShow.getId(),false),
-                                new ApiHandler.PostResponseListener() {
-                                    @Override
-                                    public void success(PostResponse response) {
-                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
-                                        Log.d("RESPONSE", response.statusMessage);
-                                    }
-                                });
+                            //DELETE POST
+                            PostModel postModel = RealmUtils.getInstance().readPostModel(mTVShow.getId());
+                            if(postModel!=null) {
+                                RealmUtils.getInstance().setWatch(postModel,false);
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(mTVShow.getId(),false,false,true,1));
+                            }
+                        }
                     }
-                    watchlist = false;
                 }else if(!MovieAppApplication.isUserLoggedIn()){
                     showLoginDialog();
                 }

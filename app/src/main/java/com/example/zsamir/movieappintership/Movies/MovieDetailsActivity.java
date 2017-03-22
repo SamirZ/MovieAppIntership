@@ -5,7 +5,6 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +34,8 @@ import com.example.zsamir.movieappintership.Modules.MovieReview;
 import com.example.zsamir.movieappintership.Modules.MovieReviews;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.Common.RatingActivity;
+import com.example.zsamir.movieappintership.RealmUtils.PostModel;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,6 @@ public class MovieDetailsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-        setFinishOnTouchOutside(true);
 
         if (getIntent().hasExtra("Movie")) {
             mMovie = getIntent().getParcelableExtra("Movie");
@@ -155,121 +155,194 @@ public class MovieDetailsActivity extends BaseActivity {
 
     private void setDetailedData() {
 
-        ApiHandler.getInstance().requestMovie(mMovie.getId(), new ApiHandler.MovieDetailsListener() {
-            @Override
-            public void success(MovieDetails response) {
-                TextView mMovieReleaseDate = (TextView) findViewById(R.id.movie_details_release_date);
-                if(!response.getProductionCountries().isEmpty())
-                    mMovieReleaseDate.setText(mMovie.getReleaseDate()+" "+ "("+response.getProductionCountries().get(0).getName()+")");
-                else
-                    mMovieReleaseDate.setText(mMovie.getReleaseDate());
-            }
-        });
+        if(isNetworkAvailable()){
+            //
+            RealmUtils.getInstance().createRealmMovieDetails(mMovie.getId());
 
-        ApiHandler.getInstance().requestMovieImages(mMovie.getId(), new ApiHandler.ImagesListener() {
-            @Override
-            public void success(Images response) {
-                if(response!=null){
-                    mMovieImages = response;
-                    if(mMovieImages.getBackdrops().size()>0){
-                        backdrops.addAll(mMovieImages.getBackdrops());
-                        mImageAdapter.notifyDataSetChanged();
-                    }else{
-                        movieImagesLabel.setVisibility(View.GONE);
-                        movieImagesSeeAll.setVisibility(View.GONE);
-                        movieImagesBreakline.setVisibility(View.GONE);
+            ApiHandler.getInstance().requestMovie(mMovie.getId(), new ApiHandler.MovieDetailsListener() {
+                @Override
+                public void success(MovieDetails response) {
+                    TextView mMovieReleaseDate = (TextView) findViewById(R.id.movie_details_release_date);
+                    if(!response.getProductionCountries().isEmpty()) {
+
+                        // NOT WORKING ???????
+                        RealmUtils.getInstance().addRealmMovieDetailsProductionCountry(mMovie.getId(),response.getProductionCountries().get(0));
+
+
+                        mMovieReleaseDate.setText(mMovie.getReleaseDate() + " " + "(" + response.getProductionCountries().get(0).getName() + ")");
+                    }
+                    else mMovieReleaseDate.setText(mMovie.getReleaseDate());
+                }
+            });
+
+            ApiHandler.getInstance().requestMovieImages(mMovie.getId(), new ApiHandler.ImagesListener() {
+                @Override
+                public void success(Images response) {
+                    if(response!=null){
+                        mMovieImages = response;
+                        if(mMovieImages.getBackdrops().size()>0){
+                            backdrops.addAll(mMovieImages.getBackdrops());
+
+                            RealmUtils.getInstance().addRealmMovieDetailsBackrops(mMovie.getId(),backdrops);
+
+                            mImageAdapter.notifyDataSetChanged();
+                        }else{
+                            movieImagesLabel.setVisibility(View.GONE);
+                            movieImagesSeeAll.setVisibility(View.GONE);
+                            movieImagesBreakline.setVisibility(View.GONE);
+                        }
                     }
                 }
-            }
-        });
+            });
 
 
-        ApiHandler.getInstance().requestMovieCredits(mMovie.getId(), new ApiHandler.CreditsListener() {
-            @Override
-            public void success(Credits response) {
-                mCredits = response;
+            ApiHandler.getInstance().requestMovieCredits(mMovie.getId(), new ApiHandler.CreditsListener() {
+                @Override
+                public void success(Credits response) {
+                    mCredits = response;
 
-                if(mCredits.crew!=null) {
-                    if(mCredits.crew.size()<1){
+                    if(mCredits.crew!=null) {
+                        if(mCredits.crew.size()<1){
+                            mMovieDirector.setVisibility(View.GONE);
+                            mMovieDirectorLabel.setVisibility(View.GONE);
+                            mMovieWriters.setVisibility(View.GONE);
+                            mMovieWritersLabel.setVisibility(View.GONE);
+                        }else{
+                            for (Crew c : mCredits.crew) {
+                                if (c.getDepartment().equals("Directing")) {
+                                    director = c;
+
+                                    RealmUtils.getInstance().addRealmMovieDetailsDirector(mMovie.getId(),director);
+                                    mMovieDirector.setText(director.getName());
+                                    break;
+                                }
+                                if (c.getDepartment().equals("Writing")) {
+                                    writers.add(c);
+                                }
+                            }
+                            if (writers.size() > 2) {
+                                mMovieWriters.setText(writers.get(0).getName() + ", " + writers.get(1).getName() + ", " + writers.get(2).getName());
+                            }else {
+                                if (!writers.isEmpty()){
+                                    mMovieWriters.setText(writers.get(0).getName());
+                                }
+                                else{
+                                    mMovieWriters.setVisibility(View.GONE);
+                                    mMovieWritersLabel.setVisibility(View.GONE);
+
+                                }
+                            }
+
+                            // NOT WORKING ?
+                            RealmUtils.getInstance().addRealmMovieDetailsWriters(mMovie.getId(),writers);
+                        }
+                    }else{
                         mMovieDirector.setVisibility(View.GONE);
                         mMovieDirectorLabel.setVisibility(View.GONE);
-                        mMovieWriters.setVisibility(View.GONE);
-                        mMovieWritersLabel.setVisibility(View.GONE);
-                    }else{
-                        for (Crew c : mCredits.crew) {
-                            if (c.getDepartment().equals("Directing")) {
-                                director = c;
-                                mMovieDirector.setText(director.getName());
-                            }
-                            if (c.getDepartment().equals("Writing")) {
-                                writers.add(c);
-                            }
-                        }
-                        if (writers.size() > 2)
-                            mMovieWriters.setText(writers.get(0).getName() + ", " + writers.get(1).getName() + ", " + writers.get(2).getName());
-                        else {
-                            if (!writers.isEmpty())
-                                mMovieWriters.setText(writers.get(0).getName());
-                            else{
-                                mMovieWriters.setVisibility(View.GONE);
-                                mMovieWritersLabel.setVisibility(View.GONE);
-
-                            }
-                        }
                     }
-                }else{
-                    mMovieDirector.setVisibility(View.GONE);
-                    mMovieDirectorLabel.setVisibility(View.GONE);
-                }
-                StringBuilder sb = new StringBuilder();
+                    StringBuilder sb = new StringBuilder();
 
 
-                if(mCredits.cast!=null){
-                    if(mCredits.cast.size()>0){
-                        actors.addAll(mCredits.cast);
-                        mCastAdapter.notifyDataSetChanged();
+                    if(mCredits.cast!=null){
+                        if(mCredits.cast.size()>0){
+                            actors.addAll(mCredits.cast);
+
+                            RealmUtils.getInstance().addRealmMovieDetailsActors(mMovie.getId(),actors);
+
+                            mCastAdapter.notifyDataSetChanged();
+                        }else{
+                            movieDetailsCastLabel.setVisibility(View.GONE);
+                            movieDetailsCastBreaklinne.setVisibility(View.GONE);
+                            mMovieStars.setVisibility(View.GONE);
+                            mMovieStarsLabel.setVisibility(View.GONE);
+                        }
+                        if(actors.size()>0) {
+                            for(int i=0;i<actors.size() && i<3;i++){
+                                sb.append(actors.get(i).getName());
+                                if(i!=2)
+                                    sb.append(", ");
+                            }
+                            mMovieStars.setText(sb.toString());
+                        }
+
                     }else{
-                        movieDetailsCastLabel.setVisibility(View.GONE);
-                        movieDetailsCastBreaklinne.setVisibility(View.GONE);
                         mMovieStars.setVisibility(View.GONE);
                         mMovieStarsLabel.setVisibility(View.GONE);
                     }
-                    if(actors.size()>0) {
-                        for(int i=0;i<actors.size() && i<3;i++){
-                            sb.append(actors.get(i).getName());
-                            if(i!=2)
-                                sb.append(", ");
-                        }
-                        mMovieStars.setText(sb.toString());
-                    }
-
-                }else{
-                    mMovieStars.setVisibility(View.GONE);
-                    mMovieStarsLabel.setVisibility(View.GONE);
                 }
-            }
-        });
+            });
 
-        final TextView reviews = (TextView) findViewById(R.id.movie_reviews);
-        final View breakline = findViewById(R.id.review_breakline);
-        ApiHandler.getInstance().requestMovieReviews(mMovie.getId(), new ApiHandler.MovieReviewsListener() {
-            @Override
-            public void success(MovieReviews response) {
+            final TextView reviews = (TextView) findViewById(R.id.movie_reviews);
+            final View breakline = findViewById(R.id.review_breakline);
+            ApiHandler.getInstance().requestMovieReviews(mMovie.getId(), new ApiHandler.MovieReviewsListener() {
+                @Override
+                public void success(MovieReviews response) {
 
-                if(response!=null){
-                    if(response.getResults().size()>0){
-                        reviewList.addAll(response.getResults());
+                    if(response!=null){
+                        if(response.getResults().size()>0){
+                            reviewList.addAll(response.getResults());
+
+                            RealmUtils.getInstance().addRealmMovieDetailsReviews(mMovie.getId(),reviewList);
+
+                        }else{
+                            reviews.setVisibility(View.GONE);
+                            breakline.setVisibility(View.GONE);
+                        }
                     }else{
                         reviews.setVisibility(View.GONE);
                         breakline.setVisibility(View.GONE);
                     }
-                }else{
-                    reviews.setVisibility(View.GONE);
-                    breakline.setVisibility(View.GONE);
+                    mReviewAdapter.notifyDataSetChanged();
+
                 }
+            });
+
+
+        }else{
+            //Offline mode
+            if(RealmUtils.getInstance().readRealmMovieDetails(mMovie.getId())!=null){
+
+                TextView mMovieReleaseDate = (TextView) findViewById(R.id.movie_details_release_date);
+                if(RealmUtils.getInstance().readRealmMovieDetails(mMovie.getId()).getProductionCountry()!=null)
+                    mMovieReleaseDate.setText(mMovie.getReleaseDate() + " " + "(" + RealmUtils.getInstance().readRealmMovieDetails(mMovie.getId()).getProductionCountry().getName() + ")");
+
+                mMovieDirector.setText(RealmUtils.getInstance().readRealmMovieDetails(mMovie.getId()).getDirector().getName());
+
+
+                if (RealmUtils.getInstance().readRealmMovieDetails(mMovie.getId()).getWriters().size() > 2)
+                    mMovieWriters.setText(RealmUtils.getInstance().readRealmMovieDetails(mMovie.getId()).getWriters().get(0).getName() + ", " + RealmUtils.getInstance().readRealmMovieDetails(mMovie.getId()).getWriters().get(1).getName() + ", " + RealmUtils.getInstance().readRealmMovieDetails(mMovie.getId()).getWriters().get(2).getName());
+                else {
+                    if (!RealmUtils.getInstance().readRealmMovieDetails(mMovie.getId()).getWriters().isEmpty()){
+                        mMovieWriters.setText(RealmUtils.getInstance().readRealmMovieDetails(mMovie.getId()).getWriters().get(0).getName());
+                    }
+                    else{
+                        mMovieWriters.setVisibility(View.GONE);
+                        mMovieWritersLabel.setVisibility(View.GONE);
+                    }
+                }
+
+                reviewList.addAll(RealmUtils.getInstance().readRealmMovieDetails(mMovie.getId()).getMovieReviews());
                 mReviewAdapter.notifyDataSetChanged();
+
+                actors.addAll(RealmUtils.getInstance().readRealmMovieDetails(mMovie.getId()).getActors());
+                mCastAdapter.notifyDataSetChanged();
+
+                backdrops.addAll(RealmUtils.getInstance().readRealmMovieDetails(mMovie.getId()).getBackdrops());
+                mImageAdapter.notifyDataSetChanged();
+
+
+                // Actors label
+                StringBuilder sb = new StringBuilder();
+                if(actors.size()>0) {
+                    for(int i=0;i<actors.size() && i<3;i++){
+                        sb.append(actors.get(i).getName());
+                        if(i!=2)
+                            sb.append(", ");
+                    }
+                    mMovieStars.setText(sb.toString());
+                }
             }
-        });
+        }
 
     }
 
@@ -307,6 +380,8 @@ public class MovieDetailsActivity extends BaseActivity {
         if(mMovie.getOverview()!=null)
             mMovieOverview.setText(mMovie.getOverview());
 
+
+        // load image from memory
         if(mMovie.getBackdropUrl()!=null){
             Glide.with(this).load(mMovie.getBackdropUrl()).into(mMovieImage);
             playVideo.setOnClickListener(new View.OnClickListener() {
@@ -365,37 +440,75 @@ public class MovieDetailsActivity extends BaseActivity {
                 if(!liked && MovieAppApplication.isUserLoggedIn()){
                     item.setIcon(ContextCompat.getDrawable(this,R.drawable.like_filled_menu));
                     if(!MovieAppApplication.getUser().getFavMovieList().contains(mMovie.getId())){
-                        MovieAppApplication.getUser().addToFavoriteMoviesList(mMovie.getId());
+                        if(isNetworkAvailable()) {
+                            ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
+                                    MovieAppApplication.getUser().getSessionId(),
+                                    new Favorite("movie", mMovie.getId(), true),
+                                    new ApiHandler.PostResponseListener() {
+                                        @Override
+                                        public void success(PostResponse response) {
+                                            ArrayList<Integer> l = new ArrayList<>();
+                                            l.add(mMovie.getId());
+                                            MovieAppApplication.getUser().addToFavoriteMoviesList(mMovie.getId());
+                                            liked = true;
+                                            RealmUtils.getInstance().addRealmAccountFavMovies(l);
+                                        }
+                                    });
+                        }else{
+                            //OFFLINE LIKE
+                            ArrayList<Integer> l = new ArrayList<>();
+                            l.add(mMovie.getId());
+                            MovieAppApplication.getUser().addToFavoriteMoviesList(mMovie.getId());
+                            liked = true;
+                            RealmUtils.getInstance().addRealmAccountFavMovies(l);
 
-                        ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
-                                MovieAppApplication.getUser().getSessionId(),
-                                new Favorite("movie",mMovie.getId(),true),
-                                new ApiHandler.PostResponseListener() {
-                                    @Override
-                                    public void success(PostResponse response) {
-                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
-                                        Log.d("RESPONSE", response.statusMessage);
-                                    }
-                                });
+                            //POST FOR SYNC
+                            PostModel postModel = RealmUtils.getInstance().readPostModel(mMovie.getId());
+                            if(postModel!=null) {
+                                RealmUtils.getInstance().setRating(postModel,true);
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(mMovie.getId(),true,true,false));
+                            }
+                        }
                     }
-                    liked = true;
                 }else if(liked && MovieAppApplication.isUserLoggedIn()){
                     item.setIcon(ContextCompat.getDrawable(this,R.drawable.like_menu));
                     if(MovieAppApplication.getUser().getFavMovieList().contains(mMovie.getId())){
-                        MovieAppApplication.getUser().removeFromFavoriteMovieList(mMovie.getId());
-
-                        ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
-                                MovieAppApplication.getUser().getSessionId(),
-                                new Favorite("movie",mMovie.getId(),false),
-                                new ApiHandler.PostResponseListener() {
-                                    @Override
-                                    public void success(PostResponse response) {
-                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
-                                        Log.d("RESPONSE", response.statusMessage);
-                                    }
-                                });
+                        if(isNetworkAvailable()) {
+                            ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
+                                    MovieAppApplication.getUser().getSessionId(),
+                                    new Favorite("movie", mMovie.getId(), false),
+                                    new ApiHandler.PostResponseListener() {
+                                        @Override
+                                        public void success(PostResponse response) {
+                                            MovieAppApplication.getUser().removeFromFavoriteMovieList(mMovie.getId());
+                                            liked = false;
+                                            RealmUtils.getInstance().removeRealmAccountFavMovie(mMovie.getId());
+                                        }
+                                    });
+                        }else{
+                            //OFFLINE UNLIKE
+                            MovieAppApplication.getUser().removeFromFavoriteMovieList(mMovie.getId());
+                            liked = false;
+                            RealmUtils.getInstance().removeRealmAccountFavMovie(mMovie.getId());
+                            //DELETE POST
+                            PostModel postModel = RealmUtils.getInstance().readPostModel(mMovie.getId());
+                            if(postModel!=null) {
+                                RealmUtils.getInstance().setRating(postModel,false);
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(mMovie.getId(),false,true,false));
+                            }
+                            /*
+                            if(postModel.getRating()==null && !postModel.isFav() && !postModel.isWatch()){
+                                RealmUtils.getInstance().deletePostModel(mMovie.getId());
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }
+                            */
+                        }
                     }
-                    liked = false;
                 }else if(!MovieAppApplication.isUserLoggedIn()){
                     showLoginDialog();
                 }
@@ -404,37 +517,76 @@ public class MovieDetailsActivity extends BaseActivity {
                 if(!watchlist && MovieAppApplication.isUserLoggedIn()){
                     item.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_filled_menu));
                     if(!MovieAppApplication.getUser().getWatchlistMovieList().contains(mMovie.getId())){
-                        MovieAppApplication.getUser().addToWatchlistMoviesList(mMovie.getId());
+                        if(isNetworkAvailable()) {
+                            ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
+                                    MovieAppApplication.getUser().getSessionId(),
+                                    new Watchlist("movie", mMovie.getId(), true),
+                                    new ApiHandler.PostResponseListener() {
+                                        @Override
+                                        public void success(PostResponse response) {
+                                            ArrayList<Integer> l = new ArrayList<>();
+                                            l.add(mMovie.getId());
+                                            MovieAppApplication.getUser().addToWatchlistMoviesList(mMovie.getId());
+                                            watchlist = true;
+                                            RealmUtils.getInstance().addRealmAccountWatchlistMovies(l);
+                                        }
+                                    });
+                        }else{
+                            //OFFLINE PUT ON WATCHLIST
+                            ArrayList<Integer> l = new ArrayList<>();
+                            l.add(mMovie.getId());
+                            MovieAppApplication.getUser().addToWatchlistMoviesList(mMovie.getId());
+                            watchlist = true;
+                            RealmUtils.getInstance().addRealmAccountWatchlistMovies(l);
 
-                        ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
-                                MovieAppApplication.getUser().getSessionId(),
-                                new Watchlist("movie",mMovie.getId(),true),
-                                new ApiHandler.PostResponseListener() {
-                                    @Override
-                                    public void success(PostResponse response) {
-                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
-                                        Log.d("RESPONSE", response.statusMessage);
-                                    }
-                                });
+                            //POST FOR SYNC
+                            PostModel postModel = RealmUtils.getInstance().readPostModel(mMovie.getId());
+                            if(postModel!=null) {
+                                RealmUtils.getInstance().setWatch(postModel,true);
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(mMovie.getId(),true,true,false,1));
+                            }
+                        }
                     }
-                    watchlist = true;
                 }else if(watchlist && MovieAppApplication.isUserLoggedIn()){
                     item.setIcon(ContextCompat.getDrawable(this,R.drawable.bookmark_menu));
                     if(MovieAppApplication.getUser().getWatchlistMovieList().contains(mMovie.getId())){
-                        MovieAppApplication.getUser().removeFromWatchlistMovieList(mMovie.getId());
+                        if(isNetworkAvailable()) {
+                            ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
+                                    MovieAppApplication.getUser().getSessionId(),
+                                    new Watchlist("movie", mMovie.getId(), false),
+                                    new ApiHandler.PostResponseListener() {
+                                        @Override
+                                        public void success(PostResponse response) {
+                                            MovieAppApplication.getUser().removeFromWatchlistMovieList(mMovie.getId());
+                                            watchlist = false;
+                                            RealmUtils.getInstance().removeRealmAccountWatchlistMovies(mMovie.getId());
+                                        }
+                                    });
+                        }else{
+                            //OFFLINE REMOVE FROM WATCHLIST
+                            MovieAppApplication.getUser().removeFromWatchlistMovieList(mMovie.getId());
+                            watchlist = false;
+                            RealmUtils.getInstance().removeRealmAccountWatchlistMovies(mMovie.getId());
 
-                        ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
-                                MovieAppApplication.getUser().getSessionId(),
-                                new Watchlist("movie",mMovie.getId(),false),
-                                new ApiHandler.PostResponseListener() {
-                                    @Override
-                                    public void success(PostResponse response) {
-                                        Log.d("RESPONSE", String.valueOf(response.statusCode));
-                                        Log.d("RESPONSE", response.statusMessage);
-                                    }
-                                });
+                            //DELETE POST
+                            PostModel postModel = RealmUtils.getInstance().readPostModel(mMovie.getId());
+                            if(postModel!=null) {
+                                RealmUtils.getInstance().setWatch(postModel,false);
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(mMovie.getId(),false,true,false,1));
+                            }
+                            /*
+                            if(postModel.getRating()==null && !postModel.isFav() && !postModel.isWatch()){
+                                RealmUtils.getInstance().deletePostModel(mMovie.getId());
+                            }else{
+                                RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                            }
+                            */
+                        }
                     }
-                    watchlist = false;
                 }else if(!MovieAppApplication.isUserLoggedIn()){
                     showLoginDialog();
                 }

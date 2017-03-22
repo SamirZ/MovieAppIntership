@@ -21,6 +21,7 @@ import com.example.zsamir.movieappintership.Modules.EpisodeCast;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.MovieList;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 import com.example.zsamir.movieappintership.Widgets.ExpandableTextView;
 
 import java.util.ArrayList;
@@ -45,25 +46,33 @@ public class ActorProfileActivity extends BaseActivity {
         if (getIntent().hasExtra("Actor")) {
             cast = getIntent().getParcelableExtra("Actor");
             mMovieAdapter = new ActorMovieAdapter(mMovies,cast);
-            ApiHandler.getInstance().requestActor(cast.getId(), new ApiHandler.ActorDetailsListener() {
-                @Override
-                public void success(Actor response) {
-                    mActor = response;
-                    initializeActor();
-                }
-            });
+            if(isNetworkAvailable()){
+                ApiHandler.getInstance().requestActor(cast.getId(), new ApiHandler.ActorDetailsListener() {
+                    @Override
+                    public void success(Actor response) {
+                        mActor = response;
+                        initializeActor();
+                    }
+                });
+            }else{
+                initializeActor();
+            }
         }
 
         if (getIntent().hasExtra("Actor1")) {
             episodeCast = getIntent().getParcelableExtra("Actor1");
             mMovieAdapter = new ActorMovieAdapter(mMovies,episodeCast.toCast());
-            ApiHandler.getInstance().requestActor(episodeCast.getId(), new ApiHandler.ActorDetailsListener() {
-                @Override
-                public void success(Actor response) {
-                    mActor = response;
-                    initializeActor();
-                }
-            });
+            if(isNetworkAvailable()){
+                ApiHandler.getInstance().requestActor(episodeCast.getId(), new ApiHandler.ActorDetailsListener() {
+                    @Override
+                    public void success(Actor response) {
+                        mActor = response;
+                        initializeActor();
+                    }
+                });
+            }else{
+                initializeActor();
+            }
         }
 
 
@@ -71,87 +80,173 @@ public class ActorProfileActivity extends BaseActivity {
 
     private void initializeActor() {
 
-        if(cast==null)
-            cast = episodeCast.toCast();
+        if(isNetworkAvailable()) {
+            if (cast == null)
+                cast = episodeCast.toCast();
+            RealmUtils.getInstance().deleteActor(cast.getId());
+            RealmUtils.getInstance().createRealmActorDetails(cast.getId(),cast,mActor);
 
-        ImageView mActorImage = (ImageView) findViewById(R.id.actor_details_image);
-        if(cast.getPosterUrl()!=null)
-        Glide.with(this).load(cast.getImageUrl()).into(mActorImage);
+            ImageView mActorImage = (ImageView) findViewById(R.id.actor_details_image);
+            if (cast.getPosterUrl() != null)
+                Glide.with(this).load(cast.getImageUrl()).into(mActorImage);
 
-        TextView mActorName = (TextView) findViewById(R.id.actor_details_name);
-        if(mActor.getName()!=null)
-            mActorName.setText(mActor.getName());
-        else
-            mActorName.setVisibility(View.GONE);
+            TextView mActorName = (TextView) findViewById(R.id.actor_details_name);
+            if (mActor.getName() != null)
+                mActorName.setText(mActor.getName());
+            else
+                mActorName.setVisibility(View.GONE);
 
-        TextView mActorDateOfBirth = (TextView) findViewById(R.id.actor_details_date_of_birth_2);
-        LinearLayout mDateOfBirth = (LinearLayout)findViewById(R.id.actor_details_date_of_birth);
-        if(mActor.getBirthday()!=null && mActor.getPlaceOfBirth()!=null) {
-            if(getDate(mActor.getBirthday()).length()>1)
-                mActorDateOfBirth.setText(getDate(mActor.getBirthday()));
-            mActorDateOfBirth.append(", "+mActor.getPlaceOfBirth());
-        }else {
-            mDateOfBirth.setVisibility(View.GONE);
-        }
+            TextView mActorDateOfBirth = (TextView) findViewById(R.id.actor_details_date_of_birth_2);
+            LinearLayout mDateOfBirth = (LinearLayout) findViewById(R.id.actor_details_date_of_birth);
+            if (mActor.getBirthday() != null && mActor.getPlaceOfBirth() != null) {
+                if (getDate(mActor.getBirthday()).length() > 1)
+                    mActorDateOfBirth.setText(getDate(mActor.getBirthday()));
+                mActorDateOfBirth.append(", " + mActor.getPlaceOfBirth());
+            } else {
+                mDateOfBirth.setVisibility(View.GONE);
+            }
 
-        TextView mActorWebsite = (TextView) findViewById(R.id.actor_details_website_2);
-        LinearLayout mWebsite = (LinearLayout)findViewById(R.id.actor_details_website);
-        if(mActor.getHomepage()!=null && mActor.getHomepage().length()>3){
-            mActorWebsite.setText(mActor.getHomepage());
-            mActorWebsite.setTextColor(ContextCompat.getColor(this, R.color.colorActorWebsite));
-        }else {
-            mWebsite.setVisibility(View.GONE);
-        }
+            TextView mActorWebsite = (TextView) findViewById(R.id.actor_details_website_2);
+            LinearLayout mWebsite = (LinearLayout) findViewById(R.id.actor_details_website);
+            if (mActor.getHomepage() != null && mActor.getHomepage().length() > 3) {
+                mActorWebsite.setText(mActor.getHomepage());
+                mActorWebsite.setTextColor(ContextCompat.getColor(this, R.color.colorActorWebsite));
+            } else {
+                mWebsite.setVisibility(View.GONE);
+            }
 
-        final TextView more = (TextView) findViewById(R.id.see_full_bio);
-        TextView mActorBioLabel = (TextView) findViewById(R.id.actor_details_biography_1);
-        final ExpandableTextView mActorBio = (ExpandableTextView) findViewById(R.id.actor_details_biography_2);
-        mActorBio.setTrimLength(335);
-        if(mActor.getBiography()!=null){
-            if(mActor.getBiography().length()>0){
-                mActorBio.setText(mActor.getBiography());
-                if(mActorBio.getOriginalTextSize()>335){
-                    more.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mActorBio.trim = !mActorBio.trim;
-                            mActorBio.setText();
-                            //text.requestFocusFromTouch();
-                            if(!clicked) {
-                                more.setText(R.string.hide_text);
-                                clicked = true;
-                            }else{
-                                more.setText(R.string.see_full_bio);
-                                clicked = false;
+            final TextView more = (TextView) findViewById(R.id.see_full_bio);
+            TextView mActorBioLabel = (TextView) findViewById(R.id.actor_details_biography_1);
+            final ExpandableTextView mActorBio = (ExpandableTextView) findViewById(R.id.actor_details_biography_2);
+            mActorBio.setTrimLength(335);
+            if (mActor.getBiography() != null) {
+                if (mActor.getBiography().length() > 0) {
+                    mActorBio.setText(mActor.getBiography());
+                    if (mActorBio.getOriginalTextSize() > 335) {
+                        more.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mActorBio.trim = !mActorBio.trim;
+                                mActorBio.setText();
+                                //text.requestFocusFromTouch();
+                                if (!clicked) {
+                                    more.setText(R.string.hide_text);
+                                    clicked = true;
+                                } else {
+                                    more.setText(R.string.see_full_bio);
+                                    clicked = false;
+                                }
                             }
-                        }
-                    });
-                }else{
-                    more.setEnabled(false);
-                    more.setTextColor(ContextCompat.getColor(this, R.color.colorAccentPressed));
+                        });
+                    } else {
+                        more.setEnabled(false);
+                        more.setTextColor(ContextCompat.getColor(this, R.color.colorAccentPressed));
+                    }
+                } else {
+                    mActorBioLabel.setVisibility(View.GONE);
+                    mActorBio.setVisibility(View.GONE);
+                    more.setVisibility(View.GONE);
                 }
-            }else{
+            } else {
                 mActorBioLabel.setVisibility(View.GONE);
                 mActorBio.setVisibility(View.GONE);
                 more.setVisibility(View.GONE);
             }
-        }else{
-            mActorBioLabel.setVisibility(View.GONE);
-            mActorBio.setVisibility(View.GONE);
-            more.setVisibility(View.GONE);
-        }
-        ApiHandler.getInstance().requestMovieWithActor(mActor.getId(), new ApiHandler.MovieListListener() {
-            @Override
-            public void success(MovieList response) {
-                mMovies.addAll(response.getMovies());
-                mMovieAdapter.notifyDataSetChanged();
-            }
-        });
+            ApiHandler.getInstance().requestMovieWithActor(mActor.getId(), new ApiHandler.MovieListListener() {
+                @Override
+                public void success(MovieList response) {
+                    mMovies.addAll(response.getMovies());
+                    //identify actor
+                    //RealmUtils.getInstance().addMoviesToRealm(mMovies);
+                    mMovieAdapter.notifyDataSetChanged();
+                }
+            });
 
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.actor_movies_recyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setAdapter(mMovieAdapter);
+            RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.actor_movies_recyclerView);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+            mRecyclerView.setLayoutManager(layoutManager);
+            mRecyclerView.setAdapter(mMovieAdapter);
+        }else {
+            if(RealmUtils.getInstance().readRealmActorDetails(cast.getId())!=null){
+                cast = RealmUtils.getInstance().readRealmActorDetails(cast.getId()).getCast();
+                mActor = RealmUtils.getInstance().readRealmActorDetails(cast.getId()).getActor();
+
+                ImageView mActorImage = (ImageView) findViewById(R.id.actor_details_image);
+                if (cast.getPosterUrl() != null)
+                    Glide.with(this).load(cast.getImageUrl()).into(mActorImage);
+
+                TextView mActorName = (TextView) findViewById(R.id.actor_details_name);
+                if (mActor.getName() != null)
+                    mActorName.setText(mActor.getName());
+                else
+                    mActorName.setVisibility(View.GONE);
+
+                TextView mActorDateOfBirth = (TextView) findViewById(R.id.actor_details_date_of_birth_2);
+                LinearLayout mDateOfBirth = (LinearLayout) findViewById(R.id.actor_details_date_of_birth);
+                if (mActor.getBirthday() != null && mActor.getPlaceOfBirth() != null) {
+                    if (getDate(mActor.getBirthday()).length() > 1)
+                        mActorDateOfBirth.setText(getDate(mActor.getBirthday()));
+                    mActorDateOfBirth.append(", " + mActor.getPlaceOfBirth());
+                } else {
+                    mDateOfBirth.setVisibility(View.GONE);
+                }
+
+                TextView mActorWebsite = (TextView) findViewById(R.id.actor_details_website_2);
+                LinearLayout mWebsite = (LinearLayout) findViewById(R.id.actor_details_website);
+                if (mActor.getHomepage() != null && mActor.getHomepage().length() > 3) {
+                    mActorWebsite.setText(mActor.getHomepage());
+                    mActorWebsite.setTextColor(ContextCompat.getColor(this, R.color.colorActorWebsite));
+                } else {
+                    mWebsite.setVisibility(View.GONE);
+                }
+
+                final TextView more = (TextView) findViewById(R.id.see_full_bio);
+                TextView mActorBioLabel = (TextView) findViewById(R.id.actor_details_biography_1);
+                final ExpandableTextView mActorBio = (ExpandableTextView) findViewById(R.id.actor_details_biography_2);
+                mActorBio.setTrimLength(335);
+                if (mActor.getBiography() != null) {
+                    if (mActor.getBiography().length() > 0) {
+                        mActorBio.setText(mActor.getBiography());
+                        if (mActorBio.getOriginalTextSize() > 335) {
+                            more.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mActorBio.trim = !mActorBio.trim;
+                                    mActorBio.setText();
+                                    //text.requestFocusFromTouch();
+                                    if (!clicked) {
+                                        more.setText(R.string.hide_text);
+                                        clicked = true;
+                                    } else {
+                                        more.setText(R.string.see_full_bio);
+                                        clicked = false;
+                                    }
+                                }
+                            });
+                        } else {
+                            more.setEnabled(false);
+                            more.setTextColor(ContextCompat.getColor(this, R.color.colorAccentPressed));
+                        }
+                    } else {
+                        mActorBioLabel.setVisibility(View.GONE);
+                        mActorBio.setVisibility(View.GONE);
+                        more.setVisibility(View.GONE);
+                    }
+                } else {
+                    mActorBioLabel.setVisibility(View.GONE);
+                    mActorBio.setVisibility(View.GONE);
+                    more.setVisibility(View.GONE);
+                }
+
+                //mMovies.addAll(RealmUtils.getInstance().readActorMoviesFromRealm(cast.getId()));
+                mMovieAdapter.notifyDataSetChanged();
+
+                RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.actor_movies_recyclerView);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+                mRecyclerView.setLayoutManager(layoutManager);
+                mRecyclerView.setAdapter(mMovieAdapter);
+            }
+        }
     }
 
     public String getDate(String date) {

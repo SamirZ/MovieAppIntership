@@ -4,11 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TVShow extends ImageFormat implements Parcelable {
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
+
+public class TVShow extends RealmObject implements Parcelable {
+
+    public boolean popular;
+    public boolean latest;
+    public boolean highestrated;
+    public boolean airing;
 
     @SerializedName("poster_path")
     @Expose
@@ -20,6 +30,7 @@ public class TVShow extends ImageFormat implements Parcelable {
 
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private int id;
 
     @SerializedName("backdrop_path")
@@ -40,10 +51,12 @@ public class TVShow extends ImageFormat implements Parcelable {
 
     @SerializedName("origin_country")
     @Expose
+    @Ignore
     private List<String> originCountry = null;
 
     @SerializedName("genre_ids")
     @Expose
+    @Ignore
     private int[] genreIds  = new int[0];
 
     @SerializedName("name")
@@ -54,12 +67,22 @@ public class TVShow extends ImageFormat implements Parcelable {
     @Expose
     private int rating;
 
+    public String allGenres;
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
     public int getRating() {
         return rating;
     }
 
     public void setBackdropPath(String backdropPath) {
         this.backdropPath = backdropPath;
+    }
+
+    public String getOrgFirstAirDate(){
+        return firstAirDate;
     }
 
     public String getFirstAirDate(){
@@ -112,20 +135,56 @@ public class TVShow extends ImageFormat implements Parcelable {
         return s[0];
     }
 
-    private int[] getGenres() {
+    public int[] getGenres() {
         return genreIds;
     }
 
     public List<String> getTvSeriesGenres() {
         List<String> genres = new ArrayList<>();
         int[] ids = getGenres();
-        for (int i=0; i<getGenres().length; i++) {
-            TVShowGenres genre = TVShowGenres.getById(ids[i]);
-            if (genre != null) {
-                genres.add(genre.getTitle());
+        if(allGenres!=null){
+            String[] g = allGenres.split(",");
+            for (String s:g) {
+                genres.add(TVShowGenres.getById(Integer.parseInt(s)).getTitle());
+            }
+        }
+        else{
+            for (int id1 : ids) {
+                TVShowGenres genre = TVShowGenres.getById(id1);
+                if (genre != null) {
+                    genres.add(genre.getTitle());
+                }
             }
         }
         return genres;
+    }
+
+    public float getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(float popularity) {
+        this.popularity = popularity;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath;
+    }
+
+    public void setVoteAverage(float voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public void setFirstAirDate(String firstAirDate) {
+        this.firstAirDate = firstAirDate;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 
     public int getId() {
@@ -159,14 +218,15 @@ public class TVShow extends ImageFormat implements Parcelable {
     public int numOfBackdrops;
     public int lastLoadedBackdrop;
 
+    @Ignore
     public List<Backdrop> backdropList;
 
     public String getPosterUrl() {
-        return BASE_IMG_URL + POSTER_SIZE_W185 + posterPath;
+        return ImageFormat.BASE_IMG_URL + ImageFormat.POSTER_SIZE_W154 + posterPath;
     }
 
     public String getBackdropUrl() {
-        return BASE_IMG_URL + BACKDROP_SIZE_W1280+ backdropPath;
+        return ImageFormat.BASE_IMG_URL + ImageFormat.BACKDROP_SIZE_W780 + backdropPath;
     }
 
 
@@ -191,10 +251,12 @@ public class TVShow extends ImageFormat implements Parcelable {
         dest.writeInt(this.lastLoadedBackdrop);
         dest.writeTypedList(this.backdropList);
         dest.writeInt(this.rating);
+        dest.writeString(this.allGenres);
     }
 
     public TVShow() {
     }
+
 
     public TVShow(String posterPath, String backdropPath, float voteAverage, String overview, String firstAirDate, int[] genreIds, String name, int id) {
         this.posterPath = posterPath;
@@ -222,6 +284,7 @@ public class TVShow extends ImageFormat implements Parcelable {
         this.lastLoadedBackdrop = in.readInt();
         this.backdropList = in.createTypedArrayList(Backdrop.CREATOR);
         this.rating = in.readInt();
+        this.allGenres = in.readString();
     }
 
     public static final Creator<TVShow> CREATOR = new Creator<TVShow>() {

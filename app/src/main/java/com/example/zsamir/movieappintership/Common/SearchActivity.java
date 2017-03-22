@@ -24,6 +24,7 @@ public class SearchActivity extends BaseActivity {
     SearchResultAdapter mResultAdapter = new SearchResultAdapter(resultList);
     RecyclerView recyclerView;
     String query = "";
+    boolean wait = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,20 +66,33 @@ public class SearchActivity extends BaseActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(final String query) {
+                if(!wait)
                 if(!query.equalsIgnoreCase(SearchActivity.this.query)){
                     resultList.clear();
                     mResultAdapter.notifyDataSetChanged();
                     SearchActivity.this.query = query;
+                    wait = true;
                     searchForData(query,1);
                 }
-
                 //
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                if(!wait)
+                if(!query.equalsIgnoreCase(newText)){
+                    resultList.clear();
+                    mResultAdapter.notifyDataSetChanged();
+                    query = newText;
+                    if(query!=null) {
+                        if (!query.equals("")) {
+                            wait = true;
+                            searchForData(query, 1);
+                        }
+                    }
+                }
+                return true;
             }
         });
 
@@ -99,12 +113,16 @@ public class SearchActivity extends BaseActivity {
         ApiHandler.getInstance().requestSearch(query, page, new ApiHandler.SearchResultListener() {
             @Override
             public void success(SearchResult response) {
-                resultList.addAll(response.getResults());
-                for (int i=0;i<resultList.size();i++){
-                    if(resultList.get(i).getMediaType().equalsIgnoreCase("person")){
-                        resultList.remove(i);
+                if(response!=null)
+                if(response.getResults()!=null){
+                    resultList.addAll(response.getResults());
+                    for (int i=0;i<resultList.size();i++){
+                        if(resultList.get(i).getMediaType().equalsIgnoreCase("person")){
+                            resultList.remove(i);
+                        }
                     }
                 }
+                wait = false;
                 mResultAdapter.notifyDataSetChanged();
             }
         });

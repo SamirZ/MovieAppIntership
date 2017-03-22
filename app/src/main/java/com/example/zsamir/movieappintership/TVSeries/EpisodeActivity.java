@@ -13,12 +13,14 @@ import com.bumptech.glide.Glide;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.CastAdapter;
 import com.example.zsamir.movieappintership.BaseActivity;
+import com.example.zsamir.movieappintership.Modules.Cast;
 import com.example.zsamir.movieappintership.Modules.Episode;
 import com.example.zsamir.movieappintership.Modules.EpisodeCast;
 import com.example.zsamir.movieappintership.Modules.EpisodeCredits;
 import com.example.zsamir.movieappintership.Modules.EpisodeDetails;
 import com.example.zsamir.movieappintership.Modules.TVShowDetails;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -28,6 +30,7 @@ public class EpisodeActivity extends BaseActivity {
     private Episode episode;
     private TVShowDetails TVShowDetails;
     private ArrayList<EpisodeCast> actors = new ArrayList<>();
+    private ArrayList<Cast> offActors = new ArrayList<>();
     private CastAdapter mCastAdapter = new CastAdapter(actors,0);
 
     private TextView episodeName;
@@ -68,22 +71,39 @@ public class EpisodeActivity extends BaseActivity {
             TVShowDetails = getIntent().getParcelableExtra("TVSeriesDetails");
             this.setTitle(TVShowDetails.getName());
 
-            ApiHandler.getInstance().requestEpisodeDetails(TVShowDetails.getId(), episode.getSeasonNumber(), episode.getEpisodeNumber(), new ApiHandler.EpisodeDetailsListener() {
-                @Override
-                public void success(EpisodeDetails response) {
-                    if(response.getOverview()!=null){
-                        if(response.getOverview().length()>1)
-                            episodeOverview.setText(response.getOverview());
-                        else{
+            if(isNetworkAvailable()){
+                ApiHandler.getInstance().requestEpisodeDetails(TVShowDetails.getId(), episode.getSeasonNumber(), episode.getEpisodeNumber(), new ApiHandler.EpisodeDetailsListener() {
+                    @Override
+                    public void success(EpisodeDetails response) {
+                        RealmUtils.getInstance().deleteEpisodeDetails(TVShowDetails.getId());
+                        RealmUtils.getInstance().createRealmEpisodeDetails(TVShowDetails.getId(), episode.getSeasonNumber(), episode.getEpisodeNumber());
+                        RealmUtils.getInstance().addRealmEpisodeDetailsData(TVShowDetails.getId(),response);
+                        if(response.getOverview()!=null){
+                            if(response.getOverview().length()>1)
+                                episodeOverview.setText(response.getOverview());
+                            else{
+                                episodeOverview.setVisibility(View.GONE);
+                                breakline.setVisibility(View.GONE);
+                            }
+                        }else {
                             episodeOverview.setVisibility(View.GONE);
                             breakline.setVisibility(View.GONE);
                         }
-                    }else {
+                    }
+                });
+            }else{
+                if(RealmUtils.getInstance().readEpisodeDetails(TVShowDetails.getId())!=null){
+                    if(RealmUtils.getInstance().readEpisodeDetails(TVShowDetails.getId()).getEpisodeDetails().getOverview().length()>1)
+                        episodeOverview.setText(RealmUtils.getInstance().readEpisodeDetails(TVShowDetails.getId()).getEpisodeDetails().getOverview());
+                    else{
                         episodeOverview.setVisibility(View.GONE);
                         breakline.setVisibility(View.GONE);
                     }
+                }else {
+                    episodeOverview.setVisibility(View.GONE);
+                    breakline.setVisibility(View.GONE);
                 }
-            });
+            }
 
         }
 
@@ -112,23 +132,46 @@ public class EpisodeActivity extends BaseActivity {
         }
 
         // get Cast
-        ApiHandler.getInstance().requestEpisodeCredits(TVShowDetails.getId(), episode.getSeasonNumber(), episode.getEpisodeNumber(), new ApiHandler.EpisodeCreditsListener() {
-            @Override
-            public void success(EpisodeCredits response) {
-                actors.clear();
-                if(response!=null){
-                    if(response.getCast().size()>0){
-                        actors.addAll(response.getCast());
-                        mCastAdapter.notifyDataSetChanged();
-                    }
-                    else{
+        if(isNetworkAvailable()){
+            ApiHandler.getInstance().requestEpisodeCredits(TVShowDetails.getId(), episode.getSeasonNumber(), episode.getEpisodeNumber(), new ApiHandler.EpisodeCreditsListener() {
+                @Override
+                public void success(EpisodeCredits response) {
+                    actors.clear();
+                    if(response!=null){
+                        if(response.getCast().size()>0){
+                            actors.addAll(response.getCast());
+                            ArrayList<Cast> c = new ArrayList<>();
+                            for (EpisodeCast eCast:actors) {
+                                c.add(eCast.toCast());
+                            }
+                            RealmUtils.getInstance().addRealmEpisodeDetailsCast(TVShowDetails.getId(),c);
+                            mCastAdapter.notifyDataSetChanged();
+                        }
+                        else{
+                            episodeCastLabel.setVisibility(View.GONE);
+                        }
+                    }else{
                         episodeCastLabel.setVisibility(View.GONE);
                     }
-                }else{
+                }
+            });
+        }else{
+            actors.clear();
+            if(RealmUtils.getInstance().readEpisodeDetails(TVShowDetails.getId())!=null){
+                if(RealmUtils.getInstance().readEpisodeDetails(TVShowDetails.getId()).getEpisodeCast().size()>0){
+                    offActors.addAll(RealmUtils.getInstance().readEpisodeDetails(TVShowDetails.getId()).getEpisodeCast());
+
+                    mCastAdapter = new CastAdapter(offActors);
+                    recyclerView.setAdapter(mCastAdapter);
+                    mCastAdapter.notifyDataSetChanged();
+                }
+                else{
                     episodeCastLabel.setVisibility(View.GONE);
                 }
+            }else{
+                episodeCastLabel.setVisibility(View.GONE);
             }
-        });
+        }
     }
 
     private void setUpViews() {

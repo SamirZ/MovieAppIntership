@@ -220,6 +220,22 @@ public class Account implements Parcelable {
     public Account() {
     }
 
+    public Account(List<Integer> favMovieList, List<Integer> favTVSeriesList, List<Integer> ratedMovieList, List<Integer> ratedTVSeriesList, List<Integer> watchlistMovieList, List<Integer> watchlistTVSeriesList, String sessionId, Integer id, String iso6391, String iso31661, String name, Boolean includeAdult, String username) {
+        this.favMovieList = favMovieList;
+        this.favTVSeriesList = favTVSeriesList;
+        this.ratedMovieList = ratedMovieList;
+        this.ratedTVSeriesList = ratedTVSeriesList;
+        this.watchlistMovieList = watchlistMovieList;
+        this.watchlistTVSeriesList = watchlistTVSeriesList;
+        this.sessionId = sessionId;
+        this.id = id;
+        this.iso6391 = iso6391;
+        this.iso31661 = iso31661;
+        this.name = name;
+        this.includeAdult = includeAdult;
+        this.username = username;
+    }
+
     protected Account(Parcel in) {
         this.favMovieList = new ArrayList<Integer>();
         in.readList(this.favMovieList, Integer.class.getClassLoader());

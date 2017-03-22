@@ -9,9 +9,13 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'realm-android'
 
 repositories {
-    maven { url 'https://maven.fabric.io/public' }
+    maven {
+        url 'https://maven.fabric.io/public'
+    }
+
 }
 
 
@@ -56,6 +60,7 @@ dependencies {
     compile 'com.android.support:support-v4:25.2.0'
     compile 'com.android.support:recyclerview-v7:25.2.0'
     compile 'com.android.support:support-vector-drawable:25.2.0'
+    compile 'com.facebook.stetho:stetho:1.4.1'
     testCompile 'junit:junit:4.12'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
 }

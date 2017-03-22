@@ -2,21 +2,35 @@ package com.example.zsamir.movieappintership.Modules;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Backdrop implements Parcelable
-{
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
+public class Backdrop extends RealmObject implements Parcelable
+{
 
     public String getFilePath() {
         return filePath;
     }
 
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
     @SerializedName("file_path")
     @Expose
+    @PrimaryKey
     private String filePath;
 
+    public Backdrop() {
+    }
+
+    public Backdrop(Backdrop b) {
+        this.filePath = b.filePath;
+    }
 
     public static final Parcelable.Creator<Backdrop> CREATOR = new Parcelable.Creator<Backdrop>() {
         public Backdrop createFromParcel(Parcel source) {
@@ -40,19 +54,12 @@ public class Backdrop implements Parcelable
         return 0;
     }
 
-    private static final String BASE_IMG_URL = "http://image.tmdb.org/t/p/";
-    // Backdrop image sizes
-    private static final String BACKDROP_SIZE_W300 = "w300";
-    private static final String BACKDROP_SIZE_W780 = "w780";
-    //private static final String BACKDROP_SIZE_W1280 = "w1280";
-    //private static final String BACKDROP_SIZE_ORIGINAL = "original";
-
     public String getBackdropSizeW300(){
-        return BASE_IMG_URL + BACKDROP_SIZE_W300 + filePath;
+        return ImageFormat.BASE_IMG_URL + ImageFormat.BACKDROP_SIZE_W300 + filePath;
     }
 
     public String getBackdropSizeW780(){
-        return BASE_IMG_URL + BACKDROP_SIZE_W780 + filePath;
+        return ImageFormat.BASE_IMG_URL + ImageFormat.BACKDROP_SIZE_W780 + filePath;
     }
 
     /*

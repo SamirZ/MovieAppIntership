@@ -6,7 +6,11 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Actor implements Parcelable
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
+
+public class Actor extends RealmObject implements Parcelable
 {
 
     @SerializedName("adult")
@@ -14,6 +18,7 @@ public class Actor implements Parcelable
     private boolean adult;
     @SerializedName("also_known_as")
     @Expose
+    @Ignore
     private List<String> alsoKnownAs = null;
     @SerializedName("biography")
     @Expose
@@ -32,6 +37,7 @@ public class Actor implements Parcelable
     private String homepage;
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private int id;
     @SerializedName("imdb_id")
     @Expose

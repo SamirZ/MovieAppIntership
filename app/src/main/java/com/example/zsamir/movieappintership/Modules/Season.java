@@ -5,7 +5,10 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Season implements Parcelable
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class Season extends RealmObject implements Parcelable
 {
 
     @SerializedName("air_date")
@@ -16,6 +19,7 @@ public class Season implements Parcelable
     private int episodeCount;
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private int id;
     @SerializedName("poster_path")
     @Expose
@@ -23,6 +27,7 @@ public class Season implements Parcelable
     @SerializedName("season_number")
     @Expose
     private int seasonNumber;
+
     public final static Parcelable.Creator<Season> CREATOR = new Creator<Season>() {
 
         public Season createFromParcel(Parcel in) {
@@ -75,4 +80,31 @@ public class Season implements Parcelable
         return 0;
     }
 
+    public String getAirDate() {
+        return airDate;
+    }
+
+    public void setAirDate(String airDate) {
+        this.airDate = airDate;
+    }
+
+    public void setSeasonNumber(int seasonNumber) {
+        this.seasonNumber = seasonNumber;
+    }
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public int getEpisodeCount() {
+        return episodeCount;
+    }
+
+    public void setEpisodeCount(int episodeCount) {
+        this.episodeCount = episodeCount;
+    }
 }

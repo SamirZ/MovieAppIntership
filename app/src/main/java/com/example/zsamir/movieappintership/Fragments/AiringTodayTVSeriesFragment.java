@@ -12,9 +12,11 @@ import android.view.ViewGroup;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 
 import com.example.zsamir.movieappintership.Adapters.TvSeriesAdapter;
+import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import java.util.ArrayList;
 
@@ -43,6 +45,12 @@ public class AiringTodayTVSeriesFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mTvSeriesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_airing_today_tvseries, container, false);
@@ -53,33 +61,60 @@ public class AiringTodayTVSeriesFragment extends Fragment {
         mRecyclerView.setLayoutManager(gridLayoutManager );
         mRecyclerView.setAdapter(mTvSeriesAdapter);
 
-        if(TVShowList.size()==0)
-            loadAiringTodayTvSeries(1);
-        else{
-            TVShowList.clear();
-            loadAiringTodayTvSeries(1);
-            mTvSeriesAdapter.notifyDataSetChanged();
-        }
+        mTvSeriesAdapter.notifyDataSetChanged();
 
-        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                //if(page<=numberOfPages)
-                    loadAiringTodayTvSeries(page);
+        if(((BaseActivity)getActivity()).isNetworkAvailable()){
+            if(TVShowList.size()==0)
+                loadAiringTodayTvSeries(1);
+            else{
+                TVShowList.clear();
+                loadAiringTodayTvSeries(1);
+                mTvSeriesAdapter.notifyDataSetChanged();
             }
-        };
-        mRecyclerView.addOnScrollListener(scrollListener);
+
+            EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                    //if(page<=numberOfPages)
+                    loadAiringTodayTvSeries(page);
+                }
+            };
+            mRecyclerView.addOnScrollListener(scrollListener);
+        }else{
+            TvSeriesAdapter mmTvSeriesAdapter = new TvSeriesAdapter(RealmUtils.getInstance().readAiringTodayTVShowsFromRealm());
+            mRecyclerView.setAdapter(mmTvSeriesAdapter);
+            mmTvSeriesAdapter.notifyDataSetChanged();
+        }
 
         return rootView;
     }
 
-    private void loadAiringTodayTvSeries(int page) {
+    private void loadAiringTodayTvSeries(final int page) {
         movieDbApi.requestAiringTodayTvSeries(page, new ApiHandler.TvSeriesListListener() {
             @Override
             public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
                 numberOfPages = response.getTotalPages();
-                Log.d("Total pages", String.valueOf(numberOfPages));
-                TVShowList.addAll(response.getTVShow());
+                //addition
+                for (TVShow t: response.getTVShow()) {
+                    if(!TVShowList.contains(t)){
+                        TVShow tv = RealmUtils.getInstance().readTVShowFromRealm(t.getId());
+                        if(tv!=null) {
+                            t.popular = tv.popular;
+                            t.latest = tv.latest;
+                            t.highestrated = tv.highestrated;
+                        }
+                        t.airing = true;
+                        if(t.getGenres().length>0){
+                            t.allGenres = "";
+                            for (int i = 0; i < t.getGenres().length; i++) {
+                                t.allGenres+=t.getGenres()[i]+",";
+                            }
+                            t.allGenres = t.allGenres.substring(0, t.allGenres.length()-1);
+                        }
+                        TVShowList.add(t);
+                    }
+                }
+                RealmUtils.getInstance().addTVShowsToRealm(TVShowList);
                 mTvSeriesAdapter.notifyDataSetChanged();
             }
         });

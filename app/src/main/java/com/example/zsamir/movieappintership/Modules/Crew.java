@@ -2,10 +2,14 @@ package com.example.zsamir.movieappintership.Modules;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Crew implements Parcelable
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class Crew extends RealmObject implements Parcelable
 {
 
     @SerializedName("credit_id")
@@ -16,6 +20,7 @@ public class Crew implements Parcelable
     private String department;
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private int id;
     @SerializedName("job")
     @Expose
@@ -40,8 +45,18 @@ public class Crew implements Parcelable
             return (new Crew[size]);
         }
 
+    };
+
+    public Crew() {
     }
-            ;
+
+    public Crew(Crew c){
+        this.id = c.id;
+        this.department = c.department;
+        this.creditId = c.creditId;
+        this.name = c.name;
+        this.job = c.job;
+    }
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(creditId);
@@ -62,4 +77,37 @@ public class Crew implements Parcelable
     public String getName() {
         return name;
     }
+
+    public String getCreditId() {
+        return creditId;
+    }
+
+    public void setCreditId(String creditId) {
+        this.creditId = creditId;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

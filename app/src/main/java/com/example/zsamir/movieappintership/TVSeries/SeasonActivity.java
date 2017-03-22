@@ -15,6 +15,8 @@ import com.example.zsamir.movieappintership.Modules.Episode;
 import com.example.zsamir.movieappintership.Modules.SeasonDetails;
 import com.example.zsamir.movieappintership.Modules.TVShowDetails;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmSeasonDetails;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +51,7 @@ public class SeasonActivity extends BaseActivity {
             setUpEpisodes();
 
             setSeason(1);
-            setYear(years.get(0));
+            setYear(TVShowDetails.getReleaseYear());
 
         }
     }
@@ -74,6 +76,9 @@ public class SeasonActivity extends BaseActivity {
     private void setUpEpisodes() {
         episodes = new ArrayList<>();
 
+        if(TVShowDetails==null && !isNetworkAvailable()){
+            TVShowDetails = RealmUtils.getInstance().readRealmTVShowDetails(TVShowDetails.getId()).getTvShowDetails();
+        }
         episodeAdapter = new EpisodeAdapter(episodes, TVShowDetails);
         RecyclerView mEpisodeRecyclerView = (RecyclerView) findViewById(R.id.episode_recycler_view);
         LinearLayoutManager linearVerticalLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
@@ -82,24 +87,37 @@ public class SeasonActivity extends BaseActivity {
     }
 
 
-    public void setSeason(int i){
-        ApiHandler apiHandler = ApiHandler.getInstance();
-        apiHandler.requestTVSeriesSeasons(TVShowDetails.getId(), i, new ApiHandler.TvSeriesSeasonListener() {
-            @Override
-            public void success(SeasonDetails response) {
-                episodes.clear();
-                if(response!=null)
-                    if(response.getEpisodes()!=null)
-                        if(response.getEpisodes().size()>0)
-                        episodes.addAll(response.getEpisodes());
-                episodeAdapter.notifyDataSetChanged();
-            }
-        });
+    public void setSeason(final int i){
+        if(isNetworkAvailable()){
+            ApiHandler.getInstance().requestTVSeriesSeasons(TVShowDetails.getId(), i, new ApiHandler.TvSeriesSeasonListener() {
+                @Override
+                public void success(SeasonDetails response) {
+                    episodes.clear();
+                    if(response!=null)
+                        if(response.getEpisodes()!=null)
+                            if(response.getEpisodes().size()>0){
+                                episodes.addAll(response.getEpisodes());
+                                RealmUtils.getInstance().createRealmSeasonDetails(TVShowDetails.getId()+""+i);
+                                RealmUtils.getInstance().addRealmSeasonsDetailsEpisodes(TVShowDetails.getId()+""+i,episodes);
+                            }
+                    episodeAdapter.notifyDataSetChanged();
+                }
+            });
+        }else{
+            episodes.clear();
+            RealmSeasonDetails realmSeasonDetails = RealmUtils.getInstance().readRealmSeasonDetails(TVShowDetails.getId()+""+i);
+            if(realmSeasonDetails!=null)
+                episodes.addAll(realmSeasonDetails.getEpisodes());
+            episodeAdapter.notifyDataSetChanged();
+        }
     }
 
     public void setYear(String year) {
         if(year!=null)
-        seasonYear.setText(year);
+            seasonYear.setText(year);
+        else{
+            seasonYear.setText("");
+        }
     }
 
     @Override

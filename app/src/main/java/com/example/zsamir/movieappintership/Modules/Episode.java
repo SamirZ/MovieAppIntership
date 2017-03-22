@@ -5,7 +5,10 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Episode implements Parcelable {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class Episode extends RealmObject implements Parcelable {
 
     @SerializedName("air_date")
     @Expose
@@ -17,6 +20,7 @@ public class Episode implements Parcelable {
 
     @SerializedName("name")
     @Expose
+    @PrimaryKey
     private String name;
 
     @SerializedName("season_number")
@@ -26,6 +30,9 @@ public class Episode implements Parcelable {
     @SerializedName("vote_average")
     @Expose
     private double voteAverage;
+
+    public Episode() {
+    }
 
     public int getEpisodeNumber() {
         return episodeNumber;

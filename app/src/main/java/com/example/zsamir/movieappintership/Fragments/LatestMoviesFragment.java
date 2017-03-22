@@ -10,10 +10,12 @@ import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.MovieAdapter;
+import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Common.EndlessRecyclerViewScrollListener;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.MovieList;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import java.util.ArrayList;
 
@@ -43,36 +45,53 @@ public class LatestMoviesFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mMovieAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_latest_movies, container, false);
         RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.latest_recyclerView);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rootView.getContext(),2);
-        if(moviesList.size()==0)
-            loadLatestMovies(1);
-        else{
-            moviesList.clear();
-            loadLatestMovies(1);
-            mMovieAdapter.notifyDataSetChanged();
+        mRecyclerView.setLayoutManager(gridLayoutManager);
+        mRecyclerView.setAdapter(mMovieAdapter);
+
+        mMovieAdapter.notifyDataSetChanged();
+
+        if(((BaseActivity)getActivity()).isNetworkAvailable()){
+            if(moviesList.size()==0)
+                loadLatestMovies(1);
+            else{
+                moviesList.clear();
+                loadLatestMovies(1);
+                mMovieAdapter.notifyDataSetChanged();
+            }
+
+
+            EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                    //if(page+1<=numberOfPages)
+                    loadLatestMovies(page);
+                }
+            };
+            mRecyclerView.addOnScrollListener(scrollListener);
+        }else{
+            MovieAdapter mmMovieAdapter = new MovieAdapter(RealmUtils.getInstance().readLatestMoviesFromRealm());
+            mRecyclerView.setAdapter(mmMovieAdapter);
+            mmMovieAdapter.notifyDataSetChanged();
         }
 
-        mRecyclerView.setLayoutManager(gridLayoutManager );
-        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager ) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                //if(page+1<=numberOfPages)
-                loadLatestMovies(page);
-            }
-        };
-        mRecyclerView.addOnScrollListener(scrollListener);
-        mRecyclerView.setAdapter(mMovieAdapter);
 
         return rootView;
     }
 
 
-    private void loadLatestMovies(int page){
+    private void loadLatestMovies(final int page){
         apiHandler.requestLatestMovies(page, new ApiHandler.MovieListListener() {
             @Override
             public void success(MovieList response) {
@@ -80,14 +99,31 @@ public class LatestMoviesFragment extends Fragment {
                     numberOfPages = response.getTotalPages();
                     // addition
                     for (Movie m: response.getMovies()) {
-                        if(!moviesList.contains(m))
+                        if(!moviesList.contains(m)){
+                            Movie movie = RealmUtils.getInstance().readMovieFromRealm(m.getId());
+                            if(movie!=null) {
+                                m.highestrated = movie.highestrated;
+                                m.popular = movie.popular;
+                            }
+                            m.latest = true;
+                            m.allGenres = "";
+                            for (int i = 0; i < m.getGenreIds().length; i++) {
+                                if(m.getGenreIds()[i]!=m.getGenreIds().length-1)
+                                    m.allGenres+=m.getGenreIds()[i]+",";
+                                else
+                                    m.allGenres+=m.getGenreIds()[i];
+                            }
                             moviesList.add(m);
+                        }
                     }
-                    //moviesList.addAll(response.getMovies());
+                    if(moviesList!=null)
+                        RealmUtils.getInstance().addMoviesToRealm(moviesList,"LATEST");
                     mMovieAdapter.notifyDataSetChanged();
                 }
             }
         });
     }
+
+
 
 }
