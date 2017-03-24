@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "582243646738",
+    "firebase_url": "https://atlantbh-intership.firebaseio.com",
+    "project_id": "atlantbh-intership",
+    "storage_bucket": "atlantbh-intership.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:582243646738:android:12cd4238c4ef10a1",
+        "android_client_info": {
+          "package_name": "com.example.zsamir.movieappintership"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "582243646738-tmodpk78hbco3i0d96vdvlbioklbd76m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6RLHnQkXfvuZlpJMlXTIUvWK64AmHKu4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

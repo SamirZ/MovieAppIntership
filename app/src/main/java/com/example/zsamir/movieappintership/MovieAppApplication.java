@@ -3,7 +3,6 @@ package com.example.zsamir.movieappintership;
 import android.app.Application;
 
 import com.example.zsamir.movieappintership.LoginModules.Account;
-import com.facebook.stetho.Stetho;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -26,8 +25,6 @@ public class MovieAppApplication extends Application {
         super.onCreate();
         Realm.init(this);
 
-
-        Stetho.initializeWithDefaults(this);
         //Fabric.with(this, new Crashlytics());
         // development mode, turn off
 

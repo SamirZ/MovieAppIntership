@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
@@ -79,6 +80,30 @@ public class BaseActivity extends AppCompatActivity implements NetworkStateRecei
                         // continue with login
                         Intent i = new Intent(BaseActivity.this, LoginActivity.class);
                         startActivityForResult(i, 1);
+
+                    }
+                })
+                .setNegativeButton(R.string.not_now, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // set pref to no
+                    }
+                })
+                .show();
+
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(BaseActivity.this, R.color.colorAccent));
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(BaseActivity.this, R.color.colorText));
+
+        //Delete user from shared preferences
+    }
+
+    public void showNoDataDialog(){
+        AlertDialog dialog = new AlertDialog.Builder(BaseActivity.this, R.style.MyDialogTheme)
+                .setTitle(getString(R.string.connection_warrning))
+                .setMessage(getString(R.string.connection_required) + "\n" + "\n" + "\n" + "\n" + "\n")
+                .setPositiveButton(R.string.connect, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with login
+                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
 
                     }
                 })
@@ -406,22 +431,24 @@ public class BaseActivity extends AppCompatActivity implements NetworkStateRecei
                         Log.d("RATING TEST",p.getRating());
                         String strAmount = p.getRating();
                         float amount = Float.parseFloat(strAmount);
-                        if (p.isTV()) {
-                            ApiHandler.getInstance().rateTVShow(p.getId(),
-                                    MovieAppApplication.getUser().getSessionId(),
-                                    new Rating((double)amount), new ApiHandler.PostResponseListener() {
-                                        @Override
-                                        public void success(PostResponse response) {
-                                        }
-                                    });
-                        } else if (p.isMovie()) {
-                            ApiHandler.getInstance().rateMovie(p.getId(),
-                                    MovieAppApplication.getUser().getSessionId(),
-                                    new Rating((double)amount), new ApiHandler.PostResponseListener() {
-                                        @Override
-                                        public void success(PostResponse response) {
-                                        }
-                                    });
+                        if(amount>0){
+                            if (p.isTV()) {
+                                ApiHandler.getInstance().rateTVShow(p.getId(),
+                                        MovieAppApplication.getUser().getSessionId(),
+                                        new Rating((double)amount), new ApiHandler.PostResponseListener() {
+                                            @Override
+                                            public void success(PostResponse response) {
+                                            }
+                                        });
+                            } else if (p.isMovie()) {
+                                ApiHandler.getInstance().rateMovie(p.getId(),
+                                        MovieAppApplication.getUser().getSessionId(),
+                                        new Rating((double)amount), new ApiHandler.PostResponseListener() {
+                                            @Override
+                                            public void success(PostResponse response) {
+                                            }
+                                        });
+                            }
                         }
                     }
                     // UPDATE RATINGS

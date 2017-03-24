@@ -75,9 +75,9 @@ public class EpisodeActivity extends BaseActivity {
                 ApiHandler.getInstance().requestEpisodeDetails(TVShowDetails.getId(), episode.getSeasonNumber(), episode.getEpisodeNumber(), new ApiHandler.EpisodeDetailsListener() {
                     @Override
                     public void success(EpisodeDetails response) {
-                        RealmUtils.getInstance().deleteEpisodeDetails(TVShowDetails.getId());
-                        RealmUtils.getInstance().createRealmEpisodeDetails(TVShowDetails.getId(), episode.getSeasonNumber(), episode.getEpisodeNumber());
-                        RealmUtils.getInstance().addRealmEpisodeDetailsData(TVShowDetails.getId(),response);
+                        RealmUtils.getInstance().deleteEpisodeDetails(episode.getName());
+                        RealmUtils.getInstance().createRealmEpisodeDetails(episode.getName(), episode.getSeasonNumber(), episode.getEpisodeNumber());
+                        RealmUtils.getInstance().addRealmEpisodeDetailsData(episode.getName(),response);
                         if(response.getOverview()!=null){
                             if(response.getOverview().length()>1)
                                 episodeOverview.setText(response.getOverview());
@@ -92,9 +92,9 @@ public class EpisodeActivity extends BaseActivity {
                     }
                 });
             }else{
-                if(RealmUtils.getInstance().readEpisodeDetails(TVShowDetails.getId())!=null){
-                    if(RealmUtils.getInstance().readEpisodeDetails(TVShowDetails.getId()).getEpisodeDetails().getOverview().length()>1)
-                        episodeOverview.setText(RealmUtils.getInstance().readEpisodeDetails(TVShowDetails.getId()).getEpisodeDetails().getOverview());
+                if(RealmUtils.getInstance().readEpisodeDetails(episode.getName())!=null){
+                    if(RealmUtils.getInstance().readEpisodeDetails(episode.getName()).getEpisodeDetails().getOverview().length()>1)
+                        episodeOverview.setText(RealmUtils.getInstance().readEpisodeDetails(episode.getName()).getEpisodeDetails().getOverview());
                     else{
                         episodeOverview.setVisibility(View.GONE);
                         breakline.setVisibility(View.GONE);
@@ -144,7 +144,7 @@ public class EpisodeActivity extends BaseActivity {
                             for (EpisodeCast eCast:actors) {
                                 c.add(eCast.toCast());
                             }
-                            RealmUtils.getInstance().addRealmEpisodeDetailsCast(TVShowDetails.getId(),c);
+                            RealmUtils.getInstance().addRealmEpisodeDetailsCast(episode.getName(),c);
                             mCastAdapter.notifyDataSetChanged();
                         }
                         else{
@@ -157,9 +157,9 @@ public class EpisodeActivity extends BaseActivity {
             });
         }else{
             actors.clear();
-            if(RealmUtils.getInstance().readEpisodeDetails(TVShowDetails.getId())!=null){
-                if(RealmUtils.getInstance().readEpisodeDetails(TVShowDetails.getId()).getEpisodeCast().size()>0){
-                    offActors.addAll(RealmUtils.getInstance().readEpisodeDetails(TVShowDetails.getId()).getEpisodeCast());
+            if(RealmUtils.getInstance().readEpisodeDetails(episode.getName())!=null){
+                if(RealmUtils.getInstance().readEpisodeDetails(episode.getName()).getEpisodeCast().size()>0){
+                    offActors.addAll(RealmUtils.getInstance().readEpisodeDetails(episode.getName()).getEpisodeCast());
 
                     mCastAdapter = new CastAdapter(offActors);
                     recyclerView.setAdapter(mCastAdapter);

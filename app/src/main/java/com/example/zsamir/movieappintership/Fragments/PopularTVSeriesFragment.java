@@ -22,9 +22,9 @@ import java.util.ArrayList;
 public class PopularTVSeriesFragment extends Fragment {
 
     private static PopularTVSeriesFragment instance = null;
-    ArrayList<TVShow> TVShowList = new ArrayList<>();
+    ArrayList<TVShow> tvShowList = new ArrayList<>();
     ApiHandler movieDbApi = ApiHandler.getInstance();
-    TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(TVShowList);
+    TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(tvShowList);
     int numberOfPages;
 
     public PopularTVSeriesFragment() {
@@ -62,10 +62,10 @@ public class PopularTVSeriesFragment extends Fragment {
         mTvSeriesAdapter.notifyDataSetChanged();
 
         if(((BaseActivity)getActivity()).isNetworkAvailable()){
-            if(TVShowList.size()==0){
+            if(tvShowList.size()==0){
                 loadPopularTvSeries(1);
             }else{
-                TVShowList.clear();
+                tvShowList.clear();
                 loadPopularTvSeries(1);
                 mTvSeriesAdapter.notifyDataSetChanged();
             }
@@ -78,9 +78,9 @@ public class PopularTVSeriesFragment extends Fragment {
             };
             mRecyclerView.addOnScrollListener(scrollListener);
         }else{
-            TvSeriesAdapter mmTvSeriesAdapter = new TvSeriesAdapter(RealmUtils.getInstance().readPopularTVShowsFromRealm());
-            mRecyclerView.setAdapter(mmTvSeriesAdapter);
-            mmTvSeriesAdapter.notifyDataSetChanged();
+            tvShowList.clear();
+            tvShowList.addAll(RealmUtils.getInstance().readPopularTVShowsFromRealm());
+            mTvSeriesAdapter.notifyDataSetChanged();
         }
         return rootView;
     }
@@ -93,7 +93,7 @@ public class PopularTVSeriesFragment extends Fragment {
                 numberOfPages = response.getTotalPages();
                 //addition
                 for (TVShow t: response.getTVShow()) {
-                    if(!TVShowList.contains(t)){
+                    if(!tvShowList.contains(t)){
                         TVShow tv = RealmUtils.getInstance().readTVShowFromRealm(t.getId());
                         if(tv!=null) {
                             t.airing = tv.airing;
@@ -108,10 +108,10 @@ public class PopularTVSeriesFragment extends Fragment {
                             }
                             t.allGenres = t.allGenres.substring(0, t.allGenres.length()-1);
                         }
-                        TVShowList.add(t);
+                        tvShowList.add(t);
                     }
                 }
-                RealmUtils.getInstance().addTVShowsToRealm(TVShowList);
+                RealmUtils.getInstance().addTVShowsToRealm(tvShowList);
                 mTvSeriesAdapter.notifyDataSetChanged();
             }
         });

@@ -5,6 +5,7 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,7 @@ import com.example.zsamir.movieappintership.Modules.MovieReviews;
 import com.example.zsamir.movieappintership.R;
 import com.example.zsamir.movieappintership.Common.RatingActivity;
 import com.example.zsamir.movieappintership.RealmUtils.PostModel;
+import com.example.zsamir.movieappintership.RealmUtils.RealmInteger;
 import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import java.util.ArrayList;

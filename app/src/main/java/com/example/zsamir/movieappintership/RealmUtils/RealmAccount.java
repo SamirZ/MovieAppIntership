@@ -1,5 +1,8 @@
 package com.example.zsamir.movieappintership.RealmUtils;
 
+import com.example.zsamir.movieappintership.Modules.Movie;
+import com.example.zsamir.movieappintership.Modules.TVShow;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +19,14 @@ public class RealmAccount extends RealmObject {
 
     private RealmList<RealmInteger> watchlistMovieList;
     private RealmList<RealmInteger> watchlistTVSeriesList;
+
+    private RealmList<Movie> favMovies;
+    private RealmList<Movie> watchMovies;
+    private RealmList<Movie> ratedMovies;
+
+    private RealmList<TVShow> favTVShow;
+    private RealmList<TVShow> watchTVShow;
+    private RealmList<TVShow> ratedTVShow;
 
     public RealmAccount() {
     }
@@ -90,5 +101,29 @@ public class RealmAccount extends RealmObject {
             l.add(i.getI());
         }
         return l;
+    }
+
+    public RealmList<Movie> getFavMovies() {
+        return favMovies;
+    }
+
+    public RealmList<Movie> getWatchMovies() {
+        return watchMovies;
+    }
+
+    public RealmList<Movie> getRatedMovies() {
+        return ratedMovies;
+    }
+
+    public RealmList<TVShow> getFavTVShow() {
+        return favTVShow;
+    }
+
+    public RealmList<TVShow> getWatchTVShow() {
+        return watchTVShow;
+    }
+
+    public RealmList<TVShow> getRatedTVShow() {
+        return ratedTVShow;
     }
 }
