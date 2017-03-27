@@ -594,7 +594,7 @@ public class TVSeriesDetailsActivity extends BaseActivity {
     {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                finish();
                 return true;
             case R.id.action_like_tv:
                 if(!liked && MovieAppApplication.isUserLoggedIn()){

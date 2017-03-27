@@ -11,6 +11,7 @@ import android.view.View;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.SearchResultAdapter;
 import com.example.zsamir.movieappintership.BaseActivity;
+import com.example.zsamir.movieappintership.Firebase.FirebaseUtils;
 import com.example.zsamir.movieappintership.Modules.Result;
 import com.example.zsamir.movieappintership.Modules.SearchResult;
 import com.example.zsamir.movieappintership.R;
@@ -30,6 +31,9 @@ public class SearchActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        FirebaseUtils utils = new FirebaseUtils();
+        utils.addDummyMoviesToFirebase();
 
         setTitle("");
 

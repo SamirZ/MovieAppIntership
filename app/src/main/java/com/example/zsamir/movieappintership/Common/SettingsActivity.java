@@ -36,9 +36,6 @@ public class SettingsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        FirebaseUtils firebaseUtils = new FirebaseUtils();
-        firebaseUtils.addDummyMoviesToFirebase();
-
         SharedPreferences sharedPreferences = getSharedPreferences("PREFERENCE", 0);
         if (sharedPreferences.contains("movieNotif")) {
             movieNotifyOn = getSharedPreferences("PREFERENCE", 0).getBoolean("movieNotif", false);

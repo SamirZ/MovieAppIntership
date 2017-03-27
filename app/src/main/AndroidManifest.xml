@@ -173,17 +173,21 @@
             android:name=".AlertReceivers.TVAlertReceiver"
             android:process=":remote" />
 
-        <activity android:name=".AlertReceivers.UpcomingMovieActivity" >
-
+        <activity android:name=".AlertReceivers.UpcomingMovieActivity">
             <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity" />
         </activity>
         <activity android:name=".AlertReceivers.AiringEpisodesActivity">
             <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity" />
         </activity>
+        <activity
+            android:name=".Cinema.CinemaActivity"
+            android:label="@string/title_activity_cinema"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Cinema.CinemaMovieActivity"></activity>
     </application>
 
 </manifest>

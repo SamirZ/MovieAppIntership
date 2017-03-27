@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.example.zsamir.movieappintership.API.ApiHandler;
+import com.example.zsamir.movieappintership.Cinema.CinemaActivity;
 import com.example.zsamir.movieappintership.Common.AccountListsRequestHandler;
 import com.example.zsamir.movieappintership.Common.RatingActivity;
 import com.example.zsamir.movieappintership.Common.SettingsActivity;
@@ -144,6 +145,7 @@ public class BaseActivity extends AppCompatActivity implements NetworkStateRecei
         navigationView.getHeaderView(0).findViewById(R.id.settings_nav).setVisibility(View.VISIBLE);
         navigationView.getHeaderView(0).findViewById(R.id.more_nav).setVisibility(View.VISIBLE);
         navigationView.getHeaderView(0).findViewById(R.id.your_list).setVisibility(View.VISIBLE);
+        navigationView.getHeaderView(0).findViewById(R.id.cinema_nav).setVisibility(View.VISIBLE);
     }
 
     private void hideButtons() {
@@ -154,6 +156,7 @@ public class BaseActivity extends AppCompatActivity implements NetworkStateRecei
         navigationView.getHeaderView(0).findViewById(R.id.settings_nav).setVisibility(View.GONE);
         navigationView.getHeaderView(0).findViewById(R.id.more_nav).setVisibility(View.GONE);
         navigationView.getHeaderView(0).findViewById(R.id.your_list).setVisibility(View.GONE);
+        navigationView.getHeaderView(0).findViewById(R.id.cinema_nav).setVisibility(View.GONE);
     }
 
     private void animateAllButtons() {
@@ -172,6 +175,8 @@ public class BaseActivity extends AppCompatActivity implements NetworkStateRecei
         animateButton(navigationView.getHeaderView(0).findViewById(R.id.your_ratings), navigationView.getHeaderView(0).findViewById(R.id.your_ratings_icon),
                 (TextView) navigationView.getHeaderView(0).findViewById(R.id.your_ratings_text), DrawableCompat.wrap(ContextCompat.getDrawable(this,R.drawable.star)));
 
+        animateButton(navigationView.getHeaderView(0).findViewById(R.id.cinema_nav), navigationView.getHeaderView(0).findViewById(R.id.cinema_nav_icon),
+                (TextView) navigationView.getHeaderView(0).findViewById(R.id.cinema_nav_text), DrawableCompat.wrap(ContextCompat.getDrawable(this,R.drawable.cinema_icon)));
     }
 
     private void setDefaultColors() {
@@ -181,6 +186,7 @@ public class BaseActivity extends AppCompatActivity implements NetworkStateRecei
         View ratings = navigationView.getHeaderView(0).findViewById(R.id.your_ratings_icon);
         View settings = navigationView.getHeaderView(0).findViewById(R.id.settings_nav_icon);
         View logout = navigationView.getHeaderView(0).findViewById(R.id.logout_nav_icon);
+        View cinema = navigationView.getHeaderView(0).findViewById(R.id.cinema_nav_icon);
 
         Drawable likeIcon = DrawableCompat.wrap(ContextCompat.getDrawable(this,R.drawable.like_filled));
         DrawableCompat.setTint(likeIcon, ContextCompat.getColor(BaseActivity.this,R.color.colorMovieItemText));
@@ -197,11 +203,16 @@ public class BaseActivity extends AppCompatActivity implements NetworkStateRecei
         Drawable logoutIcon = DrawableCompat.wrap(ContextCompat.getDrawable(this,R.drawable.redo_48));
         DrawableCompat.setTint(logoutIcon, ContextCompat.getColor(BaseActivity.this,R.color.colorMovieItemText));
 
+        Drawable cinemaIcon = DrawableCompat.wrap(ContextCompat.getDrawable(this,R.drawable.cinema_icon));
+        DrawableCompat.setTint(logoutIcon, ContextCompat.getColor(BaseActivity.this,R.color.colorMovieItemText));
+
         like.setBackground(likeIcon);
         watchlist.setBackground(watchlistIcon);
         ratings.setBackground(ratingsIcon);
         settings.setBackground(settingsIcon);
         logout.setBackground(logoutIcon);
+        cinema.setBackground(cinemaIcon);
+
 
     }
 
@@ -290,6 +301,10 @@ public class BaseActivity extends AppCompatActivity implements NetworkStateRecei
                         Intent i = new Intent(BaseActivity.this, SettingsActivity.class);
                         startActivity(i);
 
+                    }
+                    else if(layout.equals(navigationView.getHeaderView(0).findViewById(R.id.cinema_nav))){
+                        Intent i = new Intent(BaseActivity.this, CinemaActivity.class);
+                        startActivity(i);
                     }
 
                     BaseActivity.this.onBackPressed();

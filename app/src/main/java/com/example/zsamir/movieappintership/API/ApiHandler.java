@@ -328,6 +328,7 @@ public class ApiHandler {
             public void onResponse(Call<Images> call, Response<Images> response) {
                 if (listener != null) {
                     listener.success(response.body());
+                    Log.d("CALL", String.valueOf(call.request().url()));
                 }
             }
 
