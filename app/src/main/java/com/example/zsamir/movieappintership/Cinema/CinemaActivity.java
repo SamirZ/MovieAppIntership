@@ -1,6 +1,7 @@
 package com.example.zsamir.movieappintership.Cinema;
 
 import android.annotation.SuppressLint;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,10 +35,13 @@ public class CinemaActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cinema);
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         setUpDrawer((DrawerLayout) findViewById(R.id.drawer_layout_cinema),toolbar);
+
+        checkUserLogin((NavigationView)findViewById(R.id.nav_view));
 
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -123,7 +127,7 @@ public class CinemaActivity extends BaseActivity {
             LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
 
 
-            cinemaMovieAdapter = new CinemaMovieAdapter(movies);
+            cinemaMovieAdapter = new CinemaMovieAdapter(this,movies);
             movies.clear();
             getMovies(getArguments().getString("TITLE"),movies);
             cinemaMovieAdapter.notifyDataSetChanged();
@@ -135,7 +139,7 @@ public class CinemaActivity extends BaseActivity {
         }
 
         @SuppressLint("SwitchIntDef")
-        private ArrayList<CinemaMovie> getMovies(String title, ArrayList<CinemaMovie> cinemaMovies) {
+        private void getMovies(String title, ArrayList<CinemaMovie> cinemaMovies) {
             FirebaseUtils firebaseUtils = new FirebaseUtils();
 
             if(title.equalsIgnoreCase("today")){
@@ -168,9 +172,8 @@ public class CinemaActivity extends BaseActivity {
             }
 
 
-            ArrayList<CinemaMovie> movies = firebaseUtils.retrieveMoviesFromFirebase(title, cinemaMovieAdapter,cinemaMovies);
+            firebaseUtils.retrieveMovies(title, cinemaMovieAdapter,cinemaMovies);
             cinemaMovieAdapter.notifyDataSetChanged();
-            return movies;
         }
     }
 

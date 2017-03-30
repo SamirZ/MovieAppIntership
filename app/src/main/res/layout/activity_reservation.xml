@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_reservation"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorMovieDetailsBackground"
+    tools:context="com.example.zsamir.movieappintership.Cinema.ReservationActivity">
+
+    <RelativeLayout
+        android:id="@+id/first_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp"
+        android:paddingEnd="20dp"
+        android:paddingStart="10dp"
+        android:paddingLeft="10dp"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/movie_picker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:spinnerMode="dropdown" />
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:src="@drawable/arrow_down_yellow" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_below="@id/first_layout"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorItemSelected"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="5"
+        android:id="@+id/second_layout"
+        android:layout_below="@id/first_layout">
+
+        <RelativeLayout
+            android:layout_weight="2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            android:paddingRight="20dp"
+            android:paddingEnd="20dp"
+            android:paddingStart="10dp"
+            android:paddingLeft="10dp"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/date_picker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:spinnerMode="dropdown" />
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_down_yellow" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_below="@id/second_layout"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorItemSelected"
+            />
+
+        <RelativeLayout
+            android:layout_weight="3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            android:paddingRight="20dp"
+            android:paddingEnd="20dp"
+            android:paddingStart="10dp"
+            android:paddingLeft="10dp"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/num_picker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:spinnerMode="dropdown" />
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_down_yellow" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_below="@id/second_layout"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorItemSelected"
+        />
+
+    <LinearLayout
+        android:layout_below="@id/second_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="6"
+        android:layout_margin="20dp">
+
+        <ImageView
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/taken_circle"/>
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/taken"
+            android:textColor="@color/colorItemSelected"/>
+
+        <ImageView
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/white_circle"/>
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/available"
+            android:textColor="@color/colorText"/>
+
+        <ImageView
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/yellow_circle"/>
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/selected"
+            android:textColor="@color/colorAccent"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/second_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/line"
+        android:id="@+id/screen_line"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_below="@id/screen_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seat_selection_recyclerView">
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>

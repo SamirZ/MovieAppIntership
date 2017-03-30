@@ -1,24 +1,23 @@
 package com.example.zsamir.movieappintership.Cinema;
 
-import android.database.DataSetObserver;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.CastAdapter;
 import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Firebase.CinemaMovie;
+import com.example.zsamir.movieappintership.Firebase.PlayTime;
 import com.example.zsamir.movieappintership.Modules.Cast;
 import com.example.zsamir.movieappintership.Modules.Credits;
 import com.example.zsamir.movieappintership.Modules.Crew;
@@ -30,9 +29,9 @@ import com.example.zsamir.movieappintership.R;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import static java.security.AccessController.getContext;
-
 public class CinemaMovieActivity extends BaseActivity {
+
+    private String choice = "";
 
     private CinemaMovie cinemaMovie;
 
@@ -58,8 +57,11 @@ public class CinemaMovieActivity extends BaseActivity {
 
     private ImageView mMovieImage;
     private ImageView rateImage;
+    private Button book;
 
     private Spinner timePicker;
+
+    private String day;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,9 @@ public class CinemaMovieActivity extends BaseActivity {
             setUpViews();
 
             setUpData();
+        }
+        if(getIntent().hasExtra("DAY")){
+            day = getIntent().getStringExtra("DAY");
         }
     }
 
@@ -91,6 +96,7 @@ public class CinemaMovieActivity extends BaseActivity {
         mMovieName = (TextView) findViewById(R.id.cinema_movie_details_name);
         mMovieGenre = (TextView) findViewById(R.id.cinema_movie_details_genre);
         timePicker = (Spinner) findViewById(R.id.time_picker);
+        book = (Button) findViewById(R.id.book_button);
     }
 
     private void setUpData() {
@@ -209,10 +215,18 @@ public class CinemaMovieActivity extends BaseActivity {
             }
         });
 
-        ArrayList<String> times = new ArrayList<>();
-        times.add("16:00");
-        times.add("20:00");
-        times.add("22:00");
+
+        // READ MOVIE TIMES
+        //  TO DO
+        final ArrayList<String> times = new ArrayList<>();
+        times.add("Choose a time");
+
+        Log.d("MOVIE",cinemaMovie.toString());
+
+        for (PlayTime t:cinemaMovie.getPlayTimes()) {
+            times.add(t.getTime());
+        }
+
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.selected_time_item, times);
         adapter.setDropDownViewResource(R.layout.time_item);
@@ -220,10 +234,25 @@ public class CinemaMovieActivity extends BaseActivity {
         timePicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                choice = times.get(position);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        book.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(CinemaMovieActivity.this,ReservationActivity.class);
+                if(choice!=null && !choice.equalsIgnoreCase("Choose a time")){
+                    i.putExtra("TIME",choice+"/"+day);
+                    i.putExtra("MOVIE",cinemaMovie);
+
+                    CinemaMovieActivity.this.startActivity(i);
+                }else{
+                    Toast.makeText(CinemaMovieActivity.this, "Please select a time.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

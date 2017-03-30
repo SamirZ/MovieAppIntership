@@ -1,5 +1,7 @@
 package com.example.zsamir.movieappintership.Adapters;
 
+import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +18,12 @@ import java.util.ArrayList;
 
 public class CinemaMovieAdapter extends RecyclerView.Adapter<CinemaMovieViewHolder>{
 
+    private Fragment fragment;
     private ArrayList<CinemaMovie> mMovies;
 
-    public CinemaMovieAdapter(ArrayList<CinemaMovie> mMovies) {
+    public CinemaMovieAdapter(Fragment fragment, ArrayList<CinemaMovie> mMovies) {
         this.mMovies = mMovies;
+        this.fragment = fragment;
     }
 
     @Override
@@ -31,7 +35,7 @@ public class CinemaMovieAdapter extends RecyclerView.Adapter<CinemaMovieViewHold
     @Override
     public void onBindViewHolder(CinemaMovieViewHolder holder, int position) {
         CinemaMovie movie = mMovies.get(position);
-        holder.bindMovie(movie);
+        holder.bindMovie(fragment,movie);
     }
 
     @Override

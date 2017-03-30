@@ -152,4 +152,8 @@
     <string name="connect">Connect</string>
     <string name="action_cinema">Cinema</string>
     <string name="title_activity_cinema">CinemaActivity</string>
+    <string name="book">BOOK NOW</string>
+    <string name="taken">Taken</string>
+    <string name="available">Available</string>
+    <string name="selected">Selected</string>
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -39,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/cinema_movie_details_genre"
                 android:textColor="@color/colorText"
-                android:textSize="16sp"/>
+                android:textSize="18sp"/>
 
             <TextView
                 android:layout_marginLeft="10dp"
@@ -49,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/cinema_movie_details_release_date"
                 android:textColor="@color/colorMovieItemText"
-                android:textSize="12sp"/>
+                android:textSize="13sp"/>
 
             <TextView
                 android:layout_marginLeft="10dp"
@@ -59,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/break_line_details"
                 android:textColor="@color/colorMovieItemText"
-                android:textSize="12sp"/>
+                android:textSize="13sp"/>
 
             <View
                 android:id="@+id/break_line_details"
@@ -89,7 +90,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/director"
-                    android:textSize="13sp"
+                    android:textSize="14sp"
                     android:textColor="@color/colorTextDetails"
                     />
                 <TextView
@@ -99,7 +100,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/writers"
-                    android:textSize="13sp"
+                    android:textSize="14sp"
                     android:textColor="@color/colorTextDetails"
                     />
                 <TextView
@@ -109,7 +110,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/stars"
-                    android:textSize="13sp"
+                    android:textSize="14sp"
                     android:textColor="@color/colorTextDetails"
                     />
 
@@ -123,21 +124,21 @@
                     android:id="@+id/cinema_movie_details_director_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"
+                    android:textSize="14sp"
                     android:textColor="@color/colorMovieItemText"
                     />
                 <TextView
                     android:id="@+id/cinema_movie_details_writers_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"
+                    android:textSize="14sp"
                     android:textColor="@color/colorMovieItemText"
                     />
                 <TextView
                     android:id="@+id/cinema_movie_details_stars_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"
+                    android:textSize="14sp"
                     android:textColor="@color/colorMovieItemText"
                     />
             </LinearLayout>
@@ -166,7 +167,7 @@
                 android:id="@+id/cinema_movie_details_rating_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
+                android:textSize="14sp"
                 android:textColor="@color/colorText"
                 android:gravity="top"
                 />
@@ -178,7 +179,7 @@
                 android:id="@+id/cinema_movie_details_rating_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 android:textColor="@color/colorRatingPart2"
                 android:gravity="top"
                 />
@@ -214,7 +215,7 @@
                 android:id="@+id/cinema_movie_details_rating_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
+                android:textSize="14sp"
                 android:text="@string/rate_this"
                 android:textColor="@color/colorText"
                 android:gravity="top"
@@ -231,17 +232,51 @@
             android:id="@+id/cinema_movie_details_overview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
+            android:textSize="14sp"
             android:textColor="@color/colorTextDetails"
             />
 
-        <Spinner
-            android:layout_margin="10dp"
-            android:layout_gravity="center"
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/time_picker">
-        </Spinner>
+            android:layout_margin="20dp"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            android:paddingRight="20dp"
+            android:paddingEnd="20dp"
+            android:paddingStart="10dp"
+            android:paddingLeft="10dp"
+            android:background="@drawable/border_1"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/time_picker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:spinnerMode="dropdown" />
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:src="@drawable/arrow_down" />
+
+        </RelativeLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/book"
+            android:background="@color/colorAccent"
+            android:textSize="13sp"
+            android:textColor="@color/colorBlack"
+            android:layout_marginTop="20dp"
+            android:id="@+id/book_button"/>
 
     </LinearLayout>
 </ScrollView>

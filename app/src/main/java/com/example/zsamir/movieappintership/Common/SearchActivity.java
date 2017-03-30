@@ -32,8 +32,8 @@ public class SearchActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        FirebaseUtils utils = new FirebaseUtils();
-        utils.addDummyMoviesToFirebase();
+        //FirebaseUtils utils = new FirebaseUtils();
+        //utils.addDummyMoviesToFirebase();
 
         setTitle("");
 

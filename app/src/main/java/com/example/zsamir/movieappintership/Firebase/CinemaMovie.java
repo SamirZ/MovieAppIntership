@@ -9,28 +9,26 @@ public class CinemaMovie implements Parcelable {
 
     private int id;
     private String name;
-    private String time;
     private String genres;
     private double rating;
     private String overview;
     private String backdropPath;
     private String releaseDate;
 
-    private ArrayList<CinemaSeat> seats;
+    private ArrayList<PlayTime> playTimes;
 
     public CinemaMovie() {
     }
 
-    public CinemaMovie(int id, String name, String time, String genres, double rating, String overview, String backdropPath, String releaseDate, ArrayList<CinemaSeat> seats) {
+    public CinemaMovie(int id, String name, String genres, double rating, String overview, String backdropPath, String releaseDate, ArrayList<PlayTime> playTimes) {
         this.id = id;
         this.name = name;
-        this.time = time;
         this.genres = genres;
         this.rating = rating;
         this.overview = overview;
         this.backdropPath = backdropPath;
         this.releaseDate = releaseDate;
-        this.seats = seats;
+        this.playTimes = playTimes;
     }
 
     public int getId() {
@@ -47,14 +45,6 @@ public class CinemaMovie implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 
     public String getGenres() {
@@ -97,29 +87,23 @@ public class CinemaMovie implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
-    public ArrayList<CinemaSeat> getSeats() {
-        return seats;
+    public ArrayList<PlayTime> getPlayTimes() {
+        return playTimes;
     }
 
-    public void setSeats(ArrayList<CinemaSeat> seats) {
-        this.seats = seats;
+    public void setPlayTimes(ArrayList<PlayTime> playTimes) {
+        this.playTimes = playTimes;
     }
+
+
 
     @Override
     public String toString() {
         return "CinemaMovie{" +
-                "id=" + id +
                 ", name='" + name + '\'' +
-                ", time='" + time + '\'' +
-                ", genres='" + genres + '\'' +
-                ", rating=" + rating +
-                ", overview='" + overview + '\'' +
-                ", backdropPath='" + backdropPath + '\'' +
-                ", releaseDate='" + releaseDate + '\'' +
-                ", seats=" + seats +
+                ", playTimes=" + playTimes +
                 '}';
     }
-
 
     @Override
     public int describeContents() {
@@ -130,29 +114,26 @@ public class CinemaMovie implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.id);
         dest.writeString(this.name);
-        dest.writeString(this.time);
         dest.writeString(this.genres);
         dest.writeDouble(this.rating);
         dest.writeString(this.overview);
         dest.writeString(this.backdropPath);
         dest.writeString(this.releaseDate);
-        dest.writeList(this.seats);
+        dest.writeTypedList(this.playTimes);
     }
 
     protected CinemaMovie(Parcel in) {
         this.id = in.readInt();
         this.name = in.readString();
-        this.time = in.readString();
         this.genres = in.readString();
         this.rating = in.readDouble();
         this.overview = in.readString();
         this.backdropPath = in.readString();
         this.releaseDate = in.readString();
-        this.seats = new ArrayList<>();
-        in.readList(this.seats, CinemaSeat.class.getClassLoader());
+        this.playTimes = in.createTypedArrayList(PlayTime.CREATOR);
     }
 
-    public static final Parcelable.Creator<CinemaMovie> CREATOR = new Parcelable.Creator<CinemaMovie>() {
+    public static final Creator<CinemaMovie> CREATOR = new Creator<CinemaMovie>() {
         @Override
         public CinemaMovie createFromParcel(Parcel source) {
             return new CinemaMovie(source);

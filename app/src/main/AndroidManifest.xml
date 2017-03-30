@@ -185,9 +185,11 @@
         </activity>
         <activity
             android:name=".Cinema.CinemaActivity"
-            android:label="@string/title_activity_cinema"
+            android:label="@string/action_cinema"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Cinema.CinemaMovieActivity"></activity>
+        <activity android:name=".Cinema.CinemaMovieActivity"
+            android:label="@string/action_cinema"/>
+        <activity android:name=".Cinema.ReservationActivity"></activity>
     </application>
 
 </manifest>

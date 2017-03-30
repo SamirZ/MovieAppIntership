@@ -1,6 +1,8 @@
 package com.example.zsamir.movieappintership.ViewHolders;
 
+import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +24,7 @@ public class CinemaMovieViewHolder extends RecyclerView.ViewHolder implements Vi
     private TextView mMovieName;
     private TextView mMovieGenre;
     private TextView mMovieRating;
+    private Fragment fragment;
 
     private CinemaMovie mMovie;
 
@@ -34,8 +37,9 @@ public class CinemaMovieViewHolder extends RecyclerView.ViewHolder implements Vi
         mMovieImage.setOnClickListener(this);
     }
 
-    public void bindMovie(CinemaMovie movie) {
+    public void bindMovie(Fragment fragment, CinemaMovie movie) {
         mMovie = movie;
+        this.fragment = fragment;
 
         if(movie.getName()!=null)
             mMovieName.setText(movie.getName()+" ("+"2016"+")"); //TESTING EDIT
@@ -58,6 +62,7 @@ public class CinemaMovieViewHolder extends RecyclerView.ViewHolder implements Vi
     public void onClick(View v) {
         Intent i = new Intent(itemView.getContext(), CinemaMovieActivity.class);
         i.putExtra("MOVIE",mMovie);
+        i.putExtra("DAY",fragment.getArguments().getString("TITLE"));
         itemView.getContext().startActivity(i);
     }
 }
