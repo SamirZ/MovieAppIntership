@@ -79,9 +79,9 @@ public class HighestRatedMoviesFragment extends Fragment{
             mRecyclerView.addOnScrollListener(scrollListener);
         }
         else{
-            MovieAdapter mmMovieAdapter = new MovieAdapter(RealmUtils.getInstance().readHighestRatedMoviesFromRealm());
-            mRecyclerView.setAdapter(mmMovieAdapter);
-            mmMovieAdapter.notifyDataSetChanged();
+            moviesList.clear();
+            moviesList.addAll(RealmUtils.getInstance().readHighestRatedMoviesFromRealm());
+            mMovieAdapter.notifyDataSetChanged();
         }
 
         return rootView;

@@ -147,5 +147,7 @@
     <string name="movie_notification_text"> movies coming soon. Check out now!</string>
     <string name="password_warrning">Enter your password!</string>
     <string name="username_warrning">Enter your username!</string>
-    <string name="connection_warrning">Internet connection required!</string>
+    <string name="connection_warrning">Internet connection required</string>
+    <string name="connection_required">Please connect to the internet to continue.</string>
+    <string name="connect">Connect</string>
 </resources>

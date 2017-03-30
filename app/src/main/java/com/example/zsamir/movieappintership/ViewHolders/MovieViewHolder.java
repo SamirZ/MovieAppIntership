@@ -1,9 +1,15 @@
 package com.example.zsamir.movieappintership.ViewHolders;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +20,7 @@ import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Movies.MovieDetailsActivity;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -98,10 +105,44 @@ public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     @Override
     public void onClick(View view) {
-        //Toast.makeText(view.getContext(), mMovie.getTitle(), Toast.LENGTH_SHORT).show();
-        Intent i = new Intent(view.getContext(), MovieDetailsActivity.class);
-        i.putExtra("Movie", mMovie);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        view.getContext().startActivity(i);
+        if(isNetworkAvailable() || RealmUtils.getInstance().readRealmMovieDetails(mMovie.getId())!=null){
+            Intent i = new Intent(view.getContext(), MovieDetailsActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.putExtra("Movie", mMovie);
+            view.getContext().startActivity(i);
+        }else {
+            showNoDataDialog();
+        }
+    }
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) this.itemView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    private void showNoDataDialog(){
+        AlertDialog dialog = new AlertDialog.Builder(itemView.getContext(), R.style.MyDialogTheme)
+                .setTitle(itemView.getContext().getString(R.string.connection_warrning))
+                .setMessage(itemView.getContext().getString(R.string.connection_required) + "\n" + "\n" + "\n" + "\n" + "\n")
+                .setPositiveButton(R.string.connect, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with login
+                        itemView.getContext().startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+
+                    }
+                })
+                .setNegativeButton(R.string.not_now, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // set pref to no
+                    }
+                })
+                .show();
+
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.colorAccent));
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.colorText));
+
+        //Delete user from shared preferences
     }
 }

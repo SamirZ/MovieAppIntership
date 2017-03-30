@@ -1,10 +1,12 @@
 package com.example.zsamir.movieappintership.RealmUtils;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 
 public class RealmInteger extends RealmObject{
 
+    @PrimaryKey
     private int i;
 
     public RealmInteger() {

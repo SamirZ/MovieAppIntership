@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +22,9 @@ import java.util.ArrayList;
 public class AiringTodayTVSeriesFragment extends Fragment {
 
     private static AiringTodayTVSeriesFragment instance = null;
-    ArrayList<TVShow> TVShowList = new ArrayList<>();
+    ArrayList<TVShow> tvShowList = new ArrayList<>();
     ApiHandler movieDbApi = ApiHandler.getInstance();
-    TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(TVShowList);
+    TvSeriesAdapter mTvSeriesAdapter = new TvSeriesAdapter(tvShowList);
     int numberOfPages;
 
     public AiringTodayTVSeriesFragment() {
@@ -64,10 +63,10 @@ public class AiringTodayTVSeriesFragment extends Fragment {
         mTvSeriesAdapter.notifyDataSetChanged();
 
         if(((BaseActivity)getActivity()).isNetworkAvailable()){
-            if(TVShowList.size()==0)
+            if(tvShowList.size()==0)
                 loadAiringTodayTvSeries(1);
             else{
-                TVShowList.clear();
+                tvShowList.clear();
                 loadAiringTodayTvSeries(1);
                 mTvSeriesAdapter.notifyDataSetChanged();
             }
@@ -81,9 +80,9 @@ public class AiringTodayTVSeriesFragment extends Fragment {
             };
             mRecyclerView.addOnScrollListener(scrollListener);
         }else{
-            TvSeriesAdapter mmTvSeriesAdapter = new TvSeriesAdapter(RealmUtils.getInstance().readAiringTodayTVShowsFromRealm());
-            mRecyclerView.setAdapter(mmTvSeriesAdapter);
-            mmTvSeriesAdapter.notifyDataSetChanged();
+            tvShowList.clear();
+            tvShowList.addAll(RealmUtils.getInstance().readAiringTodayTVShowsFromRealm());
+            mTvSeriesAdapter.notifyDataSetChanged();
         }
 
         return rootView;
@@ -96,7 +95,7 @@ public class AiringTodayTVSeriesFragment extends Fragment {
                 numberOfPages = response.getTotalPages();
                 //addition
                 for (TVShow t: response.getTVShow()) {
-                    if(!TVShowList.contains(t)){
+                    if(!tvShowList.contains(t)){
                         TVShow tv = RealmUtils.getInstance().readTVShowFromRealm(t.getId());
                         if(tv!=null) {
                             t.popular = tv.popular;
@@ -111,10 +110,10 @@ public class AiringTodayTVSeriesFragment extends Fragment {
                             }
                             t.allGenres = t.allGenres.substring(0, t.allGenres.length()-1);
                         }
-                        TVShowList.add(t);
+                        tvShowList.add(t);
                     }
                 }
-                RealmUtils.getInstance().addTVShowsToRealm(TVShowList);
+                RealmUtils.getInstance().addTVShowsToRealm(tvShowList);
                 mTvSeriesAdapter.notifyDataSetChanged();
             }
         });

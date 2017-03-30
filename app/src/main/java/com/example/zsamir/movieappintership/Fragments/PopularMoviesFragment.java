@@ -79,9 +79,9 @@ public class PopularMoviesFragment extends Fragment{
             };
             mRecyclerView.addOnScrollListener(scrollListener);
         }else{
-            MovieAdapter mmMovieAdapter = new MovieAdapter(RealmUtils.getInstance().readPopularMoviesFromRealm());
-            mRecyclerView.setAdapter(mmMovieAdapter);
-            mmMovieAdapter.notifyDataSetChanged();
+            moviesList.clear();
+            moviesList.addAll(RealmUtils.getInstance().readPopularMoviesFromRealm());
+            mMovieAdapter.notifyDataSetChanged();
         }
 
 

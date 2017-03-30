@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.AlertReceivers.MovieAlertReceiver;
+import com.example.zsamir.movieappintership.Firebase.FirebaseUtils;
 import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.AlertReceivers.TVAlertReceiver;
 import com.example.zsamir.movieappintership.R;
@@ -34,6 +35,9 @@ public class SettingsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        FirebaseUtils firebaseUtils = new FirebaseUtils();
+        firebaseUtils.addDummyMoviesToFirebase();
 
         SharedPreferences sharedPreferences = getSharedPreferences("PREFERENCE", 0);
         if (sharedPreferences.contains("movieNotif")) {

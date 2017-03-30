@@ -4,6 +4,7 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,6 +52,7 @@ public class ActorProfileActivity extends BaseActivity {
                     @Override
                     public void success(Actor response) {
                         mActor = response;
+                        Log.d("ACTOR NAME",mActor.getName());
                         initializeActor();
                     }
                 });
@@ -83,7 +85,7 @@ public class ActorProfileActivity extends BaseActivity {
         if(isNetworkAvailable()) {
             if (cast == null)
                 cast = episodeCast.toCast();
-            RealmUtils.getInstance().deleteActor(cast.getId());
+
             RealmUtils.getInstance().createRealmActorDetails(cast.getId(),cast,mActor);
 
             ImageView mActorImage = (ImageView) findViewById(R.id.actor_details_image);
@@ -152,12 +154,12 @@ public class ActorProfileActivity extends BaseActivity {
                 mActorBio.setVisibility(View.GONE);
                 more.setVisibility(View.GONE);
             }
+
             ApiHandler.getInstance().requestMovieWithActor(mActor.getId(), new ApiHandler.MovieListListener() {
                 @Override
                 public void success(MovieList response) {
                     mMovies.addAll(response.getMovies());
-                    //identify actor
-                    //RealmUtils.getInstance().addMoviesToRealm(mMovies);
+                    RealmUtils.getInstance().addRealmActorDetailsMovies(mActor.getId(),mMovies);
                     mMovieAdapter.notifyDataSetChanged();
                 }
             });
@@ -166,9 +168,11 @@ public class ActorProfileActivity extends BaseActivity {
             LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setAdapter(mMovieAdapter);
+
         }else {
             if(RealmUtils.getInstance().readRealmActorDetails(cast.getId())!=null){
                 cast = RealmUtils.getInstance().readRealmActorDetails(cast.getId()).getCast();
+                Log.d("ACTOR NAME",cast.getName());
                 mActor = RealmUtils.getInstance().readRealmActorDetails(cast.getId()).getActor();
 
                 ImageView mActorImage = (ImageView) findViewById(R.id.actor_details_image);
@@ -176,8 +180,8 @@ public class ActorProfileActivity extends BaseActivity {
                     Glide.with(this).load(cast.getImageUrl()).into(mActorImage);
 
                 TextView mActorName = (TextView) findViewById(R.id.actor_details_name);
-                if (mActor.getName() != null)
-                    mActorName.setText(mActor.getName());
+                if (cast.getName() != null)
+                    mActorName.setText(cast.getName());
                 else
                     mActorName.setVisibility(View.GONE);
 
@@ -239,6 +243,7 @@ public class ActorProfileActivity extends BaseActivity {
                 }
 
                 //mMovies.addAll(RealmUtils.getInstance().readActorMoviesFromRealm(cast.getId()));
+                mMovies.addAll(RealmUtils.getInstance().readActorMoviesFromRealm(cast.getId()));
                 mMovieAdapter.notifyDataSetChanged();
 
                 RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.actor_movies_recyclerView);

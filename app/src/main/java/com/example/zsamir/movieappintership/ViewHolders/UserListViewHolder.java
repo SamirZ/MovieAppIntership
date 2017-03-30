@@ -32,7 +32,7 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
     private ImageView image;
     private Movie movie;
     private TVShow TVShow;
-    private Boolean clicked = false;
+    private Boolean swiped = false;
 
 
     public UserListViewHolder(View itemView, final UserListAdapter adapter) {
@@ -50,7 +50,7 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
 
             public void onSwipeLeft() {
                 if(movie!=null){
-                    if(!clicked) {
+                    if(!swiped) {
                         delete.setVisibility(View.VISIBLE);
                         image.setVisibility(View.GONE);
                         if(MovieAppApplication.getType().equalsIgnoreCase("RATINGS")){
@@ -121,16 +121,16 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
                                 }
                             });
                         }
-                        clicked = true;
+                        swiped = true;
                     }
                     else {
                         delete.setVisibility(View.GONE);
                         image.setVisibility(View.VISIBLE);
-                        clicked = false;
+                        swiped = false;
                     }
                 }
                 if(TVShow !=null){
-                    if(!clicked) {
+                    if(!swiped) {
                         image.setVisibility(View.GONE);
                         delete.setVisibility(View.VISIBLE);
                         if(MovieAppApplication.getType().equalsIgnoreCase("RATINGS")){
@@ -201,7 +201,7 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
                                 }
                             });
                         }
-                        clicked = true;
+                        swiped = true;
                     }
                 }
             }
@@ -209,7 +209,7 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
             public void onSwipeRight() {
                 delete.setVisibility(View.GONE);
                 image.setVisibility(View.VISIBLE);
-                clicked = false;
+                swiped = false;
             }
 
 
@@ -224,11 +224,7 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
         date.setText("("+movie.getReleaseYear()+")");
         rating.setText(String.format(Locale.getDefault(),"%1$.1f",movie.getVoteAverage()));
         rating.append(" /10");
-        if(movie.getPosterPath()==null){
-            Glide.with(image.getContext()).load(R.color.colorBlack).into(image);
-        }else{
-            Glide.with(image.getContext()).load(movie.getPosterUrl()).into(image);
-        }
+        Glide.with(image.getContext()).load(movie.getPosterUrl()).into(image);
     }
 
     public void bindTVSeries(TVShow TVShow){
@@ -237,11 +233,7 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
         date.setText("("+itemView.getContext().getString(R.string.tv_series_name)+" "+ TVShow.getReleaseYear()+")");
         rating.setText(String.format(Locale.getDefault(),"%1$.1f", TVShow.getVoteAverage()));
         rating.append(" /10");
-        if(TVShow.getPosterPath()==null){
-            Glide.with(image.getContext()).load(R.color.colorBlack).into(image);
-        }else{
-            Glide.with(image.getContext()).load(TVShow.getPosterUrl()).into(image);
-        }
+        Glide.with(image.getContext()).load(TVShow.getPosterUrl()).into(image);
     }
 
     @Override

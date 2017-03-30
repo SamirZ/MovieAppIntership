@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class RealmUtils {
@@ -53,19 +54,18 @@ public class RealmUtils {
     }
 
 
-    /*
+
     public ArrayList<Movie> readActorMoviesFromRealm(int id){
 
         realm.beginTransaction();
 
-        ArrayList<Movie> movies  = new ArrayList<>(realm.where(Movie.class).equalTo("actorMovie",String.valueOf(id)).findAll());
+        RealmActorDetails actorDetails = realm.where(RealmActorDetails.class).equalTo("id",id).findFirst();
 
         realm.commitTransaction();
 
-        return movies;
+        return new ArrayList<>(actorDetails.getMovies());
 
     }
-    */
 
     public Movie readMovieFromRealm(int id){
 
@@ -80,7 +80,6 @@ public class RealmUtils {
         ArrayList<Movie> movies  = new ArrayList<>(realm.where(Movie.class).equalTo("popular",true).findAll());
 
         realm.commitTransaction();
-        Log.d("REALM P M", String.valueOf(movies.size()));
 
         return movies;
 
@@ -93,7 +92,6 @@ public class RealmUtils {
         ArrayList<Movie> movies  = new ArrayList<>(realm.where(Movie.class).equalTo("latest",true).findAll());
 
         realm.commitTransaction();
-        Log.d("REALM L M", String.valueOf(movies.size()));
 
         return movies;
 
@@ -106,7 +104,6 @@ public class RealmUtils {
         ArrayList<Movie> movies  = new ArrayList<>(realm.where(Movie.class).equalTo("highestrated",true).findAll());
 
         realm.commitTransaction();
-        Log.d("REALM H M", String.valueOf(movies.size()));
 
         return movies;
 
@@ -118,7 +115,6 @@ public class RealmUtils {
         ArrayList<TVShow> tvShows  = new ArrayList<>(realm.where(TVShow.class).equalTo("popular",true).findAll());
 
         realm.commitTransaction();
-        Log.d("REALM P TV", String.valueOf(tvShows.size()));
 
         return tvShows;
     }
@@ -129,7 +125,6 @@ public class RealmUtils {
         ArrayList<TVShow> tvShows  = new ArrayList<>(realm.where(TVShow.class).equalTo("airing",true).findAll());
 
         realm.commitTransaction();
-        Log.d("REALM A TV", String.valueOf(tvShows.size()));
 
         return tvShows;
     }
@@ -140,7 +135,6 @@ public class RealmUtils {
         ArrayList<TVShow> tvShows  = new ArrayList<>(realm.where(TVShow.class).equalTo("latest",true).findAll());
 
         realm.commitTransaction();
-        Log.d("REALM L TV", String.valueOf(tvShows.size()));
 
         return tvShows;
     }
@@ -151,7 +145,6 @@ public class RealmUtils {
         ArrayList<TVShow> tvShows  = new ArrayList<>(realm.where(TVShow.class).equalTo("highestrated",true).findAll());
 
         realm.commitTransaction();
-        Log.d("REALM H TV", String.valueOf(tvShows.size()));
 
         return tvShows;
     }
@@ -228,15 +221,45 @@ public class RealmUtils {
         realm.commitTransaction();
     }
 
+    public void addRealmActorDetailsMovies(int id,ArrayList<Movie> movies){
+
+        realm.beginTransaction();
+
+        RealmActorDetails actorDetails = realm.where(RealmActorDetails.class).equalTo("id",id).findFirst();
+
+        RealmList<Movie> movieRealmList = new RealmList<>();
+
+        for (Movie m:movies) {
+            Movie realmMovie = realm.where(Movie.class).equalTo("id", m.getId()).findFirst();
+
+            if(realmMovie==null){
+                movieRealmList.add(realm.copyToRealmOrUpdate(m));
+            }
+            else{
+                movieRealmList.add(realmMovie);
+            }
+        }
+
+        actorDetails.setMovies(movieRealmList);
+
+        realm.commitTransaction();
+
+    }
+
     public void createRealmActorDetails(int id,Cast c,Actor a) {
-        deleteActor(a.getId());
-        deleteCast(c.getId());
+
         deleteActorDetails(id);
 
         realm.beginTransaction();
+
         RealmActorDetails actorDetails = realm.createObject(RealmActorDetails.class,id);
-        actorDetails.setActor(realm.copyToRealmOrUpdate(a));
+
+        //CAST DATA
         actorDetails.setCast(realm.copyToRealmOrUpdate(c));
+
+        //ACTOR DATA
+        actorDetails.setActor(realm.copyToRealmOrUpdate(a));
+
         realm.commitTransaction();
     }
 
@@ -549,7 +572,7 @@ public class RealmUtils {
         });
     }
 
-    public void deleteEpisodeDetails(int id) {
+    public void deleteEpisodeDetails(String id) {
         final RealmResults<RealmEpisodeDetails> results = realm.where(RealmEpisodeDetails.class)
                 .equalTo("id",id)
                 .findAll();
@@ -561,7 +584,7 @@ public class RealmUtils {
         });
     }
 
-    public void createRealmEpisodeDetails(int id,int seasonNumber,int episodeNumber) {
+    public void createRealmEpisodeDetails(String id,int seasonNumber,int episodeNumber) {
         deleteEpisodeDetails(id);
         realm.beginTransaction();
         RealmEpisodeDetails episodeDetails = realm.createObject(RealmEpisodeDetails.class, id);
@@ -570,7 +593,7 @@ public class RealmUtils {
         realm.commitTransaction();
     }
 
-    public void addRealmEpisodeDetailsCast(int id, ArrayList<Cast> actors) {
+    public void addRealmEpisodeDetailsCast(String id, ArrayList<Cast> actors) {
         realm.beginTransaction();
         RealmEpisodeDetails tvDetails = realm.where(RealmEpisodeDetails.class)
                 .equalTo("id",id)
@@ -584,7 +607,7 @@ public class RealmUtils {
     }
 
 
-    public RealmEpisodeDetails readEpisodeDetails(Integer id) {
+    public RealmEpisodeDetails readEpisodeDetails(String id) {
         realm.beginTransaction();
 
         RealmEpisodeDetails result = realm.where(RealmEpisodeDetails.class)
@@ -595,7 +618,7 @@ public class RealmUtils {
         return result;
     }
 
-    public void addRealmEpisodeDetailsData(Integer id,EpisodeDetails response) {
+    public void addRealmEpisodeDetailsData(String id,EpisodeDetails response) {
         realm.beginTransaction();
         RealmEpisodeDetails tvDetails = realm.where(RealmEpisodeDetails.class)
                 .equalTo("id",id)
@@ -626,13 +649,176 @@ public class RealmUtils {
             public void execute(Realm realm) {
                 RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
                 for (Integer i:integers) {
-                    RealmInteger object = realm.createObject(RealmInteger.class);
-                    object.setI(i);
-                    realmAccount.getFavMovieList().add(object);
+                    RealmInteger object = new RealmInteger(i);
+                    realmAccount.getFavMovieList().add(realm.copyToRealmOrUpdate(object));
                 }
             }
         });
     }
+
+    //////
+    public void addRealmAccountFavMoviesData(final List<Movie> movies) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
+                for (Movie m:movies) {
+                    Movie movie = realm.where(Movie.class).equalTo("id", m.getId()).findFirst();
+                    if(movie==null){
+                        realmAccount.getFavMovies().add(realm.copyToRealmOrUpdate(m));
+                    }else{
+                        realmAccount.getFavMovies().add(movie);
+                    }
+                }
+            }
+        });
+    }
+
+    public void addRealmAccountWatchMoviesData(final List<Movie> movies) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
+                for (Movie m:movies) {
+                    Movie movie = realm.where(Movie.class).equalTo("id", m.getId()).findFirst();
+                    if(movie==null){
+                        realmAccount.getWatchMovies().add(realm.copyToRealmOrUpdate(m));
+                    }else{
+                        realmAccount.getWatchMovies().add(movie);
+                    }
+                }
+            }
+        });
+    }
+
+    public void addRealmAccountRatedMoviesData(final List<Movie> movies) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
+                for (Movie m:movies) {
+                    Movie movie = realm.where(Movie.class).equalTo("id", m.getId()).findFirst();
+                    if(movie==null){
+                        realmAccount.getRatedMovies().add(realm.copyToRealmOrUpdate(m));
+                    }else{
+                        realmAccount.getRatedMovies().add(movie);
+                    }
+                }
+            }
+        });
+    }
+    ////////
+    public void removeRealmAccountFavMoviesData() {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
+                realmAccount.getFavMovies().clear();
+            }
+        });
+    }
+
+    public void removeRealmAccountWatchMoviesData() {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
+                realmAccount.getWatchMovies().clear();
+            }
+        });
+    }
+
+    public void removeRealmAccountRatedMoviesData() {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
+                realmAccount.getRatedMovies().clear();
+            }
+        });
+    }
+    ////////
+    public void addRealmAccountFavTVShowsData(final List<TVShow> tvShows) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
+                for (TVShow m:tvShows) {
+                    TVShow tvShow = realm.where(TVShow.class).equalTo("id", m.getId()).findFirst();
+                    if(tvShow==null){
+                        realmAccount.getFavTVShow().add(realm.copyToRealmOrUpdate(m));
+                    }else{
+                        realmAccount.getFavTVShow().add(tvShow);
+                    }
+                }
+            }
+        });
+    }
+
+    public void addRealmAccountWatchTVShowsData(final List<TVShow> tvShows) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
+                for (TVShow m:tvShows) {
+                    TVShow tvShow = realm.where(TVShow.class).equalTo("id", m.getId()).findFirst();
+                    if(tvShow==null){
+                        realmAccount.getWatchTVShow().add(realm.copyToRealmOrUpdate(m));
+                    }else{
+                        realmAccount.getWatchTVShow().add(tvShow);
+                    }
+                }
+            }
+        });
+    }
+
+    public void addRealmAccountRatedTVShowsData(final List<TVShow> tvShows) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
+                for (TVShow m:tvShows) {
+                    TVShow tvShow = realm.where(TVShow.class).equalTo("id", m.getId()).findFirst();
+                    if(tvShow==null){
+                        realmAccount.getRatedTVShow().add(realm.copyToRealmOrUpdate(m));
+                    }else{
+                        realmAccount.getRatedTVShow().add(tvShow);
+                    }
+                }
+            }
+        });
+    }
+    ///////
+    public void removeRealmAccountFavTVShowsData() {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
+                realmAccount.getFavTVShow().clear();
+            }
+        });
+    }
+
+    public void removeRealmAccountWatchTVShowsData() {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
+                realmAccount.getWatchTVShow().clear();
+            }
+        });
+    }
+
+    public void removeRealmAccountRatedTVShowsData() {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
+                realmAccount.getRatedTVShow().clear();
+            }
+        });
+    }
+    ///////
 
     public void removeRealmAccountFavMovie(final int id) {
         final RealmResults<RealmInteger> results = realm.where(RealmInteger.class).equalTo("i",id).findAll();
@@ -650,9 +836,8 @@ public class RealmUtils {
             public void execute(Realm realm) {
                 RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
                 for (Integer i:integers) {
-                    RealmInteger object = realm.createObject(RealmInteger.class);
-                    object.setI(i);
-                    realmAccount.getFavTVSeriesList().add(object);
+                    RealmInteger object = new RealmInteger(i);
+                    realmAccount.getFavTVSeriesList().add(realm.copyToRealmOrUpdate(object));
                 }
             }
         });
@@ -674,9 +859,8 @@ public class RealmUtils {
             public void execute(Realm realm) {
                 RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
                 for (Integer i:integers) {
-                    RealmInteger object = realm.createObject(RealmInteger.class);
-                    object.setI(i);
-                    realmAccount.getWatchlistMovieList().add(object);
+                    RealmInteger object = new RealmInteger(i);
+                    realmAccount.getWatchlistMovieList().add(realm.copyToRealmOrUpdate(object));
                 }
             }
         });
@@ -698,9 +882,8 @@ public class RealmUtils {
             public void execute(Realm realm) {
                 RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
                 for (Integer i:integers) {
-                    RealmInteger object = realm.createObject(RealmInteger.class);
-                    object.setI(i);
-                    realmAccount.getWatchlistTVSeriesList().add(object);
+                    RealmInteger object = new RealmInteger(i);
+                    realmAccount.getWatchlistTVSeriesList().add(realm.copyToRealmOrUpdate(object));
                 }
             }
         });
@@ -722,9 +905,8 @@ public class RealmUtils {
             public void execute(Realm realm) {
                 RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
                 for (Integer i:integers) {
-                    RealmInteger object = realm.createObject(RealmInteger.class);
-                    object.setI(i);
-                    realmAccount.getRatedMovieList().add(object);
+                    RealmInteger object = new RealmInteger(i);
+                    realmAccount.getRatedMovieList().add(realm.copyToRealmOrUpdate(object));
                 }
             }
         });
@@ -746,9 +928,8 @@ public class RealmUtils {
             public void execute(Realm realm) {
                 RealmAccount realmAccount = realm.where(RealmAccount.class).findFirst();
                 for (Integer i:integers) {
-                    RealmInteger object = realm.createObject(RealmInteger.class);
-                    object.setI(i);
-                    realmAccount.getRatedTVSeriesList().add(object);
+                    RealmInteger object = new RealmInteger(i);
+                    realmAccount.getRatedTVSeriesList().add(realm.copyToRealmOrUpdate(object));
                 }
             }
         });
@@ -834,4 +1015,5 @@ public class RealmUtils {
             postModel.setRating(r);
         realm.commitTransaction();
     }
+
 }

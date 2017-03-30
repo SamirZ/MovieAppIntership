@@ -79,9 +79,9 @@ public class LatestTVSeriesFragment extends Fragment {
             mRecyclerView.addOnScrollListener(scrollListener);
         }
         else{
-            TvSeriesAdapter mmTvSeriesAdapter = new TvSeriesAdapter(RealmUtils.getInstance().readLatestTVShowsFromRealm());
-            mRecyclerView.setAdapter(mmTvSeriesAdapter);
-            mmTvSeriesAdapter.notifyDataSetChanged();
+            tvShowList.clear();
+            tvShowList.addAll(RealmUtils.getInstance().readLatestTVShowsFromRealm());
+            mTvSeriesAdapter.notifyDataSetChanged();
         }
         return rootView;
     }

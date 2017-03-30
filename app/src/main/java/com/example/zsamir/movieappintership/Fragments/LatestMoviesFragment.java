@@ -81,9 +81,9 @@ public class LatestMoviesFragment extends Fragment {
             };
             mRecyclerView.addOnScrollListener(scrollListener);
         }else{
-            MovieAdapter mmMovieAdapter = new MovieAdapter(RealmUtils.getInstance().readLatestMoviesFromRealm());
-            mRecyclerView.setAdapter(mmMovieAdapter);
-            mmMovieAdapter.notifyDataSetChanged();
+            moviesList.clear();
+            moviesList.addAll(RealmUtils.getInstance().readLatestMoviesFromRealm());
+            mMovieAdapter.notifyDataSetChanged();
         }
 
 

@@ -37,8 +37,8 @@ public class NewsFeedActivity extends BaseActivity implements NavigationView.OnN
 
         if(isNetworkAvailable()){
             readRss.execute();
-        }
-        else{
+            checkFirstRun();
+        } else{
             if(!checkFirstRun())
                 readNewsFeedFromRealm();
         }

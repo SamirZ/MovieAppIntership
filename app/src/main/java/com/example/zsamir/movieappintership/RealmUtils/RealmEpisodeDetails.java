@@ -10,7 +10,7 @@ import io.realm.annotations.PrimaryKey;
 public class RealmEpisodeDetails extends RealmObject {
 
     @PrimaryKey
-    private int id;
+    private String id;
     private int seasonNumber;
     private int episodeNumber;
 
@@ -20,11 +20,11 @@ public class RealmEpisodeDetails extends RealmObject {
     public RealmEpisodeDetails() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

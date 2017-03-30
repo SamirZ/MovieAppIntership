@@ -24,7 +24,7 @@ import java.util.List;
 
 public class SeasonActivity extends BaseActivity {
 
-    private TVShowDetails TVShowDetails;
+    private TVShowDetails tvShowDetails;
 
     private TextView seasonYear;
     private ArrayList<Episode> episodes;
@@ -42,30 +42,30 @@ public class SeasonActivity extends BaseActivity {
 
         if(getIntent().hasExtra("TVSeriesDetails")){
 
-            TVShowDetails = getIntent().getParcelableExtra("TVSeriesDetails");
+            tvShowDetails = getIntent().getParcelableExtra("TVSeriesDetails");
 
-            this.setTitle(TVShowDetails.getName());
+            this.setTitle(tvShowDetails.getName());
 
             setUpSeasons();
 
             setUpEpisodes();
 
             setSeason(1);
-            setYear(TVShowDetails.getReleaseYear());
+            setYear(tvShowDetails.getReleaseYear());
 
         }
     }
 
     private void setUpSeasons() {
 
-        for(int i = 0; i< TVShowDetails.getSeasons().size(); i++){
-            if(TVShowDetails.getSeasons().get(i).getSeasonNumber()!=0){
-                list.add(Integer.toString(TVShowDetails.getSeasons().get(i).getSeasonNumber()));
-                years.add(TVShowDetails.getSeasons().get(i).getAirYear());
+        for(int i = 0; i< tvShowDetails.getSeasons().size(); i++){
+            if(tvShowDetails.getSeasons().get(i).getSeasonNumber()!=0){
+                list.add(Integer.toString(tvShowDetails.getSeasons().get(i).getSeasonNumber()));
+                years.add(tvShowDetails.getSeasons().get(i).getAirYear());
             }
         }
 
-        SeasonsAdapter seasonsAdapter = new SeasonsAdapter(list, years, this);
+        SeasonsAdapter seasonsAdapter = new SeasonsAdapter(list, years, this,tvShowDetails);
 
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.season_recycler_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
@@ -76,10 +76,10 @@ public class SeasonActivity extends BaseActivity {
     private void setUpEpisodes() {
         episodes = new ArrayList<>();
 
-        if(TVShowDetails==null && !isNetworkAvailable()){
-            TVShowDetails = RealmUtils.getInstance().readRealmTVShowDetails(TVShowDetails.getId()).getTvShowDetails();
+        if(tvShowDetails ==null && !isNetworkAvailable()){
+            tvShowDetails = RealmUtils.getInstance().readRealmTVShowDetails(tvShowDetails.getId()).getTvShowDetails();
         }
-        episodeAdapter = new EpisodeAdapter(episodes, TVShowDetails);
+        episodeAdapter = new EpisodeAdapter(episodes, tvShowDetails);
         RecyclerView mEpisodeRecyclerView = (RecyclerView) findViewById(R.id.episode_recycler_view);
         LinearLayoutManager linearVerticalLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         mEpisodeRecyclerView.setLayoutManager(linearVerticalLayoutManager);
@@ -89,7 +89,7 @@ public class SeasonActivity extends BaseActivity {
 
     public void setSeason(final int i){
         if(isNetworkAvailable()){
-            ApiHandler.getInstance().requestTVSeriesSeasons(TVShowDetails.getId(), i, new ApiHandler.TvSeriesSeasonListener() {
+            ApiHandler.getInstance().requestTVSeriesSeasons(tvShowDetails.getId(), i, new ApiHandler.TvSeriesSeasonListener() {
                 @Override
                 public void success(SeasonDetails response) {
                     episodes.clear();
@@ -97,15 +97,15 @@ public class SeasonActivity extends BaseActivity {
                         if(response.getEpisodes()!=null)
                             if(response.getEpisodes().size()>0){
                                 episodes.addAll(response.getEpisodes());
-                                RealmUtils.getInstance().createRealmSeasonDetails(TVShowDetails.getId()+""+i);
-                                RealmUtils.getInstance().addRealmSeasonsDetailsEpisodes(TVShowDetails.getId()+""+i,episodes);
+                                RealmUtils.getInstance().createRealmSeasonDetails(tvShowDetails.getId()+""+i);
+                                RealmUtils.getInstance().addRealmSeasonsDetailsEpisodes(tvShowDetails.getId()+""+i,episodes);
                             }
                     episodeAdapter.notifyDataSetChanged();
                 }
             });
         }else{
             episodes.clear();
-            RealmSeasonDetails realmSeasonDetails = RealmUtils.getInstance().readRealmSeasonDetails(TVShowDetails.getId()+""+i);
+            RealmSeasonDetails realmSeasonDetails = RealmUtils.getInstance().readRealmSeasonDetails(tvShowDetails.getId()+""+i);
             if(realmSeasonDetails!=null)
                 episodes.addAll(realmSeasonDetails.getEpisodes());
             episodeAdapter.notifyDataSetChanged();
