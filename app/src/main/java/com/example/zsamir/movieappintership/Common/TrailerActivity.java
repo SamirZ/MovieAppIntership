@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.BuildConfig;
+import com.example.zsamir.movieappintership.Firebase.CinemaMovie;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.Modules.Video;
@@ -161,6 +162,38 @@ public class TrailerActivity extends BaseActivity implements YouTubePlayer.OnIni
                     }
                 }
             });
+        }else{
+            if(getIntent().hasExtra("CinemaMovieID")){
+
+                setTitle(getString(R.string.movies_label));
+                CinemaMovie movie = getIntent().getParcelableExtra("CinemaMovieID");
+                name.setText(getString(R.string.trailer));
+                name.append(" "+movie.getName());
+                desc.setText(movie.getOverview());
+
+                ApiHandler.getInstance().requestMovieVideos(movie.getId(), new ApiHandler.VideosListener() {
+                    @Override
+                    public void success(Videos response) {
+                        if(response!=null){
+                            for (Video v:response.getVideos()) {
+                                if(v.getSite().equalsIgnoreCase("YouTube") && v.getType().equalsIgnoreCase("Trailer")){
+
+                                    FragmentManager fragmentManager = getFragmentManager();
+                                    YouTubePlayerFragment mYoutubePlayerFragment = (YouTubePlayerFragment) fragmentManager.findFragmentById(R.id.video_container);
+                                    if(mYoutubePlayerFragment!=null) {
+                                        mYoutubePlayerFragment.initialize(API_KEY, TrailerActivity.this);
+                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                        fragmentTransaction.replace(R.id.video_container, mYoutubePlayerFragment);
+                                        fragmentTransaction.commit();
+                                    }
+                                    VIDEO_ID = v.getKey();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -188,6 +221,11 @@ public class TrailerActivity extends BaseActivity implements YouTubePlayer.OnIni
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_season_details, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     @Override

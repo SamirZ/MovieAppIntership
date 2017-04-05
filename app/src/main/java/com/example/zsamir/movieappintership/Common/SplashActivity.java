@@ -10,24 +10,15 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.crashlytics.android.Crashlytics;
 import com.example.zsamir.movieappintership.API.ApiHandler;
-import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.LoginModules.Account;
 import com.example.zsamir.movieappintership.LoginModules.Token;
-import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.Modules.MovieList;
-import com.example.zsamir.movieappintership.Modules.TVShow;
-import com.example.zsamir.movieappintership.Modules.TVShowList;
 import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.NewsFeed.NewsFeedActivity;
 import com.example.zsamir.movieappintership.R;
-import com.example.zsamir.movieappintership.RealmUtils.RealmInteger;
 import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-
 import io.fabric.sdk.android.Fabric;
-import io.realm.Realm;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -77,12 +68,16 @@ public class SplashActivity extends AppCompatActivity {
                 AccountListsRequestHandler.getInstance().requestWatchlistTVSeries();
                 AccountListsRequestHandler.getInstance().requestWatchlistMovies();
                 AccountListsRequestHandler.getInstance().requestFavoriteMovies();
+                AccountListsRequestHandler.getInstance().requestRatedMovies();
+                AccountListsRequestHandler.getInstance().requestRatedTVSeries();
             }else{
                 // LOAD OFFLINE LIKED,WATCHLIST AND RATED
                 u.setFavMovieList(RealmUtils.getInstance().readRealmAccount().getFavMovieListInteger());
                 u.setFavTVSeriesList(RealmUtils.getInstance().readRealmAccount().getFavTVShowListInteger());
                 u.setWatchlistMovieList(RealmUtils.getInstance().readRealmAccount().getWatchMovieListInteger());
                 u.setWatchlistTVSeriesList(RealmUtils.getInstance().readRealmAccount().getWatchTVShowListInteger());
+                u.setRatedMovieList(RealmUtils.getInstance().readRealmAccount().getRatedMovieListInteger());
+                u.setRatedTVSeriesList(RealmUtils.getInstance().readRealmAccount().getRatedTVShowListInteger());
                 MovieAppApplication.setUser(u);
             }
         }

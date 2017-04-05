@@ -52,15 +52,17 @@ public class ListMoviesFragment extends Fragment {
 
         if(((BaseActivity)getActivity()).isNetworkAvailable()) {
 
-            loadMovies(1);
 
             EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
                 @Override
                 public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                    if(page>1)
+                    if(page!=1)
                         loadMovies(page);
                 }
             };
+
+            loadMovies(1);
+
             mRecyclerView.addOnScrollListener(scrollListener);
         }else{
             loadMoviesOffline();
@@ -131,7 +133,8 @@ public class ListMoviesFragment extends Fragment {
 
         for (RealmInteger i:RealmUtils.getInstance().readRealmAccount().getRatedMovieList()) {
             if(RealmUtils.getInstance().readMovieFromRealm(i.getI())!=null)
-                moviesList.add(RealmUtils.getInstance().readMovieFromRealm(i.getI()));
+                if(!moviesList.contains(RealmUtils.getInstance().readMovieFromRealm(i.getI())))
+                    moviesList.add(RealmUtils.getInstance().readMovieFromRealm(i.getI()));
         }
 
         mMovieAdapter.notifyDataSetChanged();
@@ -141,6 +144,7 @@ public class ListMoviesFragment extends Fragment {
 
         for (RealmInteger i:RealmUtils.getInstance().readRealmAccount().getWatchlistMovieList()) {
             if(RealmUtils.getInstance().readMovieFromRealm(i.getI())!=null)
+                if(!moviesList.contains(RealmUtils.getInstance().readMovieFromRealm(i.getI())))
                 moviesList.add(RealmUtils.getInstance().readMovieFromRealm(i.getI()));
         }
 
@@ -151,6 +155,7 @@ public class ListMoviesFragment extends Fragment {
 
         for (RealmInteger i:RealmUtils.getInstance().readRealmAccount().getFavMovieList()) {
             if(RealmUtils.getInstance().readMovieFromRealm(i.getI())!=null)
+                if(!moviesList.contains(RealmUtils.getInstance().readMovieFromRealm(i.getI())))
                 moviesList.add(RealmUtils.getInstance().readMovieFromRealm(i.getI()));
         }
 

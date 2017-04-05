@@ -34,6 +34,7 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
     private Movie movie;
     private TVShow tvShow;
     private Boolean swiped = false;
+    private Boolean first = true;
 
 
     public UserListViewHolder(View itemView, final UserListAdapter adapter) {
@@ -227,7 +228,11 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
         date.setText("("+movie.getReleaseYear()+")");
         rating.setText(String.format(Locale.getDefault(),"%1$.1f",movie.getVoteAverage()));
         rating.append(" /10");
-        Glide.with(image.getContext()).load(movie.getPosterUrl()).into(image);
+        Log.d("LOADED PIC","PIC OF MOVIE");
+        if(first) {
+            Glide.with(image.getContext()).load(movie.getPosterUrl()).into(image);
+            first = false;
+        }
     }
 
     public void bindTVSeries(TVShow TVShow){

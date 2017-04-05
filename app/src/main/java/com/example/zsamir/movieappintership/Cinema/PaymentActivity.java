@@ -1,5 +1,9 @@
 package com.example.zsamir.movieappintership.Cinema;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Firebase.CinemaSeat;
@@ -41,19 +46,38 @@ public class PaymentActivity extends BaseActivity {
     public Token tok;
     private int playTimeId;
     private String day;
+    private ProgressDialog progress;
+    private ToggleButton t1;
+    private ToggleButton t2;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
 
-        /*
-        String s = MovieAppApplication.getUser().getName() + "~" + 0
-                cinemaMovie.getName() + " (" + cinemaMovie.getReleaseYear() + ")~" + 1
-                date + " - " + time + "~" + 2
-                String.valueOf(selected) +" "+ ticketType+"~" + 3
-                ids + "~" + 4
-                + selected * 20.00; 5
-                */
+        t1 = (ToggleButton) findViewById(R.id.visa);
+        t2 = (ToggleButton) findViewById(R.id.mastercard);
+
+        t1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                t1.setChecked(true);
+                t1.setTextColor(getResources().getColor(R.color.colorAccent));
+                t2.setChecked(false);
+                t2.setTextColor(getResources().getColor(R.color.colorMovieItemText));
+            }
+        });
+
+        t2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                t2.setChecked(true);
+                t2.setTextColor(getResources().getColor(R.color.colorAccent));
+                t1.setChecked(false);
+                t1.setTextColor(getResources().getColor(R.color.colorMovieItemText));
+            }
+        });
+
+
 
         if(getIntent().hasExtra("CONTENT")){
             String[] content = getIntent().getStringExtra("CONTENT").split("~");
@@ -89,10 +113,21 @@ public class PaymentActivity extends BaseActivity {
 
     public void submitCard() {
 
+        progress = new ProgressDialog(this,ProgressDialog.THEME_HOLO_DARK);
+        progress.setMessage("Processing...");
+        progress.setCancelable(false);
+        progress.show();
         EditText cardholderName = (EditText) findViewById(R.id.username);
         EditText cardNumberField = (EditText) findViewById(R.id.card_number);
         EditText expirationDate = (EditText) findViewById(R.id.expiration_date);
         EditText cvcField = (EditText) findViewById(R.id.security_code);
+
+
+
+        cardholderName.getBackground().setColorFilter(getResources().getColor(R.color.colorMovieItemText), PorterDuff.Mode.SRC_IN);
+        cardNumberField.getBackground().setColorFilter(getResources().getColor(R.color.colorMovieItemText), PorterDuff.Mode.SRC_IN);
+        expirationDate.getBackground().setColorFilter(getResources().getColor(R.color.colorMovieItemText), PorterDuff.Mode.SRC_IN);
+        cvcField.getBackground().setColorFilter(getResources().getColor(R.color.colorMovieItemText), PorterDuff.Mode.SRC_IN);
 
         //4 2 4 2 4 2 4 2 4 2 4  2  4  2  4  2
         //0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
@@ -156,6 +191,9 @@ public class PaymentActivity extends BaseActivity {
                 }
 
                 public void onError(Exception error) {
+                    if(progress!=null)
+                        progress.dismiss();
+                    Toast.makeText(PaymentActivity.this, "Payment Unsuccessful", Toast.LENGTH_SHORT).show();
                     Log.d("Stripe error", error.getLocalizedMessage());
                 }
             });
@@ -209,10 +247,11 @@ public class PaymentActivity extends BaseActivity {
 
             RequestOptions.RequestOptionsBuilder builder = new RequestOptions.RequestOptionsBuilder();
             builder.setApiKey(SECRET_KEY_TEST);
+            builder.setIdempotencyKey(desc);
             RequestOptions options = builder.build();
 
-            Charge charge = Charge.create(chargeParams, options); // TESTING
-            //Charge charge = Charge.create(chargeParams, SECRET_KEY_TEST); //WORKS
+            Charge charge = Charge.create(chargeParams, options);
+            //Charge charge = Charge.create(chargeParams, SECRET_KEY_TEST); //DEPRECATED
 
             if(charge!=null) {
                 Log.d("Payment", "Successful");
@@ -223,14 +262,24 @@ public class PaymentActivity extends BaseActivity {
                 for (String seat:seatArray) {
                     for (CinemaSeat c:ReservationActivity.getSeatLocation()) {
                         if(c.getId().equals(seat)){
+                            Log.d("SEATID",c.getId());
                             utils.occupySeats(day,movie,playTimeId,ReservationActivity.getSeatLocation().indexOf(c));
                         }
                     }
                 }
+                Intent i = new Intent(this,ConfirmationActivity.class);
+                if(progress!=null)
+                    progress.dismiss();
+                startActivity(i);
+                finish();
             }
-            else
+            else {
+                if(progress!=null)
+                    progress.dismiss();
+                Toast.makeText(this, "Payment Unsuccessful", Toast.LENGTH_SHORT).show();
                 Log.d("Payment", "Unsuccessful");
-            //START NEW ACTIVITY
+
+            }
         } catch (InvalidRequestException | APIConnectionException | APIException | AuthenticationException | CardException e) {
             e.printStackTrace();
         }

@@ -303,8 +303,12 @@ public class BaseActivity extends AppCompatActivity implements NetworkStateRecei
 
                     }
                     else if(layout.equals(navigationView.getHeaderView(0).findViewById(R.id.cinema_nav))){
-                        Intent i = new Intent(BaseActivity.this, CinemaActivity.class);
-                        startActivity(i);
+                        if(isNetworkAvailable()) {
+                            Intent i = new Intent(BaseActivity.this, CinemaActivity.class);
+                            startActivity(i);
+                        }else{
+                            showNoDataDialog();
+                        }
                     }
 
                     BaseActivity.this.onBackPressed();

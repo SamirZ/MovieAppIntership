@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,6 +13,7 @@
         tools:context="com.example.zsamir.movieappintership.Movies.MovieDetailsActivity">
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/first"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -25,6 +26,16 @@
                 android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
                 android:id="@+id/cinema_movie_details_image"/>
+
+            <ImageView
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="55dp"
+                android:padding="20dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/movie_play_video"
+                android:clickable="true"
+                android:background="@android:drawable/ic_media_play"/>
 
             <View
                 android:layout_above="@+id/break_line_details"
@@ -72,6 +83,8 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/second"
+            android:layout_below="@id/first"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -145,6 +158,8 @@
         </LinearLayout>
 
         <RelativeLayout
+            android:id="@+id/third"
+            android:layout_below="@id/second"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin = "10dp"
@@ -224,6 +239,7 @@
         </RelativeLayout>
 
         <TextView
+            android:layout_below="@id/third"
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
@@ -236,10 +252,11 @@
             android:textColor="@color/colorTextDetails"
             />
 
-
         <RelativeLayout
+            android:id="@+id/fourth"
+            android:layout_below="@id/cinema_movie_details_overview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_margin="20dp"
             android:paddingBottom="20dp"
             android:paddingTop="20dp"
@@ -269,6 +286,8 @@
         </RelativeLayout>
 
         <Button
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/fourth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/book"
@@ -278,5 +297,5 @@
             android:layout_marginTop="20dp"
             android:id="@+id/book_button"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 </ScrollView>

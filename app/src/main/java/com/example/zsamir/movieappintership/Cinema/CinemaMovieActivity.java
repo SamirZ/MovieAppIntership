@@ -16,6 +16,8 @@ import com.bumptech.glide.Glide;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.CastAdapter;
 import com.example.zsamir.movieappintership.BaseActivity;
+import com.example.zsamir.movieappintership.Common.RatingActivity;
+import com.example.zsamir.movieappintership.Common.TrailerActivity;
 import com.example.zsamir.movieappintership.Firebase.CinemaMovie;
 import com.example.zsamir.movieappintership.Firebase.PlayTime;
 import com.example.zsamir.movieappintership.Modules.Cast;
@@ -57,6 +59,7 @@ public class CinemaMovieActivity extends BaseActivity {
 
     private ImageView mMovieImage;
     private ImageView rateImage;
+    private ImageView playVideo;
     private Button book;
 
     private Spinner timePicker;
@@ -97,6 +100,7 @@ public class CinemaMovieActivity extends BaseActivity {
         mMovieGenre = (TextView) findViewById(R.id.cinema_movie_details_genre);
         timePicker = (Spinner) findViewById(R.id.time_picker);
         book = (Button) findViewById(R.id.book_button);
+        playVideo = (ImageView) findViewById(R.id.movie_play_video);
     }
 
     private void setUpData() {
@@ -107,16 +111,30 @@ public class CinemaMovieActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if(MovieAppApplication.isUserLoggedIn()){
-                    //Intent i = new Intent(CinemaMovieActivity.this, RatingActivity.class);
-                    //i.putExtra("MOVIE",cinemaMovie);
-                    //startActivityForResult(i,1);
+                    Intent i = new Intent(CinemaMovieActivity.this, RatingActivity.class);
+                    i.putExtra("CINEMAMOVIE",cinemaMovie);
+                    startActivityForResult(i,1);
                 }else{
                     showLoginDialog();
                 }
             }
         };
 
-        //rateImage.setOnClickListener(onClickListener);
+        playVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isNetworkAvailable()) {
+                    Intent i = new Intent(CinemaMovieActivity.this, TrailerActivity.class);
+                    i.putExtra("CinemaMovieID", cinemaMovie);
+                    startActivity(i);
+                }else{
+                    showNoDataDialog();
+                }
+            }
+        });
+
+
+        rateImage.setOnClickListener(onClickListener);
         rateText.setOnClickListener(onClickListener);
 
 

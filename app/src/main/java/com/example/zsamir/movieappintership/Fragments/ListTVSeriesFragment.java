@@ -131,7 +131,8 @@ public class ListTVSeriesFragment extends Fragment {
 
         for (RealmInteger i:RealmUtils.getInstance().readRealmAccount().getRatedTVSeriesList()) {
             if(RealmUtils.getInstance().readTVShowFromRealm(i.getI())!=null)
-                tvShowList.add(RealmUtils.getInstance().readTVShowFromRealm(i.getI()));
+                if(!tvShowList.contains(RealmUtils.getInstance().readTVShowFromRealm(i.getI())))
+                    tvShowList.add(RealmUtils.getInstance().readTVShowFromRealm(i.getI()));
         }
 
         mTvSeriesAdapter.notifyDataSetChanged();
@@ -141,7 +142,8 @@ public class ListTVSeriesFragment extends Fragment {
 
         for (RealmInteger i:RealmUtils.getInstance().readRealmAccount().getWatchlistTVSeriesList()) {
             if(RealmUtils.getInstance().readTVShowFromRealm(i.getI())!=null)
-                tvShowList.add(RealmUtils.getInstance().readTVShowFromRealm(i.getI()));
+                if(!tvShowList.contains(RealmUtils.getInstance().readTVShowFromRealm(i.getI())))
+                    tvShowList.add(RealmUtils.getInstance().readTVShowFromRealm(i.getI()));
         }
 
         mTvSeriesAdapter.notifyDataSetChanged();
@@ -149,9 +151,10 @@ public class ListTVSeriesFragment extends Fragment {
 
     private void searchForFavoriteTVShowsOffline() {
 
-        for (RealmInteger i:RealmUtils.getInstance().readRealmAccount().getFavMovieList()) {
+        for (RealmInteger i:RealmUtils.getInstance().readRealmAccount().getFavTVSeriesList()) {
             if(RealmUtils.getInstance().readTVShowFromRealm(i.getI())!=null)
-                tvShowList.add(RealmUtils.getInstance().readTVShowFromRealm(i.getI()));
+                if(!tvShowList.contains(RealmUtils.getInstance().readTVShowFromRealm(i.getI())))
+                    tvShowList.add(RealmUtils.getInstance().readTVShowFromRealm(i.getI()));
         }
 
         mTvSeriesAdapter.notifyDataSetChanged();

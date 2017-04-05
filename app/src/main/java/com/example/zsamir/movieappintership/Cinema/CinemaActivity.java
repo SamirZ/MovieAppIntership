@@ -1,8 +1,11 @@
 package com.example.zsamir.movieappintership.Cinema;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,8 +24,10 @@ import android.view.ViewGroup;
 
 import com.example.zsamir.movieappintership.Adapters.CinemaMovieAdapter;
 import com.example.zsamir.movieappintership.BaseActivity;
+import com.example.zsamir.movieappintership.Common.SearchActivity;
 import com.example.zsamir.movieappintership.Firebase.CinemaMovie;
 import com.example.zsamir.movieappintership.Firebase.FirebaseUtils;
+import com.example.zsamir.movieappintership.Login.LoginActivity;
 import com.example.zsamir.movieappintership.R;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
@@ -30,7 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class CinemaActivity extends BaseActivity {
+public class CinemaActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
     @Override
@@ -59,20 +64,43 @@ public class CinemaActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_cinema, menu);
+        getMenuInflater().inflate(R.menu.menu_movies, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_search:
+                if(isNetworkAvailable()) {
+                    Intent i = new Intent(this, SearchActivity.class);
+                    startActivity(i);
+                }else{
+                    showNoDataDialog();
+                }
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.nav_login) {
+            Intent i = new Intent(this,LoginActivity.class);
+            startActivityForResult(i,1);
         }
 
-        return super.onOptionsItemSelected(item);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_cinema);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
+
 
     public static class CinemaFragment extends Fragment {
 

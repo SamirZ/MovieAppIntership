@@ -190,6 +190,8 @@ public class LoginActivity extends BaseActivity {
                                                         AccountListsRequestHandler.getInstance().requestFavoriteTVSeries();
                                                         AccountListsRequestHandler.getInstance().requestWatchlistMovies();
                                                         AccountListsRequestHandler.getInstance().requestWatchlistTVSeries();
+                                                        AccountListsRequestHandler.getInstance().requestRatedMovies();
+                                                        AccountListsRequestHandler.getInstance().requestRatedTVSeries();
 
                                                         Intent returnIntent = new Intent();
                                                         setResult(RESULT_OK,returnIntent);

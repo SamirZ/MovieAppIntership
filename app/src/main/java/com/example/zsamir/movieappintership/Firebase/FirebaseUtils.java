@@ -157,9 +157,9 @@ public class FirebaseUtils {
         for (int i = 1; i <= 11; i++) {
 
             String id = "";
-            if(i<2){
+            if(i<=2){
                 id = letter + String.valueOf(i);
-            }else if(i<8){
+            }else if(i<=8){
                 id = letter + String.valueOf(i-1);
             }else {
                 id = letter + String.valueOf(i-2);
@@ -214,7 +214,22 @@ public class FirebaseUtils {
         playTimes.add(new PlayTime("18:00",seats));
         playTimes.add(new PlayTime("20:00",seats));
 
-        ArrayList<Movie> movies = RealmUtils.getInstance().readPopularMoviesFromRealm();
+        ArrayList<PlayTime> playTimes2 = new ArrayList<>();
+        playTimes2.add(new PlayTime("20:00",seats));
+        playTimes2.add(new PlayTime("22:00",seats));
+
+        ArrayList<PlayTime> playTimes3 = new ArrayList<>();
+        playTimes3.add(new PlayTime("16:00",seats));
+        playTimes3.add(new PlayTime("18:00",seats));
+
+        Movie m1 = RealmUtils.getInstance().readMovieFromRealm(329865);
+        Movie m2 = RealmUtils.getInstance().readMovieFromRealm(122917);
+        Movie m3 = RealmUtils.getInstance().readMovieFromRealm(269149);
+
+        ArrayList<Movie> movies = new ArrayList<>();
+        movies.add(m1);
+        movies.add(m2);
+        movies.add(m3);
 
         ArrayList<CinemaMovie> cinemaMovies = new ArrayList<>();
         for (int i = 0; i < movies.size(); i++) {
@@ -223,24 +238,43 @@ public class FirebaseUtils {
 
                 if(movies.get(i).getTitle().equals("Arrival")){
                     allGenres = "Drama/Science-Fiction";
+                    cinemaMovies.add(
+                            new CinemaMovie(
+                                    movies.get(i).getId(),
+                                    movies.get(i).getTitle(),
+                                    allGenres,
+                                    movies.get(i).getVoteAverage(),
+                                    movies.get(i).getOverview(),
+                                    movies.get(i).getBackdropPath(),
+                                    movies.get(i).getOrgReleaseDate(),
+                                    playTimes));
                 }
-                else if(movies.get(i).getTitle().equalsIgnoreCase("Hell or High Water")){
-                    allGenres = "Western/Crime/Drama";
+                else if(movies.get(i).getTitle().equalsIgnoreCase("The Hobbit: The Battle of the Five Armies")){
+                    allGenres = "Action/Adventure/Fantasy";
+                    cinemaMovies.add(
+                            new CinemaMovie(
+                                    movies.get(i).getId(),
+                                    movies.get(i).getTitle(),
+                                    allGenres,
+                                    movies.get(i).getVoteAverage(),
+                                    movies.get(i).getOverview(),
+                                    movies.get(i).getBackdropPath(),
+                                    movies.get(i).getOrgReleaseDate(),
+                                    playTimes2));
                 }
                 else if(movies.get(i).getTitle().equalsIgnoreCase("Zootopia")){
                     allGenres = "Animation/Adventure/Family/Comedy";
+                    cinemaMovies.add(
+                            new CinemaMovie(
+                                    movies.get(i).getId(),
+                                    movies.get(i).getTitle(),
+                                    allGenres,
+                                    movies.get(i).getVoteAverage(),
+                                    movies.get(i).getOverview(),
+                                    movies.get(i).getBackdropPath(),
+                                    movies.get(i).getOrgReleaseDate(),
+                                    playTimes3));
                 }
-                cinemaMovies.add(
-                        new CinemaMovie(
-                                movies.get(i).getId(),
-                                movies.get(i).getTitle(),
-                                allGenres,
-                                movies.get(i).getVoteAverage(),
-                                movies.get(i).getOverview(),
-                                movies.get(i).getBackdropPath(),
-                                movies.get(i).getOrgReleaseDate(),
-                                playTimes));
-
             }
 
             ArrayList<PlayDay> days = new ArrayList<>();
