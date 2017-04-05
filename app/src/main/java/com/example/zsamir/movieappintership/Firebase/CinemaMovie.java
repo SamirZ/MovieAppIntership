@@ -97,6 +97,60 @@ public class CinemaMovie implements Parcelable {
 
 
 
+    public String getStringReleaseDate() {
+        if(releaseDate!=null){
+            String[] s = releaseDate.split("-");
+            if(s.length>1){
+                if(s[2].startsWith("0")){
+                    String s1 = s[2].substring(1);
+                    return s1 + " " + toMonth(Integer.parseInt(s[1])) + " " + s[0];
+                }
+                return s[2]+" "+ toMonth(Integer.parseInt(s[1]))+ " "+ s[0];
+            }
+        }return null;
+
+    }
+
+    private String toMonth(int i) {
+        switch (i){
+            case 1:
+                return "January";
+            case 2:
+                return "February";
+            case 3:
+                return "March";
+            case 4:
+                return "April";
+            case 5:
+                return "May";
+            case 6:
+                return "June";
+            case 7:
+                return "July";
+            case 8:
+                return "August";
+            case 9:
+                return "September";
+            case 10:
+                return "October";
+            case 11:
+                return "November";
+            case 12:
+                return "December";
+        }
+        return "Wrong Month Format";
+    }
+
+    public String getReleaseYear() {
+        String[] s = releaseDate.split("-");
+        if(s.length>0){
+            return s[0];
+        }else {
+            return null;
+        }
+    }
+
+
     @Override
     public String toString() {
         return "CinemaMovie{" +

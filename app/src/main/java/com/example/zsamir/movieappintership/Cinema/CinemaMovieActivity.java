@@ -130,8 +130,10 @@ public class CinemaMovieActivity extends BaseActivity {
         }
 
 
-        if(cinemaMovie.getName()!=null)
+        if(cinemaMovie.getName()!=null && cinemaMovie.getReleaseDate()!=null) {
             mMovieName.setText(cinemaMovie.getName());
+            mMovieName.append(" ("+cinemaMovie.getReleaseYear()+")");
+        }
 
 
         if(cinemaMovie.getGenres()!=null)
@@ -141,10 +143,12 @@ public class CinemaMovieActivity extends BaseActivity {
             @Override
             public void success(MovieDetails response) {
                 TextView mMovieReleaseDate = (TextView) findViewById(R.id.cinema_movie_details_release_date);
-                if(!response.getProductionCountries().isEmpty()) {
-                    mMovieReleaseDate.setText(cinemaMovie.getReleaseDate() + " " + "(" + response.getProductionCountries().get(0).getName() + ")");
-                }
-                else mMovieReleaseDate.setText(cinemaMovie.getReleaseDate());
+                if(response!=null) {
+                    if (!response.getProductionCountries().isEmpty()) {
+                        mMovieReleaseDate.setText(cinemaMovie.getStringReleaseDate() + " " + "(" + response.getProductionCountries().get(0).getName() + ")");
+                    }
+                }else mMovieReleaseDate.setText(cinemaMovie.getStringReleaseDate());
+
             }
         });
 

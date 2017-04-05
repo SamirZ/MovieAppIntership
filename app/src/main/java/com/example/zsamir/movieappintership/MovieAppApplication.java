@@ -3,6 +3,7 @@ package com.example.zsamir.movieappintership;
 import android.app.Application;
 
 import com.example.zsamir.movieappintership.LoginModules.Account;
+import com.google.firebase.FirebaseApp;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;

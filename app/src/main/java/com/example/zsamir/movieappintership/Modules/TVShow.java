@@ -15,6 +15,10 @@ import io.realm.annotations.PrimaryKey;
 
 public class TVShow extends RealmObject implements Parcelable {
 
+    public boolean favorite;
+    public boolean watch;
+    public boolean rated;
+
     public boolean popular;
     public boolean latest;
     public boolean highestrated;

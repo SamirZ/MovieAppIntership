@@ -5,22 +5,22 @@ import android.os.Parcelable;
 
 public class CinemaSeat implements Parcelable {
 
-    private int id;
+    private String id;
     private boolean free;
 
     public CinemaSeat() {
     }
 
-    public CinemaSeat(int id, boolean free) {
+    public CinemaSeat(String id, boolean free) {
         this.id = id;
         this.free = free;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -40,12 +40,12 @@ public class CinemaSeat implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
+        dest.writeString(this.id);
         dest.writeByte(this.free ? (byte) 1 : (byte) 0);
     }
 
     protected CinemaSeat(Parcel in) {
-        this.id = in.readInt();
+        this.id = in.readString();
         this.free = in.readByte() != 0;
     }
 

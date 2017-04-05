@@ -201,4 +201,9 @@ public class TrailerActivity extends BaseActivity implements YouTubePlayer.OnIni
                 return super.onOptionsItemSelected(menuItem);
         }
     }
+
+    @Override
+    public void onNetworkUnavailable() {
+
+    }
 }

@@ -15,6 +15,7 @@ import com.example.zsamir.movieappintership.Firebase.CinemaMovie;
 import com.example.zsamir.movieappintership.Modules.ImageFormat;
 import com.example.zsamir.movieappintership.R;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,8 +43,7 @@ public class CinemaMovieViewHolder extends RecyclerView.ViewHolder implements Vi
         this.fragment = fragment;
 
         if(movie.getName()!=null)
-            mMovieName.setText(movie.getName()+" ("+"2016"+")"); //TESTING EDIT
-        //TO DO
+            mMovieName.setText(movie.getName()+" ("+mMovie.getReleaseYear()+")");
 
         if(mMovie.getGenres()!=null)
             mMovieGenre.setText(mMovie.getGenres());
@@ -62,7 +62,38 @@ public class CinemaMovieViewHolder extends RecyclerView.ViewHolder implements Vi
     public void onClick(View v) {
         Intent i = new Intent(itemView.getContext(), CinemaMovieActivity.class);
         i.putExtra("MOVIE",mMovie);
-        i.putExtra("DAY",fragment.getArguments().getString("TITLE"));
+        String title = fragment.getArguments().getString("TITLE");
+        if(title.equalsIgnoreCase("today")){
+            Calendar calendar = Calendar.getInstance();
+            int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+            switch (day) {
+                case Calendar.MONDAY:
+                    title = "Monday";
+                    break;
+                case Calendar.TUESDAY:
+                    title = "Tuesday";
+                    break;
+                case Calendar.WEDNESDAY:
+                    title = "Wednesday";
+                    break;
+                case Calendar.THURSDAY:
+                    title = "Thursday";
+                    break;
+                case Calendar.FRIDAY:
+                    title = "Friday";
+                    break;
+                case Calendar.SATURDAY:
+                    title = "Saturday";
+                    break;
+                case Calendar.SUNDAY:
+                    title = "Sunday";
+                    break;
+            }
+        }
+
+
+        i.putExtra("DAY",title);
         itemView.getContext().startActivity(i);
     }
 }

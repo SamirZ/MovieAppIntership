@@ -5,7 +5,6 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -357,7 +356,7 @@ public class MovieDetailsActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(view.getContext(), GalleryActivity.class);
-                i.putExtra("Movie",mMovie);
+                i.putExtra("Movie", mMovie);
                 view.getContext().startActivity(i);
             }
         });
@@ -389,9 +388,13 @@ public class MovieDetailsActivity extends BaseActivity {
             playVideo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(MovieDetailsActivity.this, TrailerActivity.class);
-                    i.putExtra("MovieID",mMovie);
-                    startActivity(i);
+                    if(isNetworkAvailable()) {
+                        Intent i = new Intent(MovieDetailsActivity.this, TrailerActivity.class);
+                        i.putExtra("MovieID", mMovie);
+                        startActivity(i);
+                    }else{
+                        showNoDataDialog();
+                    }
                 }
             });
         }

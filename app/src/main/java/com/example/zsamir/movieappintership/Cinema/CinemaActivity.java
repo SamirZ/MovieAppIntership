@@ -24,17 +24,19 @@ import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.Firebase.CinemaMovie;
 import com.example.zsamir.movieappintership.Firebase.FirebaseUtils;
 import com.example.zsamir.movieappintership.R;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class CinemaActivity extends BaseActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cinema);
-
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -170,7 +172,6 @@ public class CinemaActivity extends BaseActivity {
                         break;
                 }
             }
-
 
             firebaseUtils.retrieveMovies(title, cinemaMovieAdapter,cinemaMovies);
             cinemaMovieAdapter.notifyDataSetChanged();

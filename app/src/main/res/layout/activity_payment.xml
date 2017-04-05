@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_payment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorMovieDetailsBackground"
+    tools:context="com.example.zsamir.movieappintership.Cinema.PaymentActivity">
+
+    <RadioGroup
+        android:id="@+id/card_types"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        >
+
+        <ToggleButton
+            android:textOn="@string/visa"
+            android:textOff="@string/visa"
+            android:checked="true"
+            android:textColor="@color/colorMovieItemText"
+            android:background="@drawable/selector"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/visa"
+            android:text="@string/visa"/>
+
+        <ToggleButton
+            android:textOn="@string/mastercard"
+            android:textOff="@string/mastercard"
+            android:textColor="@color/colorMovieItemText"
+            android:background="@drawable/selector"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/mastercard"
+            android:text="@string/mastercard"/>
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/card_types"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:ems="10"
+            android:hint="@string/name"
+            android:textColorHint="@color/colorMovieItemText"
+            android:textColor="@color/colorAccent"
+            android:textSize="16sp"
+            android:padding="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:id="@+id/username" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:ems="10"
+            android:hint="@string/card_hint"
+            android:textColorHint="@color/colorMovieItemText"
+            android:textColor="@color/colorAccent"
+            android:textSize="16sp"
+            android:padding="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:id="@+id/card_number" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:ems="10"
+            android:hint="@string/expiry_date_hint"
+            android:textColorHint="@color/colorMovieItemText"
+            android:textColor="@color/colorAccent"
+            android:textSize="16sp"
+            android:padding="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:id="@+id/expiration_date" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:ems="10"
+            android:hint="@string/security_code"
+            android:textColorHint="@color/colorMovieItemText"
+            android:textColor="@color/colorAccent"
+            android:textSize="16sp"
+            android:padding="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:id="@+id/security_code" />
+
+    </LinearLayout>
+
+    <Button
+        android:background="@color/colorAccent"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorBlack"
+        android:id="@+id/submit"
+        android:text="@string/submit"/>
+
+</RelativeLayout>

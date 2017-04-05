@@ -183,6 +183,9 @@ public class LoginActivity extends BaseActivity {
 
                                                         RealmUtils.getInstance().createRealmAccount();
 
+                                                        RealmUtils.getInstance().deleteAllMovies();
+                                                        RealmUtils.getInstance().deleteAllTVShows();
+
                                                         AccountListsRequestHandler.getInstance().requestFavoriteMovies();
                                                         AccountListsRequestHandler.getInstance().requestFavoriteTVSeries();
                                                         AccountListsRequestHandler.getInstance().requestWatchlistMovies();
