@@ -17,7 +17,7 @@
         android:layout_above="@+id/breakline"
         android:layout_width="match_parent"
         android:layout_height="175dp"
-        android:background="@drawable/gradient_3" />
+        android:background="@drawable/gradient" />
 
 
     <TextView

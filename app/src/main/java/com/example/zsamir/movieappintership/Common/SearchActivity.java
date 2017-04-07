@@ -11,6 +11,7 @@ import android.view.View;
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.Adapters.SearchResultAdapter;
 import com.example.zsamir.movieappintership.BaseActivity;
+import com.example.zsamir.movieappintership.Firebase.FirebaseUtils;
 import com.example.zsamir.movieappintership.Modules.Result;
 import com.example.zsamir.movieappintership.Modules.SearchResult;
 import com.example.zsamir.movieappintership.R;
@@ -30,6 +31,9 @@ public class SearchActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        //FirebaseUtils utils = new FirebaseUtils();
+        //utils.addDummyMoviesToFirebase();
 
         setTitle("");
 
@@ -63,16 +67,21 @@ public class SearchActivity extends BaseActivity {
         searchView.setQueryHint(getString(R.string.search_title));
         searchView.setIconified(false);
 
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(final String query) {
-                if(!wait)
-                if(!query.equalsIgnoreCase(SearchActivity.this.query)){
-                    resultList.clear();
-                    mResultAdapter.notifyDataSetChanged();
-                    SearchActivity.this.query = query;
-                    wait = true;
-                    searchForData(query,1);
+                if(isNetworkAvailable()) {
+                    if (!wait)
+                        if (!query.equalsIgnoreCase(SearchActivity.this.query)) {
+                            resultList.clear();
+                            mResultAdapter.notifyDataSetChanged();
+                            SearchActivity.this.query = query;
+                            wait = true;
+                            searchForData(query, 1);
+                        }
+                }else{
+                    showNoDataDialog();
                 }
                 //
                 return false;
@@ -80,17 +89,21 @@ public class SearchActivity extends BaseActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(!wait)
-                if(!query.equalsIgnoreCase(newText)){
-                    resultList.clear();
-                    mResultAdapter.notifyDataSetChanged();
-                    query = newText;
-                    if(query!=null) {
-                        if (!query.equals("")) {
-                            wait = true;
-                            searchForData(query, 1);
+                if(isNetworkAvailable()) {
+                    if (!wait)
+                        if (!query.equalsIgnoreCase(newText)) {
+                            resultList.clear();
+                            mResultAdapter.notifyDataSetChanged();
+                            query = newText;
+                            if (query != null) {
+                                if (!query.equals("")) {
+                                    wait = true;
+                                    searchForData(query, 1);
+                                }
+                            }
                         }
-                    }
+                }else{
+                    showNoDataDialog();
                 }
                 return true;
             }
@@ -157,5 +170,10 @@ public class SearchActivity extends BaseActivity {
             default:
                 return super.onOptionsItemSelected(menuItem);
         }
+    }
+
+    @Override
+    public void onNetworkUnavailable() {
+
     }
 }

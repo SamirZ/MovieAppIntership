@@ -150,4 +150,27 @@
     <string name="connection_warrning">Internet connection required</string>
     <string name="connection_required">Please connect to the internet to continue.</string>
     <string name="connect">Connect</string>
+    <string name="action_cinema">Cinema</string>
+    <string name="title_activity_cinema">CinemaActivity</string>
+    <string name="book">BOOK NOW</string>
+    <string name="taken">Taken</string>
+    <string name="available">Available</string>
+    <string name="selected">Selected</string>
+    <string name="checkout">Checkout</string>
+    <string name="total">Total:</string>
+    <string name="checkout_summary">Checkout Summary</string>
+    <string name="summary_movie">Movie:</string>
+    <string name="summary_date">Date and Time:</string>
+    <string name="summary_tickets">Tickets:</string>
+    <string name="summary_seats">Seats:</string>
+    <string name="proceed">Proceed to Payment</string>
+    <string name="tickets">Tickets</string>
+    <string name="card_hint">Card Number</string>
+    <string name="com.stripe.publishable_key" translatable="false">pk_test_zE1ULZbOXShTdmPbVv4512s7</string>
+    <string name="submit">Submit</string>
+    <string name="security_code">Security Code</string>
+    <string name="name">Credit Card Holder</string>
+    <string name="visa">Visa</string>
+    <string name="mastercard">Mastercard</string>
+
 </resources>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_summary"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorMovieDetailsBackground"
+    tools:context="com.example.zsamir.movieappintership.Cinema.SummaryActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/check"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorText"
+            android:textSize="16sp"
+            android:padding="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="@string/checkout_summary"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorItemSelected"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorMovieItemText"
+            android:textSize="16sp"
+            android:padding="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/summary_name"
+            android:text="@string/account_name"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorItemSelected"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorMovieItemText"
+            android:textSize="16sp"
+            android:padding="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/summary_movie"
+            android:text="@string/summary_movie"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorItemSelected"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorMovieItemText"
+            android:textSize="16sp"
+            android:padding="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/summary_date"
+            android:text="@string/summary_date"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorItemSelected"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorMovieItemText"
+            android:textSize="16sp"
+            android:padding="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/summary_tickets"
+            android:text="@string/summary_tickets"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorItemSelected"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorMovieItemText"
+            android:textSize="16sp"
+            android:padding="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/summary_seats"
+            android:text="@string/summary_seats"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorItemSelected"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorMovieItemText"
+            android:textSize="16sp"
+            android:padding="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/summary_total"
+            android:text="@string/total"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorItemSelected"
+            />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/proceed"
+        android:text="@string/proceed"
+        android:background="@color/colorAccent"/>
+
+</RelativeLayout>

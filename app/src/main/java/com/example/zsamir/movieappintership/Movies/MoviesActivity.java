@@ -73,8 +73,12 @@ public class MoviesActivity extends BaseActivity implements NavigationView.OnNav
         switch (item.getItemId()) {
 
             case R.id.action_search:
-                Intent i = new Intent(this,SearchActivity.class);
-                startActivity(i);
+                if(isNetworkAvailable()) {
+                    Intent i = new Intent(this, SearchActivity.class);
+                    startActivity(i);
+                }else{
+                    showNoDataDialog();
+                }
                 return true;
 
             default:

@@ -155,7 +155,7 @@ public class TVSeriesDetailsActivity extends BaseActivity {
 
     private void setKnowData() {
         if(mTVShow.getName()!=null && mTVShow.getReleaseYear()!=null)
-        mTvSeriesName.setText(mTVShow.getName()+" ("+ mTVShow.getReleaseYear()+")");
+            mTvSeriesName.setText(mTVShow.getName()+" ("+ mTVShow.getReleaseYear()+")");
 
 
         if(isNetworkAvailable()) {
@@ -190,9 +190,13 @@ public class TVSeriesDetailsActivity extends BaseActivity {
             playVideo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(TVSeriesDetailsActivity.this, TrailerActivity.class);
-                    i.putExtra("TVID", mTVShow);
-                    startActivity(i);
+                    if(isNetworkAvailable()) {
+                        Intent i = new Intent(TVSeriesDetailsActivity.this, TrailerActivity.class);
+                        i.putExtra("TVID", mTVShow);
+                        startActivity(i);
+                    }else{
+                        showNoDataDialog();
+                    }
                 }
             });
         }
@@ -200,10 +204,14 @@ public class TVSeriesDetailsActivity extends BaseActivity {
         tvSeriesImagesSeeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(view.getContext(), GalleryActivity.class);
-                if(mTVShow !=null)
-                i.putExtra("TVSeries", mTVShow);
-                view.getContext().startActivity(i);
+                if(isNetworkAvailable()) {
+                    Intent i = new Intent(view.getContext(), GalleryActivity.class);
+                    if (mTVShow != null)
+                        i.putExtra("TVSeries", mTVShow);
+                    view.getContext().startActivity(i);
+                }else{
+                    showNoDataDialog();
+                }
             }
         });
 
@@ -594,7 +602,7 @@ public class TVSeriesDetailsActivity extends BaseActivity {
     {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                finish();
                 return true;
             case R.id.action_like_tv:
                 if(!liked && MovieAppApplication.isUserLoggedIn()){
@@ -664,7 +672,7 @@ public class TVSeriesDetailsActivity extends BaseActivity {
                         }
                     }
                 }else if(!MovieAppApplication.isUserLoggedIn()){
-                        showLoginDialog();
+                    showLoginDialog();
                 }
                 return true;
             case R.id.action_watchlist_tv:

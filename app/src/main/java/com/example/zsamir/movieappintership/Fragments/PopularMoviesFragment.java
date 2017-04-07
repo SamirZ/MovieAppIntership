@@ -108,7 +108,8 @@ public class PopularMoviesFragment extends Fragment{
                             for (int i = 0; i < m.getGenreIds().length; i++) {
                                 m.allGenres+=m.getGenreIds()[i]+",";
                             }
-                            m.allGenres = m.allGenres.substring(0, m.allGenres.length()-1);
+                            if(m.allGenres.length()>1)
+                                m.allGenres = m.allGenres.substring(0, m.allGenres.length()-1);
                             moviesList.add(m);
                         }
                     }

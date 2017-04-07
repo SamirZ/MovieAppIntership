@@ -18,6 +18,7 @@ import com.example.zsamir.movieappintership.LoginModules.Watchlist;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Movies.MovieDetailsActivity;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 import com.example.zsamir.movieappintership.TVSeries.TVSeriesDetailsActivity;
 import com.example.zsamir.movieappintership.Widgets.OnSwipeTouchListener;
 
@@ -31,8 +32,9 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
     private TextView delete;
     private ImageView image;
     private Movie movie;
-    private TVShow TVShow;
+    private TVShow tvShow;
     private Boolean swiped = false;
+    private Boolean first = true;
 
 
     public UserListViewHolder(View itemView, final UserListAdapter adapter) {
@@ -64,6 +66,8 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
                                                     Log.d("DELETED", String.valueOf(movie.getId()));
                                                     if(MovieAppApplication.getUser().getRatedMovieList().contains(movie.getId()))
                                                         MovieAppApplication.getUser().getRatedMovieList().remove(movie.getId());
+
+                                                    RealmUtils.getInstance().removeRealmAccountRatedMovies(movie.getId());
                                                     delete.setVisibility(View.GONE);
                                                     image.setVisibility(View.VISIBLE);
                                                     adapter.getMovies().remove(movie);
@@ -78,7 +82,6 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
                                 public void onClick(View v) {
                                     if(MovieAppApplication.getUser().getWatchlistMovieList().contains(movie.getId())){
                                         MovieAppApplication.getUser().removeFromWatchlistMovieList(movie.getId());
-
                                         ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
                                                 MovieAppApplication.getUser().getSessionId(),
                                                 new Watchlist("movie",movie.getId(),false),
@@ -129,7 +132,7 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
                         swiped = false;
                     }
                 }
-                if(TVShow !=null){
+                if(tvShow !=null){
                     if(!swiped) {
                         image.setVisibility(View.GONE);
                         delete.setVisibility(View.VISIBLE);
@@ -137,16 +140,17 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
                             delete.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    ApiHandler.getInstance().deleteRatingTVShow(TVShow.getId(),
+                                    ApiHandler.getInstance().deleteRatingTVShow(tvShow.getId(),
                                             MovieAppApplication.getUser().getSessionId(), new ApiHandler.PostResponseListener() {
                                                 @Override
                                                 public void success(PostResponse response) {
-                                                    Log.d("DELETED", String.valueOf(TVShow.getId()));
-                                                    if(MovieAppApplication.getUser().getRatedTVSeriesList().contains(TVShow.getId()))
-                                                        MovieAppApplication.getUser().getRatedTVSeriesList().remove(TVShow.getId());
+                                                    Log.d("DELETED", String.valueOf(tvShow.getId()));
+                                                    if(MovieAppApplication.getUser().getRatedTVSeriesList().contains(tvShow.getId()))
+                                                        MovieAppApplication.getUser().getRatedTVSeriesList().remove(tvShow.getId());
+                                                    RealmUtils.getInstance().removeRealmAccountRatedTVShow(tvShow.getId());
                                                     delete.setVisibility(View.GONE);
                                                     image.setVisibility(View.VISIBLE);
-                                                    adapter.getTVSeries().remove(TVShow);
+                                                    adapter.getTVSeries().remove(tvShow);
                                                     adapter.notifyItemRemoved(getAdapterPosition());
                                                 }
                                             });
@@ -156,12 +160,12 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
                             delete.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    if(MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(TVShow.getId())){
-                                        MovieAppApplication.getUser().removeFromWatchlistTVSeriesList(TVShow.getId());
+                                    if(MovieAppApplication.getUser().getWatchlistTVSeriesList().contains(tvShow.getId())){
+                                        MovieAppApplication.getUser().removeFromWatchlistTVSeriesList(tvShow.getId());
 
                                         ApiHandler.getInstance().sendToWatchlist(MovieAppApplication.getUser().getId(),
                                                 MovieAppApplication.getUser().getSessionId(),
-                                                new Watchlist("tv", TVShow.getId(),false),
+                                                new Watchlist("tv", tvShow.getId(),false),
                                                 new ApiHandler.PostResponseListener() {
                                                     @Override
                                                     public void success(PostResponse response) {
@@ -169,7 +173,7 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
                                                         Log.d("RESPONSE", response.statusMessage);
                                                         delete.setVisibility(View.GONE);
                                                         image.setVisibility(View.VISIBLE);
-                                                        adapter.getTVSeries().remove(TVShow);
+                                                        adapter.getTVSeries().remove(tvShow);
                                                         adapter.notifyItemRemoved(getAdapterPosition());
                                                     }
                                                 });
@@ -180,12 +184,12 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
                             delete.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    if(MovieAppApplication.getUser().getFavTVSeriesList().contains(TVShow.getId())){
-                                        MovieAppApplication.getUser().removeFromFavoriteTVSeriesList(TVShow.getId());
+                                    if(MovieAppApplication.getUser().getFavTVSeriesList().contains(tvShow.getId())){
+                                        MovieAppApplication.getUser().removeFromFavoriteTVSeriesList(tvShow.getId());
 
                                         ApiHandler.getInstance().sendFavorite(MovieAppApplication.getUser().getId(),
                                                 MovieAppApplication.getUser().getSessionId(),
-                                                new Favorite("tv", TVShow.getId(),false),
+                                                new Favorite("tv", tvShow.getId(),false),
                                                 new ApiHandler.PostResponseListener() {
                                                     @Override
                                                     public void success(PostResponse response) {
@@ -193,7 +197,7 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
                                                         Log.d("RESPONSE", response.statusMessage);
                                                         delete.setVisibility(View.GONE);
                                                         image.setVisibility(View.VISIBLE);
-                                                        adapter.getTVSeries().remove(TVShow);
+                                                        adapter.getTVSeries().remove(tvShow);
                                                         adapter.notifyItemRemoved(getAdapterPosition());
                                                     }
                                                 });
@@ -224,11 +228,15 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
         date.setText("("+movie.getReleaseYear()+")");
         rating.setText(String.format(Locale.getDefault(),"%1$.1f",movie.getVoteAverage()));
         rating.append(" /10");
-        Glide.with(image.getContext()).load(movie.getPosterUrl()).into(image);
+        Log.d("LOADED PIC","PIC OF MOVIE");
+        if(first) {
+            Glide.with(image.getContext()).load(movie.getPosterUrl()).into(image);
+            first = false;
+        }
     }
 
     public void bindTVSeries(TVShow TVShow){
-        this.TVShow = TVShow;
+        this.tvShow = TVShow;
         name.setText(TVShow.getName());
         date.setText("("+itemView.getContext().getString(R.string.tv_series_name)+" "+ TVShow.getReleaseYear()+")");
         rating.setText(String.format(Locale.getDefault(),"%1$.1f", TVShow.getVoteAverage()));
@@ -243,9 +251,9 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
             i.putExtra("Movie", movie);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             view.getContext().startActivity(i);
-        }else if(TVShow !=null){
+        }else if(tvShow !=null){
             Intent i = new Intent(view.getContext(), TVSeriesDetailsActivity.class);
-            i.putExtra("TVSeries", TVShow);
+            i.putExtra("TVSeries", tvShow);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             view.getContext().startActivity(i);
         }

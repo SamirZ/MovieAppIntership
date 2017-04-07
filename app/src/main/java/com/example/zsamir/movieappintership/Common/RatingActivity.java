@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.example.zsamir.movieappintership.API.ApiHandler;
 import com.example.zsamir.movieappintership.BaseActivity;
+import com.example.zsamir.movieappintership.Firebase.CinemaMovie;
 import com.example.zsamir.movieappintership.LoginModules.PostResponse;
 import com.example.zsamir.movieappintership.LoginModules.Rating;
 import com.example.zsamir.movieappintership.Modules.Movie;
@@ -28,6 +29,7 @@ public class RatingActivity extends BaseActivity {
     private RatingBar ratingBar;
     private Movie movie;
     private TVShow tvShow;
+    private CinemaMovie cinemaMovie;
     private List<Movie> ratedMovies = new ArrayList<>();
     private List<TVShow> ratedTVSeries = new ArrayList<>();
 
@@ -42,10 +44,16 @@ public class RatingActivity extends BaseActivity {
             requestRatedMovies();
         }
 
-        if(getIntent().hasExtra("TV")){
+        else if(getIntent().hasExtra("TV")){
             setTitle(getString(R.string.rate_this)+" TV show");
             tvShow = getIntent().getParcelableExtra("TV");
             requestRatedTVSeries();
+        }
+
+        else if(getIntent().hasExtra("CINEMAMOVIE")){
+            setTitle(getString(R.string.rate_this)+" movie");
+            cinemaMovie = getIntent().getParcelableExtra("CINEMAMOVIE");
+            requestRatedCinemaMovies();
         }
 
 
@@ -92,6 +100,16 @@ public class RatingActivity extends BaseActivity {
                                 Toast.makeText(RatingActivity.this, "Successfully rated", Toast.LENGTH_SHORT).show();
                             }
                         });
+            } else if (cinemaMovie != null) {
+                Log.d("RATING", String.valueOf((double) ratingBar.getRating()));
+                ApiHandler.getInstance().rateTVShow(cinemaMovie.getId(),
+                        MovieAppApplication.getUser().getSessionId(),
+                        new Rating((double) ratingBar.getRating()), new ApiHandler.PostResponseListener() {
+                            @Override
+                            public void success(PostResponse response) {
+                                Toast.makeText(RatingActivity.this, "Successfully rated", Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
         }else{
             float amount = ratingBar.getRating();
@@ -116,6 +134,17 @@ public class RatingActivity extends BaseActivity {
                     RealmUtils.getInstance().createOrUpdatePostModel(postModel);
                 }else{
                     RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(tvShow.getId(),strAmount,false,true));
+                }
+                Toast.makeText(RatingActivity.this, "Rating stored", Toast.LENGTH_SHORT).show();
+            } else if (cinemaMovie != null) {
+                Log.d("RATING", strAmount);
+
+                PostModel postModel = RealmUtils.getInstance().readPostModel(cinemaMovie.getId());
+                if(postModel!=null) {
+                    RealmUtils.getInstance().setRating(postModel,strAmount);
+                    RealmUtils.getInstance().createOrUpdatePostModel(postModel);
+                }else{
+                    RealmUtils.getInstance().createOrUpdatePostModel(new PostModel(cinemaMovie.getId(),strAmount,true,false));
                 }
                 Toast.makeText(RatingActivity.this, "Rating stored", Toast.LENGTH_SHORT).show();
             }
@@ -201,4 +230,50 @@ public class RatingActivity extends BaseActivity {
             }
         });
     }
+
+    private void requestRatedCinemaMovies() {
+        ApiHandler.getInstance().requestAccountRatedMovies(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), 1, new ApiHandler.MovieListListener() {
+            @Override
+            public void success(MovieList response) {
+                for (Movie t: response.getMovies()) {
+                    ratedMovies.add(t);
+                }
+                if(response.getTotalPages()>1){
+                    for(int i = response.getTotalPages(); i>= 2; i--){
+                        ApiHandler.getInstance().requestAccountRatedMovies(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.MovieListListener() {
+                            @Override
+                            public void success(MovieList response) {
+                                for (Movie t: response.getMovies()) {
+                                    ratedMovies.add(t);
+                                }
+                            }
+                        });
+                    }
+                    for (Movie m:ratedMovies) {
+                        if(cinemaMovie!=null){
+                            if(cinemaMovie.getId()==m.getId()){
+                                Log.d("MOVIE_RATING", String.valueOf((float)m.getRating()));
+                                ratingBar.setRating((float)m.getRating());
+                            }
+                        }
+                    }
+                }else{
+                    for (Movie m:ratedMovies) {
+                        if(cinemaMovie!=null){
+                            if(cinemaMovie.getId()==m.getId()){
+                                Log.d("MOVIE_RATING", String.valueOf((float)m.getRating()));
+                                ratingBar.setRating((float)m.getRating());
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
 }

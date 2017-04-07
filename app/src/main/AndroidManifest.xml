@@ -13,6 +13,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="7441d02155685acc10fd1c60286364bb5d941e54" />
+
         <activity
             android:name=".Movies.MoviesActivity"
             android:label="@string/movies_label"
@@ -105,11 +112,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="7441d02155685acc10fd1c60286364bb5d941e54" />
-
         <activity
             android:name=".TVSeries.EpisodeActivity"
             android:parentActivityName=".TVSeries.SeasonActivity"
@@ -173,16 +175,62 @@
             android:name=".AlertReceivers.TVAlertReceiver"
             android:process=":remote" />
 
-        <activity android:name=".AlertReceivers.UpcomingMovieActivity" >
-
+        <activity
+            android:name=".AlertReceivers.UpcomingMovieActivity"
+            android:screenOrientation="portrait">
             <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity" />
         </activity>
-        <activity android:name=".AlertReceivers.AiringEpisodesActivity">
+        <activity
+            android:name=".AlertReceivers.AiringEpisodesActivity"
+            android:screenOrientation="portrait">
             <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.TVSeries.TVSeriesActivity" />
+        </activity>
+        <activity
+            android:name=".Cinema.CinemaActivity"
+            android:label="@string/action_cinema"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Cinema.CinemaMovieActivity"
+            android:label="@string/action_cinema"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.Cinema.CinemaActivity" />
+        </activity>
+        <activity
+            android:name=".Cinema.ReservationActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.Cinema.CinemaMovieActivity" />
+        </activity>
+        <activity
+            android:name=".Cinema.SummaryActivity"
+            android:label="@string/tickets"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.Cinema.ReservationActivity" />
+        </activity>
+        <activity
+            android:name=".Cinema.PaymentActivity"
+            android:label="@string/checkout_summary"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.Cinema.SummaryActivity" />
+        </activity>
+        <activity android:name=".Cinema.ConfirmationActivity"
+            android:label="@string/action_cinema"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zsamir.movieappintership.Cinema.CinemaActivity" />
         </activity>
     </application>
 

@@ -160,6 +160,44 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/cinema_nav"
+        android:background="@color/colorNavBar"
+        android:clickable="true">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/cinema_icon"
+            android:id="@+id/cinema_nav_icon"
+            android:layout_marginLeft="25dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/cinema_nav_text"
+            android:textColor="@color/colorMovieItemText"
+            android:layout_toRightOf="@id/cinema_nav_icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/action_cinema"
+            />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:background="@color/colorNavHeaderBreakLine2">
+    </View>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/settings_nav"
         android:background="@color/colorNavBar"
         android:clickable="true">

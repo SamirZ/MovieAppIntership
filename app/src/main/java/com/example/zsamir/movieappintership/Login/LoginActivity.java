@@ -183,10 +183,15 @@ public class LoginActivity extends BaseActivity {
 
                                                         RealmUtils.getInstance().createRealmAccount();
 
+                                                        RealmUtils.getInstance().deleteAllMovies();
+                                                        RealmUtils.getInstance().deleteAllTVShows();
+
                                                         AccountListsRequestHandler.getInstance().requestFavoriteMovies();
                                                         AccountListsRequestHandler.getInstance().requestFavoriteTVSeries();
                                                         AccountListsRequestHandler.getInstance().requestWatchlistMovies();
                                                         AccountListsRequestHandler.getInstance().requestWatchlistTVSeries();
+                                                        AccountListsRequestHandler.getInstance().requestRatedMovies();
+                                                        AccountListsRequestHandler.getInstance().requestRatedTVSeries();
 
                                                         Intent returnIntent = new Intent();
                                                         setResult(RESULT_OK,returnIntent);

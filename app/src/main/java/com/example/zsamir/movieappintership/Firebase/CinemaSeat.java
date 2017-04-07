@@ -1,20 +1,26 @@
 package com.example.zsamir.movieappintership.Firebase;
 
-public class CinemaSeat {
+import android.os.Parcel;
+import android.os.Parcelable;
 
-    private int id;
+public class CinemaSeat implements Parcelable {
+
+    private String id;
     private boolean free;
 
-    public CinemaSeat(int id, boolean free) {
+    public CinemaSeat() {
+    }
+
+    public CinemaSeat(String id, boolean free) {
         this.id = id;
         this.free = free;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -25,4 +31,33 @@ public class CinemaSeat {
     public void setFree(boolean free) {
         this.free = free;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeByte(this.free ? (byte) 1 : (byte) 0);
+    }
+
+    protected CinemaSeat(Parcel in) {
+        this.id = in.readString();
+        this.free = in.readByte() != 0;
+    }
+
+    public static final Parcelable.Creator<CinemaSeat> CREATOR = new Parcelable.Creator<CinemaSeat>() {
+        @Override
+        public CinemaSeat createFromParcel(Parcel source) {
+            return new CinemaSeat(source);
+        }
+
+        @Override
+        public CinemaSeat[] newArray(int size) {
+            return new CinemaSeat[size];
+        }
+    };
 }

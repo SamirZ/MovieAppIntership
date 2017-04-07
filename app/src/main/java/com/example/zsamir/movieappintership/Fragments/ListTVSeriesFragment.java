@@ -16,6 +16,7 @@ import com.example.zsamir.movieappintership.Modules.TVShow;
 import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.LoginModules.Account;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmInteger;
 import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 
 import java.util.ArrayList;
@@ -46,9 +47,6 @@ public class ListTVSeriesFragment extends Fragment {
 
         if(((BaseActivity)getActivity()).isNetworkAvailable()){
 
-            RealmUtils.getInstance().removeRealmAccountFavTVShowsData();
-            RealmUtils.getInstance().removeRealmAccountWatchTVShowsData();
-            RealmUtils.getInstance().removeRealmAccountRatedTVShowsData();
 
             loadTVSeries(1);
 
@@ -70,15 +68,6 @@ public class ListTVSeriesFragment extends Fragment {
     private void loadTVSeries(int page) {
         if(getActivity().getIntent().hasExtra("TYPE")) {
             String type = getActivity().getIntent().getStringExtra("TYPE");
-
-            if(page==1){
-                if (type.equalsIgnoreCase("FAVORITES"))
-                    RealmUtils.getInstance().removeRealmAccountFavTVShowsData();
-                else if (type.equalsIgnoreCase("WATCHLIST"))
-                    RealmUtils.getInstance().removeRealmAccountWatchTVShowsData();
-                else if (type.equalsIgnoreCase("RATINGS"))
-                    RealmUtils.getInstance().removeRealmAccountRatedTVShowsData();
-            }
 
             if (type.equalsIgnoreCase("FAVORITES"))
                 searchForFavoriteTVSeries(page);
@@ -110,7 +99,6 @@ public class ListTVSeriesFragment extends Fragment {
             @Override
             public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
                 tvShowList.addAll(response.getTVShow());
-                RealmUtils.getInstance().addRealmAccountFavTVShowsData(response.getTVShow());
                 mTvSeriesAdapter.notifyDataSetChanged();
 
             }
@@ -122,7 +110,6 @@ public class ListTVSeriesFragment extends Fragment {
             @Override
             public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
                 tvShowList.addAll(response.getTVShow());
-                RealmUtils.getInstance().addRealmAccountWatchTVShowsData(response.getTVShow());
                 mTvSeriesAdapter.notifyDataSetChanged();
 
             }
@@ -134,7 +121,6 @@ public class ListTVSeriesFragment extends Fragment {
             @Override
             public void success(com.example.zsamir.movieappintership.Modules.TVShowList response) {
                 tvShowList.addAll(response.getTVShow());
-                RealmUtils.getInstance().addRealmAccountRatedTVShowsData(response.getTVShow());
                 mTvSeriesAdapter.notifyDataSetChanged();
             }
         });
@@ -142,17 +128,35 @@ public class ListTVSeriesFragment extends Fragment {
     }
 
     private void searchForRatedTVShowsOffline() {
-        tvShowList.addAll(RealmUtils.getInstance().readRealmAccount().getRatedTVShow());
+
+        for (RealmInteger i:RealmUtils.getInstance().readRealmAccount().getRatedTVSeriesList()) {
+            if(RealmUtils.getInstance().readTVShowFromRealm(i.getI())!=null)
+                if(!tvShowList.contains(RealmUtils.getInstance().readTVShowFromRealm(i.getI())))
+                    tvShowList.add(RealmUtils.getInstance().readTVShowFromRealm(i.getI()));
+        }
+
         mTvSeriesAdapter.notifyDataSetChanged();
     }
 
     private void searchForWatchlistTVShowsOffline() {
-        tvShowList.addAll(RealmUtils.getInstance().readRealmAccount().getWatchTVShow());
+
+        for (RealmInteger i:RealmUtils.getInstance().readRealmAccount().getWatchlistTVSeriesList()) {
+            if(RealmUtils.getInstance().readTVShowFromRealm(i.getI())!=null)
+                if(!tvShowList.contains(RealmUtils.getInstance().readTVShowFromRealm(i.getI())))
+                    tvShowList.add(RealmUtils.getInstance().readTVShowFromRealm(i.getI()));
+        }
+
         mTvSeriesAdapter.notifyDataSetChanged();
     }
 
     private void searchForFavoriteTVShowsOffline() {
-        tvShowList.addAll(RealmUtils.getInstance().readRealmAccount().getFavTVShow());
+
+        for (RealmInteger i:RealmUtils.getInstance().readRealmAccount().getFavTVSeriesList()) {
+            if(RealmUtils.getInstance().readTVShowFromRealm(i.getI())!=null)
+                if(!tvShowList.contains(RealmUtils.getInstance().readTVShowFromRealm(i.getI())))
+                    tvShowList.add(RealmUtils.getInstance().readTVShowFromRealm(i.getI()));
+        }
+
         mTvSeriesAdapter.notifyDataSetChanged();
     }
 }

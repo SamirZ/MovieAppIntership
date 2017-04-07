@@ -103,4 +103,9 @@ public class GalleryActivity extends BaseActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onNetworkUnavailable() {
+
+    }
 }

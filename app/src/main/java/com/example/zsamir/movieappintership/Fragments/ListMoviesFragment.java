@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import com.example.zsamir.movieappintership.LoginModules.Account;
 import com.example.zsamir.movieappintership.Modules.Movie;
 import com.example.zsamir.movieappintership.Modules.MovieList;
 import com.example.zsamir.movieappintership.R;
+import com.example.zsamir.movieappintership.RealmUtils.RealmInteger;
 import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 import com.google.gson.Gson;
 
@@ -51,16 +51,18 @@ public class ListMoviesFragment extends Fragment {
         mRecyclerView.setAdapter(mMovieAdapter);
 
         if(((BaseActivity)getActivity()).isNetworkAvailable()) {
-            
-            loadMovies(1);
+
 
             EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
                 @Override
                 public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                    if(page>1)
+                    if(page!=1)
                         loadMovies(page);
                 }
             };
+
+            loadMovies(1);
+
             mRecyclerView.addOnScrollListener(scrollListener);
         }else{
             loadMoviesOffline();
@@ -85,15 +87,6 @@ public class ListMoviesFragment extends Fragment {
         if(getActivity().getIntent().hasExtra("TYPE")) {
             String type = getActivity().getIntent().getStringExtra("TYPE");
 
-            if(page==1){
-                if (type.equalsIgnoreCase("FAVORITES"))
-                    RealmUtils.getInstance().removeRealmAccountFavMoviesData();
-                else if (type.equalsIgnoreCase("WATCHLIST"))
-                    RealmUtils.getInstance().removeRealmAccountWatchMoviesData();
-                else if (type.equalsIgnoreCase("RATINGS"))
-                    RealmUtils.getInstance().removeRealmAccountRatedMoviesData();
-            }
-
             if (type.equalsIgnoreCase("FAVORITES"))
                 searchForFavoriteMovies(page);
             else if (type.equalsIgnoreCase("WATCHLIST"))
@@ -108,7 +101,6 @@ public class ListMoviesFragment extends Fragment {
             @Override
             public void success(MovieList response) {
                 moviesList.addAll(response.getMovies());
-                RealmUtils.getInstance().addRealmAccountRatedMoviesData(response.getMovies());
                 mMovieAdapter.notifyDataSetChanged();
 
             }
@@ -120,7 +112,6 @@ public class ListMoviesFragment extends Fragment {
             @Override
             public void success(MovieList response) {
                 moviesList.addAll(response.getMovies());
-                RealmUtils.getInstance().addRealmAccountWatchMoviesData(response.getMovies());
                 mMovieAdapter.notifyDataSetChanged();
 
             }
@@ -132,7 +123,6 @@ public class ListMoviesFragment extends Fragment {
             @Override
             public void success(MovieList response) {
                 moviesList.addAll(response.getMovies());
-                RealmUtils.getInstance().addRealmAccountFavMoviesData(response.getMovies());
                 mMovieAdapter.notifyDataSetChanged();
             }
         });
@@ -140,17 +130,35 @@ public class ListMoviesFragment extends Fragment {
 
 
     private void searchForRatedMoviesOffline() {
-        moviesList.addAll(RealmUtils.getInstance().readRealmAccount().getRatedMovies());
+
+        for (RealmInteger i:RealmUtils.getInstance().readRealmAccount().getRatedMovieList()) {
+            if(RealmUtils.getInstance().readMovieFromRealm(i.getI())!=null)
+                if(!moviesList.contains(RealmUtils.getInstance().readMovieFromRealm(i.getI())))
+                    moviesList.add(RealmUtils.getInstance().readMovieFromRealm(i.getI()));
+        }
+
         mMovieAdapter.notifyDataSetChanged();
     }
 
     private void searchForWatchlistMoviesOffline() {
-        moviesList.addAll(RealmUtils.getInstance().readRealmAccount().getWatchMovies());
+
+        for (RealmInteger i:RealmUtils.getInstance().readRealmAccount().getWatchlistMovieList()) {
+            if(RealmUtils.getInstance().readMovieFromRealm(i.getI())!=null)
+                if(!moviesList.contains(RealmUtils.getInstance().readMovieFromRealm(i.getI())))
+                moviesList.add(RealmUtils.getInstance().readMovieFromRealm(i.getI()));
+        }
+
         mMovieAdapter.notifyDataSetChanged();
     }
 
     private void searchForFavoriteMoviesOffline() {
-        moviesList.addAll(RealmUtils.getInstance().readRealmAccount().getFavMovies());
+
+        for (RealmInteger i:RealmUtils.getInstance().readRealmAccount().getFavMovieList()) {
+            if(RealmUtils.getInstance().readMovieFromRealm(i.getI())!=null)
+                if(!moviesList.contains(RealmUtils.getInstance().readMovieFromRealm(i.getI())))
+                moviesList.add(RealmUtils.getInstance().readMovieFromRealm(i.getI()));
+        }
+
         mMovieAdapter.notifyDataSetChanged();
     }
 }

@@ -141,4 +141,63 @@ public class AccountListsRequestHandler {
             }
         });
     }
+
+    public void requestRatedMovies(){
+        ApiHandler.getInstance().requestAccountRatedMovies(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), 1, new ApiHandler.MovieListListener() {
+            @Override
+            public void success(MovieList response) {
+                ArrayList<Integer> l = new ArrayList<>();
+                for (Movie t: response.getMovies()) {
+                    MovieAppApplication.getUser().addToRatedMoviesList(t.getId());
+                    l.add(t.getId());
+                }
+                RealmUtils.getInstance().addRealmAccountRatedMovies(l);
+                if(response.getTotalPages()>1){
+                    for(int i = response.getTotalPages(); i>= 2; i--){
+                        ApiHandler.getInstance().requestAccountRatedMovies(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.MovieListListener() {
+                            @Override
+                            public void success(MovieList response) {
+                                ArrayList<Integer> l = new ArrayList<>();
+                                for (Movie t: response.getMovies()) {
+                                    MovieAppApplication.getUser().addToRatedMoviesList(t.getId());
+                                    l.add(t.getId());
+                                }
+                                RealmUtils.getInstance().addRealmAccountRatedMovies(l);
+
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
+    public void requestRatedTVSeries(){
+        ApiHandler.getInstance().requestAccountRatedTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
+            @Override
+            public void success(TVShowList response) {
+                ArrayList<Integer> l = new ArrayList<>();
+                for (TVShow t: response.getTVShow()) {
+                    MovieAppApplication.getUser().addToRatedTVSeriesList(t.getId());
+                    l.add(t.getId());
+                }
+                RealmUtils.getInstance().addRealmAccountRatedTVShow(l);
+                if(response.getTotalPages()>1){
+                    for(int i = response.getTotalPages(); i>= 2; i--){
+                        ApiHandler.getInstance().requestAccountRatedTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.TvSeriesListListener() {
+                            @Override
+                            public void success(TVShowList response) {
+                                ArrayList<Integer> l = new ArrayList<>();
+                                for (TVShow t: response.getTVShow()) {
+                                    MovieAppApplication.getUser().addToRatedTVSeriesList(t.getId());
+                                    l.add(t.getId());
+                                }
+                                RealmUtils.getInstance().addRealmAccountRatedTVShow(l);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
 }

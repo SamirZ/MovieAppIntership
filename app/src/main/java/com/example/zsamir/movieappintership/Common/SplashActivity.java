@@ -10,21 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.crashlytics.android.Crashlytics;
 import com.example.zsamir.movieappintership.API.ApiHandler;
-import com.example.zsamir.movieappintership.BaseActivity;
 import com.example.zsamir.movieappintership.LoginModules.Account;
 import com.example.zsamir.movieappintership.LoginModules.Token;
-import com.example.zsamir.movieappintership.Modules.Movie;
-import com.example.zsamir.movieappintership.Modules.MovieList;
-import com.example.zsamir.movieappintership.Modules.TVShow;
-import com.example.zsamir.movieappintership.Modules.TVShowList;
 import com.example.zsamir.movieappintership.MovieAppApplication;
 import com.example.zsamir.movieappintership.NewsFeed.NewsFeedActivity;
 import com.example.zsamir.movieappintership.R;
-import com.example.zsamir.movieappintership.RealmUtils.RealmInteger;
 import com.example.zsamir.movieappintership.RealmUtils.RealmUtils;
 import com.google.gson.Gson;
-
-import java.util.ArrayList;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -76,12 +68,16 @@ public class SplashActivity extends AppCompatActivity {
                 AccountListsRequestHandler.getInstance().requestWatchlistTVSeries();
                 AccountListsRequestHandler.getInstance().requestWatchlistMovies();
                 AccountListsRequestHandler.getInstance().requestFavoriteMovies();
+                AccountListsRequestHandler.getInstance().requestRatedMovies();
+                AccountListsRequestHandler.getInstance().requestRatedTVSeries();
             }else{
                 // LOAD OFFLINE LIKED,WATCHLIST AND RATED
                 u.setFavMovieList(RealmUtils.getInstance().readRealmAccount().getFavMovieListInteger());
                 u.setFavTVSeriesList(RealmUtils.getInstance().readRealmAccount().getFavTVShowListInteger());
                 u.setWatchlistMovieList(RealmUtils.getInstance().readRealmAccount().getWatchMovieListInteger());
                 u.setWatchlistTVSeriesList(RealmUtils.getInstance().readRealmAccount().getWatchTVShowListInteger());
+                u.setRatedMovieList(RealmUtils.getInstance().readRealmAccount().getRatedMovieListInteger());
+                u.setRatedTVSeriesList(RealmUtils.getInstance().readRealmAccount().getRatedTVShowListInteger());
                 MovieAppApplication.setUser(u);
             }
         }
@@ -102,124 +98,6 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    private void requestFavoriteMovies(){
-        ApiHandler.getInstance().requestAccountFavoriteMovies(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), 1, new ApiHandler.MovieListListener() {
-            @Override
-            public void success(MovieList response) {
-                ArrayList<Integer> l = new ArrayList<>();
-                for (Movie t: response.getMovies()) {
-                    MovieAppApplication.getUser().addToFavoriteMoviesList(t.getId());
-                    l.add(t.getId());
-                }
-                RealmUtils.getInstance().addRealmAccountFavMovies(l);
-                if(response.getTotalPages()>1){
-                    for(int i = response.getTotalPages(); i>= 2; i--){
-                        ApiHandler.getInstance().requestAccountFavoriteMovies(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.MovieListListener() {
-                            @Override
-                            public void success(MovieList response) {
-                                ArrayList<Integer> l = new ArrayList<>();
-                                for (Movie t: response.getMovies()) {
-                                    MovieAppApplication.getUser().addToFavoriteMoviesList(t.getId());
-                                    l.add(t.getId());
-                                }
-                                RealmUtils.getInstance().addRealmAccountFavMovies(l);
-
-                            }
-                        });
-                    }
-                }
-            }
-        });
-    }
-
-    private void requestFavoriteTVSeries(){
-        ApiHandler.getInstance().requestAccountFavoriteTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
-            @Override
-            public void success(TVShowList response) {
-                ArrayList<Integer> l = new ArrayList<>();
-                for (TVShow t: response.getTVShow()) {
-                    MovieAppApplication.getUser().addToFavoriteTVSeriesList(t.getId());
-                    l.add(t.getId());
-                }
-                RealmUtils.getInstance().addRealmAccountFavTVShow(l);
-                if(response.getTotalPages()>1){
-                    for(int i = response.getTotalPages(); i>= 2; i--){
-                        ApiHandler.getInstance().requestAccountFavoriteTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.TvSeriesListListener() {
-                            @Override
-                            public void success(TVShowList response) {
-                                ArrayList<Integer> l = new ArrayList<>();
-                                for (TVShow t: response.getTVShow()) {
-                                    MovieAppApplication.getUser().addToFavoriteTVSeriesList(t.getId());
-                                    l.add(t.getId());
-                                }
-                                RealmUtils.getInstance().addRealmAccountFavTVShow(l);
-                            }
-                        });
-                    }
-                }
-            }
-        });
-    }
-
-    private void requestWatchlistMovies(){
-        ApiHandler.getInstance().requestAccountWatchlistMovies(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), 1, new ApiHandler.MovieListListener() {
-            @Override
-            public void success(MovieList response) {
-                ArrayList<Integer> l = new ArrayList<>();
-                for (Movie t: response.getMovies()) {
-                    MovieAppApplication.getUser().addToWatchlistMoviesList(t.getId());
-                    l.add(t.getId());
-                }
-                RealmUtils.getInstance().addRealmAccountWatchlistMovies(l);
-                if(response.getTotalPages()>1){
-                    for(int i = response.getTotalPages(); i>= 2; i--){
-                        ApiHandler.getInstance().requestAccountWatchlistMovies(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.MovieListListener() {
-                            @Override
-                            public void success(MovieList response) {
-                                ArrayList<Integer> l = new ArrayList<>();
-                                for (Movie t: response.getMovies()) {
-                                    MovieAppApplication.getUser().addToWatchlistMoviesList(t.getId());
-                                    l.add(t.getId());
-                                }
-                                RealmUtils.getInstance().addRealmAccountWatchlistMovies(l);
-                            }
-                        });
-                    }
-                }
-            }
-        });
-    }
-
-    private void requestWatchlistTVSeries(){
-        ApiHandler.getInstance().requestAccountWatchlistTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), 1, new ApiHandler.TvSeriesListListener() {
-            @Override
-            public void success(TVShowList response) {
-                ArrayList<Integer> l = new ArrayList<>();
-                for (TVShow t: response.getTVShow()) {
-                    MovieAppApplication.getUser().addToWatchlistTVSeriesList(t.getId());
-                    l.add(t.getId());
-                }
-                RealmUtils.getInstance().addRealmAccountWatchlistTVShow(l);
-                if(response.getTotalPages()>1){
-                    for(int i = response.getTotalPages(); i>= 2; i--){
-                        ApiHandler.getInstance().requestAccountWatchlistTVSeries(MovieAppApplication.getUser().getId(), MovieAppApplication.getUser().getSessionId(), i, new ApiHandler.TvSeriesListListener() {
-                            @Override
-                            public void success(TVShowList response) {
-                                ArrayList<Integer> l = new ArrayList<>();
-                                for (TVShow t: response.getTVShow()) {
-                                    MovieAppApplication.getUser().addToWatchlistTVSeriesList(t.getId());
-                                    l.add(t.getId());
-                                }
-                                RealmUtils.getInstance().addRealmAccountWatchlistTVShow(l);
-                            }
-                        });
-                    }
-                }
-
-            }
-        });
     }
 
     public boolean isNetworkAvailable() {

@@ -21,6 +21,10 @@ public class Movie extends RealmObject implements Parcelable {
     @Ignore
     public List<Backdrop> backdropList;
 
+    public boolean favorite;
+    public boolean watch;
+    public boolean rated;
+
     public boolean popular;
     public boolean latest;
     public boolean highestrated;
